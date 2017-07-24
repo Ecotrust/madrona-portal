@@ -56,7 +56,7 @@
   <p class="notes"><strong>Notes:</strong> {{layer.data_overview|richtext}}</p>
   {% if layer.espis_enabled %}
     {% if layer.espis_search or layer.espis_region %}
-      <a href="{{layer.get_espis_link}}" target="_blank">View related ESPIS layers</a>
+      <a href="{{layer.get_espis_link}}" target="_blank">View related studies via ESPIS</a>
     {% endif %}
   {% endif %}
 </section>
