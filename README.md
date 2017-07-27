@@ -42,6 +42,9 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
 7. At the root of `marco-portal2`, run `vagrant up` and let it install ALL of dependencies MARCO relies upon
 
 8. At this point, you should be completely setup!
+  * Note: At this point, there still seem to be issues with Wagtail Pages, and therefore Ocean Stories.
+  * This is due to needing to configure for Redis to run on a socket, and Celery to point to that socket.
+  * This is likely not the only way, but it's what I have working and how it runs on production. --RDH
 
 9. You probably want to create a superuser once you're in your VM, so that you have access to both the Django and Wagtail backend
 
