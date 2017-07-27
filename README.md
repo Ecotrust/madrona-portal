@@ -16,7 +16,28 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
 ```
 
 
-1.  To quickly clone all the repositiories from [MidAtlanticPortal](https://github.com/MidAtlanticPortal), run one of the following curl commands with Ruby/Perl. In doing so, this will clone all of the respositories at the same level and will require you to move all the non `marco-portal2` repositories to a subfolder - called `apps` as diagrammed above
+1. Clone all required modules. Currently this list includes:
+  * marco-portal2 (this repo)
+  * madrona-analysistools
+  * madrona-features
+  * madrona-forms
+  * madrona-manipulators
+  * madrona-scenarios
+  * marco-map_groups
+  * marco-portal2
+  * mp-accounts
+  * mp-clipping
+  * mp-data-manager
+  * mp-drawing
+  * mp-explore
+  * mp-proxy
+  * mp-visualize
+  * p97-nursery
+  * p97settings
+  * django-libsass # Can Seth's changes be made locally and have libsass installed via pip again?
+  * django-recaptcha-develop # This CAN be moved to requirements.txt
+
+To quickly clone all the repositiories from [MidAtlanticPortal](https://github.com/MidAtlanticPortal), run one of the following curl commands with Ruby/Perl. In doing so, this will clone all of the respositories at the same level
     * RUBY:
     ```
     curl -s https://api.github.com/orgs/MidAtlanticPortal/repos?per_page=200 | ruby -rubygems -e 'require "json"; JSON.load(STDIN.read).each { |repo| %x[git clone #{repo["clone_url"]} ]}'
@@ -25,17 +46,43 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
     ```
     curl -s https://api.github.com/orgs/MidAtlanticPortal/repos\?per_page\=200 | perl -ne 'print "$1\n" if (/"clone_url": "([^"]+)/)' | xargs -n 1 git clone
     ```
+    
+  Putting this all together, your process will look something like this (using Perl on Linux for this example):
+  ``` 
+ cd [working directory]
+ curl -s https://api.github.com/orgs/MidAtlanticPortal/repos\?per_page\=200 | perl -ne 'print "$1\n" if (/"clone_url": "([^"]+)/)' | xargs -n 1 git clone
+ mkdir ./marco-portal2/apps
+ shopt -s extglob
+ mv !(*marco-portal2*) ./marco-portal2/apps/
+ shopt -u extglob
+ ```
 
 2.  Once your folder structure is set up, create a `config.ini` file by making a copy of the `config.ini.template` located at `marco-portal2/marco` and modify the following
-      * **MEDIA_ROOT:** /home/vagrant/marco_portal2/media
-      * **STATIC_ROOT:** /home/vagrant/marco_portal2/static
-
+      * **SECRET_KEY** = [Punch in some random gibberish]
+      * **MEDIA_ROOT** = /home/vagrant/marco_portal2/media
+      * **STATIC_ROOT** = /home/vagrant/marco_portal2/static
+      * **LOCATION** = /var/run/redis/redis.sock
+      * **RESULT_BACKEND** = redis+socket:///var/run/redis/redis.sock
+      * **BROKER_URL** = redis+socket:///var/run/redis/redis.sock
+      
 3. Create a `/static/` directory at the root level and move the `/bower_components/` directory (also found at the root level) within it
 
 4. Create a `/media/` directory at the root level and retrieve the live server's media folder via ssh/sftp located at `/webapps/marco_portal_media/` and add it to the `/media/` path. Refer to your team's technical documentation for server login (username and password) credentials
     * Of note - you may want to exclude the `data_manager` folder within the media directory - unless you're interested in several GBs of utfgrid layers.
+```
+mkdir media
+scp -r user@live_server:~/webapps/marco_portal_media/documents ./media/         #11s -- RDH 7/27/2017
+scp -r user@live_server:~/webapps/marco_portal_media/group_images ./media/      #11s
+scp -r user@live_server:~/webapps/marco_portal_media/images ./media/            #3m19s
+scp -r user@live_server:~/webapps/marco_portal_media/original_images ./media/   #3m57s
+scp user@live_server:~/webapps/marco_portal_media/index.html ./media/           #12s
+```
 
-5. Retrieve the data & content fixture from `/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `marco-portal2`
+5. Retrieve the data & content fixture from `~/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `marco-portal2`
+```
+cd [working dir]/marco-portal2
+scp user@live_server:~fixtures/dev_fixture.json ./                              #25s
+```
 
 6. Download and install [vagrant](https://www.vagrantup.com/downloads.html) and [virtual box](https://www.virtualbox.org/wiki/Downloads) (if you haven't already done so already)
 
