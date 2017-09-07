@@ -152,6 +152,9 @@ class OceanStory(DetailPageBase):
         return self.get_prev_siblings().live().filter(display_home_page=True).first() or \
             self.get_siblings().live().filter(display_home_page=True).last()
 
+    def is_first_sibling(self):
+        return len(self.get_prev_siblings().live().filter(display_home_page=True)) == 0
+
 
 OceanStory.content_panels = DetailPageBase.content_panels + [
     FieldPanel('display_home_page'),
