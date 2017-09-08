@@ -146,8 +146,9 @@ Since this project is modularized, changes to a submodule only requires server u
 
 1.  SSH into the server
 2.  Activate your virtual env - `source ~/env/marco_portal2/bin/activate`
-3.  Navigate to the submodule that you're updating
-    *  Submodules are located at `cd /home/midatlantic/env/marco_portal2/src/[THE-NAME-OF-YOUR-SUBMODULE]`
+3.  Navigate to the submodule that you're updating. Submodules are located at:
+    *  **Sandbox** - `cd /home/midatlantic/env/marco_portal2/src/[THE-NAME-OF-YOUR-SUBMODULE]`
+    *  **Production** - `cd ~/webapps/marco_portal/marco/src/`  
 4.  Once you're at that path - `git fetch && git reset -q --hard origin/master` 
     *  `origin/master` pertains to the main master branch - you can change that to whatever your branch you'd like
     *  Of note, the master *marco-portal2* branch runs as `origin/prototype`
