@@ -81,7 +81,7 @@ scp user@live_server:~/webapps/marco_portal_media/index.html ./media/           
 5. Retrieve the data & content fixture from `~/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `marco-portal2`
 ```
 cd [working dir]/marco-portal2
-scp user@live_server:~fixtures/dev_fixture.json ./                              #25s
+scp user@live_server:~/fixtures/dev_fixture.json ./                              #25s
 ```
 
 6. Download and install [vagrant](https://www.vagrantup.com/downloads.html) and [virtual box](https://www.virtualbox.org/wiki/Downloads) (if you haven't already done so already)
