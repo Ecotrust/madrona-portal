@@ -41,3 +41,5 @@ FACEBOOK_KEY = You forgot to set the facebook key
 FACEBOOK_SECRET = You forgot to set the facebook secret
 TWITTER_KEY = You forgot to set the twitter key
 TWITTER_SECRET = You forgot to set the twitter secret
+GOOGLE_KEY = You forgot to set the google key
+GOOGLE_SECRET = You forgot to set the google secret

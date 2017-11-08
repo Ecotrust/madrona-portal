@@ -112,7 +112,8 @@ INSTALLED_APPS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    # 'social.backends.google.GooglePlusAuth',
+    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOpenId',
     'social.backends.facebook.FacebookOAuth2',
     'social.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
@@ -270,13 +271,15 @@ GEOJSON_DOWNLOAD = True  # force headers to treat like an attachment
 # authentication
 SOCIAL_AUTH_NEW_USER_URL = '/account/?new=true&login=django'
 SOCIAL_AUTH_FACBEOOK_NEW_USER_URL = '/account/?new=true&login=facebook'
-SOCIAL_AUTH_GOOGLE_PLUS_NEW_USER_URL = '/account/?new=true&login=gplus'
+# SOCIAL_AUTH_GOOGLE_PLUS_NEW_USER_URL = '/account/?new=true&login=gplus'
 SOCIAL_AUTH_TWITTER_NEW_USER_URL = '/account/?new=true&login=twitter'
+SOCIAL_AUTH_GOOGLE_NEW_USER_URL = '/account/?new=true&login=google'
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/account/?login=django'
-SOCIAL_AUTH_GOOGLE_PLUS_LOGIN_REDIRECT_URL = '/account/?login=gplus'
+# SOCIAL_AUTH_GOOGLE_PLUS_LOGIN_REDIRECT_URL = '/account/?login=gplus'
 SOCIAL_AUTH_FACEBOOK_LOGIN_REDIRECT_URL = '/account/?login=facebook'
 SOCIAL_AUTH_TWITTER_LOGIN_REDIRECT_URL = '/account/?login=twitter'
+SOCIAL_AUTH_GOOGLE_LOGIN_REDIRECT_URL = '/account/?login=google'
 
 # SOCIAL_AUTH_GOOGLE_PLUS_KEY = ''
 # SOCIAL_AUTH_GOOGLE_PLUS_SECRET = ''
@@ -291,6 +294,11 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile,email']
 
 SOCIAL_AUTH_TWITTER_KEY = cfg.get('SOCIAL_AUTH', 'TWITTER_KEY', '')
 SOCIAL_AUTH_TWITTER_SECRET = cfg.get('SOCIAL_AUTH', 'TWITTER_SECRET', '')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = cfg.get('SOCIAL_AUTH', 'GOOGLE_KEY', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = cfg.get('SOCIAL_AUTH', 'GOOGLE_SECRET', '')
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = True
 
 # SOCIAL_AUTH_EMAIL_FORCE_EMAIL_VALIDATION = True
 SOCIAL_AUTH_EMAIL_VALIDATION_FUNCTION = 'accounts.pipeline.send_validation_email'
