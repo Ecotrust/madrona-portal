@@ -388,6 +388,22 @@ NOCAPTCHA = True
 RECAPTCHA_PUBLIC_KEY = '6LevfQoUAAAAAPIKTQHJt3_Y2NDXkZQ3HYQHDNHk'
 RECAPTCHA_PRIVATE_KEY = '6LevfQoUAAAAACp-4BPAgx4oMgeJrn1d9IMyReoI'
 
+# OL2 doesn't support reprojecting rasters, so for WMS servers that don't provide
+# EPSG:3857 we send it to a proxy to be re-projected.
+WMS_PROXY = 'http://tiles.ecotrust.org/mapserver/'
+WMS_PROXY_MAPFILE_FIELD = 'map'
+WMS_PROXY_MAPFILE = '/mapfiles/generic.map'
+WMS_PROXY_LAYERNAME = 'LAYERNAME'
+WMS_PROXY_CONNECTION = 'CONN'
+WMS_PROXY_FORMAT = 'FORMAT'
+WMS_PROXY_VERSION = 'VERSION'
+WMS_PROXY_SOURCE_SRS = 'SOURCESRS'
+WMS_PROXY_SOURCE_STYLE = 'SRCSTYLE'
+WMS_PROXY_TIME_EXTENT = 'TIMEEXT'
+WMS_PROXY_TIME_DEFAULT = 'TIMEDEF'
+WMS_PROXY_GENERIC_LAYER = 'generic'
+WMS_PROXY_TIME_LAYER = 'time'
+
 if False:
     MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
     INSTALLED_APPS += ('debug_toolbar',)
