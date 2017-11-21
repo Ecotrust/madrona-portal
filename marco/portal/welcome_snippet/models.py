@@ -4,6 +4,7 @@ from django.db import models
 
 from wagtail.wagtailcore.models import Orderable
 from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
 from wagtail.wagtailsnippets.models import register_snippet
@@ -73,7 +74,7 @@ class WelcomePageEntry(Orderable):
             return ''
 
 @register_snippet
-class WelcomePage(models.Model):
+class WelcomePage(ClusterableModel):
     title = models.CharField(max_length=255)
     body = RichTextField(null=True, blank=True)
     active = models.BooleanField(default=False)
@@ -92,5 +93,5 @@ WelcomePage.panels = [
         FieldPanel('body'),
         FieldPanel('active'),
     ]),
-    InlinePanel(WelcomePage, 'entries', label='Entries')
+    InlinePanel('entries', label='Entries')
 ]

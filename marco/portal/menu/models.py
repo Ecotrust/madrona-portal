@@ -5,6 +5,7 @@ from django.db import models
 
 from wagtail.wagtailcore.models import Orderable
 from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
 from wagtail.wagtailsnippets.models import register_snippet
@@ -71,7 +72,7 @@ class MenuEntry(Orderable, MenuEntryBase):
     menu = ParentalKey('Menu', related_name='entries')
 
 @register_snippet
-class Menu(models.Model):
+class Menu(ClusterableModel):
     class Meta:
         ordering = ('footer', 'order',)
 
