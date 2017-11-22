@@ -9,7 +9,7 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailsearch import index
 from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtailimages.models import AbstractImage, AbstractRendition
+from wagtail.wagtailimages.models import AbstractImage, AbstractRendition, Image
 
 
 # Portal defines its own custom image class to replace wagtailimages.Image,
@@ -21,6 +21,11 @@ class PortalImage(AbstractImage):
 
     search_fields = AbstractImage.search_fields + (
         index.SearchField('creator'),
+    )
+
+    admin_form_fields = Image.admin_form_fields + (
+        'creator',
+        'creator_URL'
     )
 
 # Receive the pre_delete signal and delete the file associated with the model instance.

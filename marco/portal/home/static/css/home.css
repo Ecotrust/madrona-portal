@@ -1,0 +1,92 @@
+.carousel,
+.slide-wrap {
+  height: 520px;
+}
+
+.carousel a,
+.carousel a * {
+  color: #fff;
+  transition: 0.2s all ease-in-out;
+  text-shadow: 0 0 6px rgba(96,96,96,.6);
+}
+
+.carousel a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+  .carousel a:hover * {
+    text-shadow: 0 0 10px rgba(96,96,96,.6);
+  }
+
+.slide-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.slide-bg {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+  .slide-bg:after {
+    background: rgba(0,0,0,.2);
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+.slide-content {
+  margin: 0 auto;
+  padding: 80px 0 50px;
+  text-align: center;
+  width: 80%;
+}
+
+.slide-title {
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: .0125em;
+  word-spacing: .18375em;
+  margin: 0 0 1.75rem;
+}
+
+.slide-body {
+  font-size: 1em;
+}
+  .slide-body p {
+    font-size: 1.125em;
+    text-align: justify;
+  }
+
+.slick-prev, .slick-next {
+  height: 45px;
+  width: 45px;
+}
+  .slick-prev:before, .slick-next:before {
+    color: #22408f;
+    font-size: 45px;
+  }
+
+.slick-prev {
+  left: -50px;
+}
+.slick-next {
+  right: -50px;
+}
+
+@media only screen and (min-width: 900px) {
+  .slide-title {
+    font-size: 5.5em;
+  }
+  .slide-body {
+    margin: 0 auto;
+    width: 50%;
+  }
+}
