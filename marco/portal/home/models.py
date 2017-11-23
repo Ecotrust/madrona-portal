@@ -57,9 +57,64 @@ class HomePageCarouselSlide(models.Model):
 class HomePageCarousel(Orderable, HomePageCarouselSlide):
     slides = ParentalKey('HomePage', related_name='slides')
 
+class HomePageCard(models.Model):
+    title = models.CharField(max_length=255, blank=True)
+    body = RichTextField(blank=True, null=True)
+    link_external = models.URLField("External link", blank=True)
+    link_page = models.ForeignKey(
+        'wagtailcore.Page',
+        null=True,
+        blank=True,
+        related_name='+'
+    )
+    card_image = models.ForeignKey(
+        'base.PortalImage',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    panels = [
+        FieldPanel('title'),
+        FieldPanel('body'),
+        FieldPanel('link_external'),
+        PageChooserPanel('link_page'),
+        ImageChooserPanel('card_image'),
+    ]
+
+    @property
+    def link(self):
+        if self.link_page:
+            return self.link_page.url
+        else:
+            return self.link_external
+
 class HomePage(Page):
     parent_page_types = []
     intro = RichTextField(blank=True)
+    card_left = models.ForeignKey(
+        HomePageCard,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    card_center = models.ForeignKey(
+        HomePageCard,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    card_right = models.ForeignKey(
+        HomePageCard,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
     # def serve(self, request):
     #     # Randomize
     #     story = OceanStory.objects.live().exclude(display_home_page=False).order_by('?')[0]
@@ -70,4 +125,9 @@ class HomePage(Page):
 HomePage.content_panels = [
     FieldPanel('intro', classname="full"),
     InlinePanel('slides', label="Home Page Carousel Slides"),
+    MultiFieldPanel([
+        FieldPanel('card_left'),
+        FieldPanel('card_center'),
+        FieldPanel('card_right'),
+    ], classname="col3")
 ]
