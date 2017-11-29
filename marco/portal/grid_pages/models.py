@@ -65,7 +65,4 @@ class GridPageDetail(DetailPageBase):
     content_panels = DetailPageBase.content_panels + [
         FieldPanel('metric'),
     ]
-GridPageDetail.content_panels += [InlinePanel(GridPageDetail, 'sections',
-                                              label="Sections"),]
-
-
+GridPageDetail.content_panels += [InlinePanel('sections', label="Sections"),]
