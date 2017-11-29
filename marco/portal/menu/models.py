@@ -111,4 +111,4 @@ class Menu(ClusterableModel):
 
         return mark_safe(s)
 
-Menu.panels.append(InlinePanel( Menu, 'entries', label="Entries" ))
+Menu.panels.append(InlinePanel('entries', label="Entries" ))

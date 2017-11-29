@@ -67,8 +67,7 @@ class Story(Page):
 # Inline panels have to be added after class definition, because foreign keys
 # defined in other models aren't connected until after the model has been
 # defined
-Story.content_panels.append(InlinePanel(Story, 'story_sections',
-                                        label='Story Section'))
+Story.content_panels.append(InlinePanel('story_sections', label='Story Section'))
 
 class News(PageBase):
     subpage_types = ['Story']

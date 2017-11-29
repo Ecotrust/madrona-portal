@@ -159,5 +159,5 @@ class OceanStory(DetailPageBase):
 OceanStory.content_panels = DetailPageBase.content_panels + [
     FieldPanel('display_home_page'),
     MultiFieldPanel([FieldPanel('hook'), FieldPanel('explore_title'), FieldPanel('explore_url')], "Map overlay"),
-    InlinePanel( OceanStory, 'sections', label="Sections" ),
+    InlinePanel('sections', label="Sections" ),
 ]
