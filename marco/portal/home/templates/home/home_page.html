@@ -1,0 +1,51 @@
+{% extends "cms/section.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/slick.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/slick-theme.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}"/>
+{% endblock %}
+
+{% block page_header %}{% endblock %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block page_header_container %}{% endblock %}
+
+{% block content %}
+    {% if page.intro != '<p><br/></p>' %} <!-- this is as empty as a richtext field gets -->
+    <div class="intro">{{ page.intro|richtext }}</div>
+    {% endif %}
+
+    {% if page.slides.all %}
+        <section class="carousel">
+            {% for slide in page.slides.all %}
+                <div class="slide">
+                  <a href="{{ slide.link }}">
+                    <div class="slide-wrap">
+                      <div class="slide-bg">
+                        {% image slide.slide_image min-1200x500 %}
+                      </div>
+                      <div class="slide-content">
+                        <h2 class="slide-title">{{ slide.title }}</h2>
+                        <div class="slide-body">{{ slide.body|richtext }}</div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    {% if page.cards.all %}
+      <hr />
+      {% include "portal/components/index_listing.html" with items=page.cards.all item_template="home/home_page_card.html" only %}
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/slick.min.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
