@@ -59,7 +59,7 @@ class HomePageCarousel(Orderable, HomePageCarouselSlide):
 
 class HomePageCard(models.Model):
     title = models.CharField(max_length=255, blank=True)
-    body = RichTextField(blank=True, null=True)
+    description = RichTextField(blank=True, null=True)
     link_external = models.URLField("External link", blank=True)
     link_page = models.ForeignKey(
         'wagtailcore.Page',
@@ -67,7 +67,7 @@ class HomePageCard(models.Model):
         blank=True,
         related_name='+'
     )
-    card_image = models.ForeignKey(
+    feature_image = models.ForeignKey(
         'base.PortalImage',
         null=True,
         blank=True,
@@ -75,12 +75,19 @@ class HomePageCard(models.Model):
         related_name='+'
     )
 
+    def url(self):
+        if self.link_page and self.link_page.url:
+            return self.link_page.url
+        else:
+            return self.link_external
+
+
     panels = [
         FieldPanel('title'),
-        FieldPanel('body'),
+        FieldPanel('description'),
         FieldPanel('link_external'),
         PageChooserPanel('link_page'),
-        ImageChooserPanel('card_image'),
+        ImageChooserPanel('feature_image'),
     ]
 
     @property
@@ -90,30 +97,12 @@ class HomePageCard(models.Model):
         else:
             return self.link_external
 
+class HomePageCardSet(Orderable, HomePageCard):
+    cards = ParentalKey('HomePage', related_name='cards')
+
 class HomePage(Page):
     parent_page_types = []
     intro = RichTextField(blank=True)
-    card_left = models.ForeignKey(
-        HomePageCard,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    card_center = models.ForeignKey(
-        HomePageCard,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    card_right = models.ForeignKey(
-        HomePageCard,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
 
     # def serve(self, request):
     #     # Randomize
@@ -125,9 +114,6 @@ class HomePage(Page):
 HomePage.content_panels = [
     FieldPanel('intro', classname="full"),
     InlinePanel('slides', label="Home Page Carousel Slides"),
-    MultiFieldPanel([
-        FieldPanel('card_left'),
-        FieldPanel('card_center'),
-        FieldPanel('card_right'),
-    ], classname="col3")
+    InlinePanel('cards', label="Home Page Content Cards"),
+
 ]

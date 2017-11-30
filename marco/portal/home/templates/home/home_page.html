@@ -7,10 +7,16 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}"/>
 {% endblock %}
 
+{% block page_header %}{% endblock %}
+
 {% block body_class %}template-blogindexpage{% endblock %}
 
+{% block page_header_container %}{% endblock %}
+
 {% block content %}
+    {% if page.intro != '<p><br/></p>' %} <!-- this is as empty as a richtext field gets -->
     <div class="intro">{{ page.intro|richtext }}</div>
+    {% endif %}
 
     {% if page.slides.all %}
         <section class="carousel">
@@ -31,6 +37,12 @@
             {% endfor %}
         </section>
     {% endif %}
+
+    {% if page.cards.all %}
+      <hr />
+      {% include "portal/components/index_listing.html" with items=page.cards.all item_template="home/home_page_card.html" only %}
+    {% endif %}
+
 {% endblock %}
 
 {% block extra_js %}
