@@ -1,15 +1,24 @@
-$(".carousel").slick({
-  responsive: [{
-    breakpoint: 1024,
-    settings: {
-        slidesToShow: 1,
-        infinite: true,
-        dots: true,
-        autoplay: true,
-        autoplaySpeed: 6000,
-      }
-  },{
-    breakpoint: 300,
-    settings: "unslick" // destroys slick
-  }]
+$(document).ready(function() {
+  $(".carousel").slick({
+    accessibility: true,
+    arrows: true,
+    dots: true,
+    // infinite: false,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    responsive: [{
+      breakpoint: 1024,
+      settings: {
+          accessibility: false,
+          arrows: true,
+          dots: true,
+          pauseOnHover: true,
+          autoplay: true,
+          autoplaySpeed: 5000,
+        }
+    },{
+      breakpoint: 450,
+      settings: "unslick" // destroys slick
+    }]
+  });
 });
