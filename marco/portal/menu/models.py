@@ -24,6 +24,7 @@ class MenuEntryBase(models.Model):
         ('A', 'Always display'),
         ('I', 'Display only to logged-in users'),
         ('O', 'Display only to anonymous users'),
+        ('S', 'Display only to staff and administrators')
     ))
 
     page = models.ForeignKey(
@@ -79,6 +80,8 @@ class Menu(ClusterableModel):
     title = models.CharField(max_length=255)
     active = models.BooleanField(default=False, help_text=("To display this "
        "menu, check this box. "))
+    is_user_menu = models.BooleanField(default=False, help_text=("If this menu "
+        "is the User Menu, check this box."))
     footer = models.BooleanField(default=False, help_text=("Select to display "
        "this menu in the footer rather than in the nav bar. The footer has "
        "enough room for four menus."))
@@ -89,6 +92,7 @@ class Menu(ClusterableModel):
         MultiFieldPanel([
             FieldPanel('title'),
             FieldPanel('active'),
+            FieldPanel('is_user_menu'),
             FieldPanel('footer'),
             FieldPanel('order'),
         ]),
