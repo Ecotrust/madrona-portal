@@ -104,7 +104,7 @@
 
 	    var dataLayers = _.indexBy(data, 'id');
 	    _.each(dataLayers, function(d) {
-	      if (d.layer_type == 'ArcRest') {
+	      if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
 	        hackyMarineCadastreLayerConversion(d);
 	      }
 	    })
@@ -194,7 +194,7 @@
 	var _ = __webpack_require__(12);
 
 	module.exports = function(l) {
-	  l.layer_type = "WMS";
+	  l.layer_type = "Cadastre";
 	  l.url = l.url.replace(
 	    /^(http:\/\/coast.noaa.gov\/arcgis)\/rest\/(services\/MarineCadastre\/[^/]+\/MapServer)\/export$/,
 	    '$1/$2/WMSServer'
@@ -321,9 +321,9 @@
 	        url: "http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/ImageServer/exportImage",
 	        // projection: "EPSG:3857",
 	        params: {
-          		'TILED': true, 
-          		'F':'image', 
-          		'FORMAT':'png', 
+          		'TILED': true,
+          		'F':'image',
+          		'FORMAT':'png',
           		'SIZE': '256,256'
           	}
 	      }),
@@ -381,22 +381,56 @@
 	        opacity: l.opacity,
 	      });
 	    },
+      // This was mostly added with hacking marine cadastre in mind. This could use some cleaning.
 	    'WMS': function(l) {
 	      return new ol.layer.Tile({
-	        // extent: [-13884991, 2870341, -7455066, 6338219],
+	        extent: [-13884991, 2870341, -7455066, 6338219],
 	        source: new ol.source.TileWMS( ({
 	          url: l.url,
 	          params: {
-	          	'LAYERS': l.arcgis_layers, 
-	          	'TILED': true, 
-	          	'F':'image', 
-	          	'FORMAT':'png', 
+	          	'LAYERS': l.arcgis_layers,
+	          	'TILED': true,
+	          	'F':'image',
+	          	'FORMAT':'png',
 	          	'SIZE': '256,256'
 	          }
 	        }))
 	      })
 	    },
-	  }
+      // See static/portal/ocean_story/hacky_marine_cadastre_layer_conversion.js
+	    'Cadastre': function(l) {
+	      return new ol.layer.Tile({
+	        extent: [-13884991, 2870341, -7455066, 6338219],
+	        source: new ol.source.TileWMS( ({
+	          url: l.url,
+	          params: {
+	          	'LAYERS': l.arcgis_layers,
+	          	'TILED': true,
+	          	'F':'image',
+	          	'FORMAT':'png',
+	          	'SIZE': '256,256'
+	          }
+	        }))
+	      })
+	    },
+      'ArcRest': function(l) {
+        return new ol.layer.Tile({
+          // source: new ol.source.TileArcGISRest({
+          source: new ol.source.TileWMS({
+            url: l.url,
+            params: {
+              'LAYERS': 'show:' + l.arcgis_layers,
+              'BBOXSR': '3857',
+              'IMAGESR': '3857',
+              'SIZE': '256,256',
+              'FORMAT': 'PNG32',
+              'F': 'image',
+              'TILED': true
+            }
+          })
+        })
+      }
+	  };
 
 	  function wrapAnimations(animations, after) {
 	    return function(map, state) {
@@ -7766,7 +7800,7 @@
 	    root._ = _;
 	  }
 	}.call(this));
-	
+
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), (function() { return this; }())))
 
 /***/ },

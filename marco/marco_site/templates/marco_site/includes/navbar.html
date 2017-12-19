@@ -15,15 +15,8 @@
 <!-- Collect the nav links, forms, and other content for toggling -->
 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
   <ul class="nav navbar-nav navbar-right">
-    <li class="{% active 'planner' %}"><a href="{% url 'planner' %}"><span class="icon-marco oversized"></span>MARINE PLANNER</a></li>
+    <li class="{% active 'planner' %}"><a href="{% url 'planner' %}"><span class="icon-marco oversized"></span>MAP</a></li>
     {% menus %}
-    <li class="{% active 'account' %}">
-      {% if user.is_authenticated %}
-          <a href="{% url 'account:index' %}">{{ user.first_name }} <span class="fa fa-user"></span></a>
-      {% else %}
-          <a href="{% url 'account:index' %}?next={{ request.path }}">LOG IN <span class="fa fa-user"></span></a>
-      {% endif %}
-    </li>
     {% if not SEARCH_DISABLED %}
       <li class="dropdown search-dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-search"></span></a>

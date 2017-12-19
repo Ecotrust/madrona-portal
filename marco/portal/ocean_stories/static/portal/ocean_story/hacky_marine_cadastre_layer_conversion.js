@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 module.exports = function(l) {
-  l.layer_type = "WMS";
+  l.layer_type = "Cadastre";
   l.url = l.url.replace(
     /^(http:\/\/coast.noaa.gov\/arcgis)\/rest\/(services\/MarineCadastre\/[^/]+\/MapServer)\/export$/,
     '$1/$2/WMSServer'
