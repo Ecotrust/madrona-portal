@@ -90,17 +90,36 @@
     right: 5px;
 }
 
+@media only screen and (min-width: 600px) {
+  .slide-title {
+    font-size: 3em;
+  }
+}
+
 @media only screen and (min-width: 900px) {
+  .slide-title {
+    font-size: 4em;
+  }
+  .slide-body {
+      font-size: 1.125em;
+      margin: 0 auto;
+      width: 70%;
+  }
+  .slide-body .rich-text {
+      font-size: 1.125em;
+      line-height: 1.375;
+  }
+}
+
+@media only screen and (min-width: 1120px) {
   .slide-title {
     font-size: 5.125em;
   }
   .slide-body {
       font-size: 1.25em;
-      margin: 0 auto;
       width: 56%;
   }
   .slide-body .rich-text {
       font-size: 1.25em;
-      line-height: 1.375;
   }
 }

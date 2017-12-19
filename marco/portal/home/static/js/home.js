@@ -1,6 +1,5 @@
 $(document).ready(function() {
   $(".carousel").slick({
-    accessibility: true,
     arrows: true,
     dots: true,
     // infinite: false,
@@ -9,7 +8,6 @@ $(document).ready(function() {
     responsive: [{
       breakpoint: 1024,
       settings: {
-          accessibility: false,
           arrows: true,
           dots: true,
           pauseOnHover: true,
@@ -17,8 +15,22 @@ $(document).ready(function() {
           autoplaySpeed: 5000,
         }
     },{
-      breakpoint: 450,
-      settings: "unslick" // destroys slick
+      breakpoint: 700,
+      settings: {
+          arrows: true,
+          dots: true,
+          pauseOnHover: true,
+          autoplay: true,
+          autoplaySpeed: 5000,
+        }
+    },{
+      breakpoint: 480,
+      settings: {
+        arrows: false,
+        dots: false,
+        pauseOnHover: false,
+        autoplay: false,
+      }
     }]
   });
 });
