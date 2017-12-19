@@ -1,10 +1,7 @@
-.intro:not(:empty) {
+.intro .rich-text:not(:empty) {
     background: #22408f;
-    padding: 1.5rem;
-}
-
-.intro:not(:empty) .rich-text {
     color: #fff;
+    padding: 1.5rem;
 }
 
 .carousel,
