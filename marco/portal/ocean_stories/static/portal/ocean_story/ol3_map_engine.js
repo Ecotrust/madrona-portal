@@ -98,13 +98,52 @@ module.exports = function(element, animate) {
     },
     'WMS': function(l) {
       return new ol.layer.Tile({
-        // extent: [-13884991, 2870341, -7455066, 6338219],
+        extent: [-13884991, 2870341, -7455066, 6338219],
         source: new ol.source.TileWMS( ({
           url: l.url,
-          params: {'LAYERS': l.arcgis_layers, 'TILED': true}
+          params: {
+            'LAYERS': l.arcgis_layers,
+            'TILED': true,
+            'F':'image',
+            'FORMAT':'png',
+            'SIZE': '256,256'
+          }
         }))
       })
     },
+    // See static/portal/ocean_story/hacky_marine_cadastre_layer_conversion.js
+    'Cadastre': function(l) {
+      return new ol.layer.Tile({
+        extent: [-13884991, 2870341, -7455066, 6338219],
+        source: new ol.source.TileWMS( ({
+          url: l.url,
+          params: {
+            'LAYERS': l.arcgis_layers,
+            'TILED': true,
+            'F':'image',
+            'FORMAT':'png',
+            'SIZE': '256,256'
+          }
+        }))
+      })
+    },
+    'ArcRest': function(l) {
+      return new ol.layer.Tile({
+        // source: new ol.source.TileArcGISRest({
+        source: new ol.source.TileWMS({
+          url: l.url,
+          params: {
+            'LAYERS': 'show:' + l.arcgis_layers,
+            'BBOXSR': '3857',
+            'IMAGESR': '3857',
+            'SIZE': '256,256',
+            'FORMAT': 'PNG32',
+            'F': 'image',
+            'TILED': true
+          }
+        })
+      })
+    }
   }
 
   function wrapAnimations(animations, after) {

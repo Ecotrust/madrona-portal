@@ -58,7 +58,7 @@ function mount(mapElement, story, animate) {
 
     var dataLayers = _.indexBy(data, 'id');
     _.each(dataLayers, function(d) {
-      if (d.layer_type == 'ArcRest') {
+      if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
         hackyMarineCadastreLayerConversion(d);
       }
     })
