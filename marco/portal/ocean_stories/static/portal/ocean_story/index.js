@@ -48,7 +48,12 @@ function mount(mapElement, story, animate) {
   }
 
   curtain($('.curtain'), callIfChanged(function(collapsed){
-    console.info('set collapse: '+collapsed)
+    console.info('set collapse: '+collapsed);
+    if (collapsed) {
+      $('.intro.overlay').addClass('curtain-call');
+    } else {
+      $('.intro.overlay').removeClass('curtain-call');
+    }
     mapElement.toggleClass('half', collapsed);
     mapElement.toggleClass('full', !collapsed);
     mapEngine.updateSize();

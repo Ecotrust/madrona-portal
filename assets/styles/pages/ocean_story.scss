@@ -17,6 +17,10 @@ div.curtain-container {
   pointer-events: none;
 }
 
+.curtain.overlay { // view data button
+    z-index: 901;
+}
+
 .clickable {
   pointer-events: auto;
 }
@@ -62,10 +66,14 @@ div.curtain-container {
   }
 
   .intro {
+    background-color: rgba(46,46,46,0.45);
     width: 100%;
     text-shadow:0px 0px .1em $black;
     height: calc(100vh - #{$navbar-height});
     position: relative;
+    &.curtain-call {
+        background-color: transparent;
+    }
     .ocean-story-n {
       font-family: "Roboto Condensed";
       font-size: 16pt;
@@ -84,15 +92,14 @@ div.curtain-container {
     .center {
       text-align: center;
       color: $white;
-
-      background-color: rgba(0, 0, 0, 0.125);
       text-shadow: 0px 0px 8px #666;
       padding: 2em;
     }
     a.next-page, a.previous-page {
       @extend .clickable;
-      background: fade($gray-darker, 50%);
+      background: rgba($black, .4);
       color: $white;
+      font-size: 2.5em;
       padding: 15px;
       position: absolute;
       top: 50%;
@@ -109,13 +116,29 @@ div.curtain-container {
 
   .learn-more {
     display: block;
+    font-size: 1.25em;
     height: $navbar-height;
     line-height: $navbar-height;
+    position: relative;
     width: 100%;
     text-align: center;
     /*font-style: italic;*/
     font-weight: bold;
-    margin-top: 5px;
+    margin-top: 0px;
+    z-index: 902;
+
+    &:before {
+        background: rgba(#e7e7e8, .95);
+        border-radius: 50%;
+        bottom: -8rem;
+        content: '';
+        position: absolute;
+        left: 50%;
+        height: 16rem;
+        transform: translate(-50%,0);
+        width: 16rem;
+        z-index: -1;
+    }
   }
 
   a.anchor {
