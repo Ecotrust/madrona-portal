@@ -61,10 +61,10 @@ gulp.task('css', function() {
 
 gulp.task('browser-sync', function(cb) {
   browserSync({
-    proxy: "localhost:8111",
+    proxy: "localhost:8112",
     open: false,
     // tunnel: true,
-    
+
     // ghostMode: true,
     files: "../static/**/*",
   }, cb);

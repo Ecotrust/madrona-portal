@@ -66,14 +66,10 @@ div.curtain-container {
   }
 
   .intro {
-    background-color: rgba(46,46,46,0.45);
     width: 100%;
     text-shadow:0px 0px .1em $black;
     height: calc(100vh - #{$navbar-height});
     position: relative;
-    &.curtain-call {
-        background-color: transparent;
-    }
     .ocean-story-n {
       font-family: "Roboto Condensed";
       font-size: 16pt;
@@ -90,14 +86,15 @@ div.curtain-container {
       font-weight: 600;
     }
     .center {
+      background-color: rgba(46,46,46,0.5);
       text-align: center;
       color: $white;
       text-shadow: 0px 0px 8px #666;
-      padding: 2em;
+      padding: 6em;
     }
     a.next-page, a.previous-page {
       @extend .clickable;
-      background: rgba($black, .4);
+      background: rgba($white, .5);
       color: $white;
       font-size: 2.5em;
       padding: 15px;
@@ -125,16 +122,15 @@ div.curtain-container {
     /*font-style: italic;*/
     font-weight: bold;
     margin-top: 0px;
-    z-index: 902;
+    // z-index: 90;
 
     &:before {
-        background: rgba(#e7e7e8, .95);
-        border-radius: 50%;
-        bottom: -8rem;
+        background: rgba(#e7e7e8, 1);
+        bottom: 0;
         content: '';
         position: absolute;
         left: 50%;
-        height: 16rem;
+        height: 140%;
         transform: translate(-50%,0);
         width: 16rem;
         z-index: -1;
@@ -148,9 +144,110 @@ div.curtain-container {
     visibility: hidden;
   }
 
+  &.section-layout {
+
+      .page-header {
+        margin: 0 auto;
+        text-align: center;
+        width: 100%;
+
+        .title-line {
+            margin: 10rem 0 4rem;
+        }
+
+        h1 {
+            color: $brand-primary;
+            width: 100%;
+        }
+
+        .description {
+            margin: 0 auto;
+            position: relative;
+            width: 66%;
+
+            &:after {
+                background: $dark-gray;
+                bottom: -4rem;
+                content: '';
+                left: 30%;
+                height: 1px;
+                position: absolute;
+                width: 40%;
+            }
+
+            .rich-text {
+                p {
+                    color: $black;
+                    font-weight: normal;
+                    margin-bottom: 4rem;
+                }
+            }
+        }
+    }
+  }
+
   .content {
     section {
-      @extend .text-block;
+      // .text-block returns a width a 75% as the only style
+      // WHYYYY??? not sure why this is set to be 75% width so commenting out for now
+      // @extend .text-block;
+      margin: 1rem auto 2rem;
+      width: 84%;
+
+      &.no-legend {
+          .section-body {
+              width: 100%;
+          }
+      }
+
+      &.has-legend {
+          .section-body {
+              width: 75%;
+          }
+      }
+    }
+
+    .section-body {
+        h2 {
+            margin: 6rem 0 2rem;
+        }
+
+        .rich-text {
+            font-size: 1.1875em;
+            line-height: 1.6375;
+        }
+    }
+
+    .story-with-media-left,
+    .story-with-media-right {
+
+        .story-media-left {
+            padding: 8px 20px 10px 0;
+        }
+        .story-media-right {
+            padding: 8px 0 10px 20px;
+        }
+
+        .story-media-left,
+        .story-media-right {
+            width: 30%;
+            img {
+                max-width: 100%;
+            }
+        }
+    }
+
+    .story-media-right {
+        float: right;
+    }
+    .story-media-left {
+        float: left;
+    }
+
+    .media-full {
+        img {
+            max-width: 100%;
+        }
     }
   }
 

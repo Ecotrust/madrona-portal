@@ -1,0 +1,46 @@
+{% load wagtailcore_tags %}
+{% if item.media_position == 'left' and item.media_image %}
+<div class="story-with-media-left">
+{% endif %}
+{% if item.media_position == 'right' and item.media_image %}
+<div class="story-with-media-right">
+{% endif %}
+
+    {% if item.media_position == 'left' %}
+        {% if item.media_image or item.media_embed_url %}
+        <div class="story-media-left thumbnail">
+            {% include "portal/components/media.html" %}
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if item.media_position == 'right' %}
+        {% if item.media_image or item.media_embed_url %}
+        <div class="story-media-right thumbnail">
+            {% include "portal/components/media.html" %}
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="story-media-body">
+        <div class="item-text">
+            {% block body %}
+                {{ item.body|richtext }}
+            {% endblock %}
+        </div>
+    </div>
+
+    {% if item.media_position == 'full' %}
+        {% if item.media_image or item.media_embed_url %}
+        <div class="media-full">
+            {% include "portal/components/media.html" %}
+        </div>
+        {% endif %}
+    {% endif %}
+
+{% if item.media_position == 'left' and item.media_image %}
+</div>
+{% endif %}
+{% if item.media_position == 'right' and item.media_image %}
+</div>
+{% endif %}

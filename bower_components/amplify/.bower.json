@@ -35,7 +35,7 @@
     "tag": "1.1.2",
     "commit": "fc7e28bf3fd36b3643e839df2a19d2157ccf9c6e"
   },
-  "_source": "git://github.com/appendto/amplify.git",
+  "_source": "https://github.com/appendto/amplify.git",
   "_target": "~1.1.0",
   "_originalSource": "amplify"
 }

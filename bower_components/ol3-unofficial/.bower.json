@@ -12,7 +12,7 @@
     "tag": "v3.0.3",
     "commit": "ca2bb1087ede51a6f1157e287fb1255b6d810edc"
   },
-  "_source": "git://github.com/nd0ut/ol3-bower.git",
+  "_source": "https://github.com/nd0ut/ol3-bower.git",
   "_target": "~3.0.3",
   "_originalSource": "ol3-unofficial"
 }

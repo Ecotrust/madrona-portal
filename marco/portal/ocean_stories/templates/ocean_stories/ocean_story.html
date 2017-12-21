@@ -58,6 +58,7 @@
         {% for section in self.sections.all %}
             <a style="clear:right" class="anchor" id="section-{{forloop.counter}}"></a>
             {% if section.map_legend %}
+            <section class="has-legend">
                 <div class="legend-well
                     {# if there's a section title, move the legend in line with the top of the body text #}
                     {% if not section.title %}no-headline{% endif %}">
@@ -69,10 +70,13 @@
                             {% endfor %}
                     </div>
                 </div>
+            {% else %}
+            <section class="no-legend">
             {% endif %}
-            <section>
-                <h2>{{ section.title }}</h2>
-                {% include "portal/components/media_item.html" with item=section only %}
+                <div class="section-body">
+                    <h2>{{ section.title }}</h2>
+                    {% include "portal/components/ocean_story_media_item.html" with item=section only %}
+                </div>
             </section>
         {% endfor %}
     {% endif %}

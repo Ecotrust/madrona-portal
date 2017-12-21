@@ -10,7 +10,7 @@
     "tag": "v1.0.2",
     "commit": "53d1cef940d81efda6b517bb4a8f060a92ac7484"
   },
-  "_source": "git://github.com/bdougherty/BigScreen.git",
+  "_source": "https://github.com/bdougherty/BigScreen.git",
   "_target": "~v1.0.0",
   "_originalSource": "bigscreen"
 }

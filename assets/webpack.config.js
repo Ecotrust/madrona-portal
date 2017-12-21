@@ -13,7 +13,7 @@ roots.push(path.join(__dirname, "node_modules"));
 
 module.exports = {
   entry: {
-    ocean_story: "portal/ocean_story/index.js",
+    ocean_story: path.join(__dirname,'..','/marco/portal/ocean_stories/static/portal/ocean_story/index.js'),
     marco_site: "javascript/marco_site.js",
   },
   output: {
