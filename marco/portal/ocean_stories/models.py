@@ -87,7 +87,7 @@ class OceanStorySectionBase(MediaItem):
             data_layers[layer_id]['legend'] = layer['legend']
             data_layers[layer_id]['legend_source'] = 'img'
             data_layers[layer_id]['arcgis_layers'] = layer['arcgis_layers']
-            if layer['legend'] == u'' and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
+            if (layer['legend'] == u'' or layer['legend'] == None) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
                 data_layers[layer_id]['legend_source'] = 'url'
                 data_layers[layer_id]['legend'] = "%s" % layer['url'].split('/export')[0]
 
