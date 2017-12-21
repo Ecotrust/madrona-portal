@@ -61,7 +61,7 @@ gulp.task('css', function() {
 
 gulp.task('browser-sync', function(cb) {
   browserSync({
-    proxy: "localhost:8112",
+    proxy: "localhost:8111",
     open: false,
     // tunnel: true,
 
