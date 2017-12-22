@@ -218,30 +218,21 @@ div.curtain-container {
         }
     }
 
-    .story-with-media-left,
-    .story-with-media-right {
-
-        .story-media-left {
-            padding: 8px 20px 10px 0;
-        }
-        .story-media-right {
-            padding: 8px 0 10px 20px;
-        }
-
-        .story-media-left,
-        .story-media-right {
-            width: 30%;
-            img {
-                max-width: 100%;
-            }
-        }
-    }
-
+    .story-media-left,
     .story-media-right {
-        float: right;
+        width: 30%;
+        img {
+            max-width: 100%;
+        }
     }
+
     .story-media-left {
+        padding: 8px 20px 10px 0;
         float: left;
+    }
+    .story-media-right {
+        padding: 8px 0 10px 20px;
+        float: right;
     }
 
     .media-full {
