@@ -74,7 +74,7 @@ class OceanStorySectionBase(MediaItem):
                 continue
 
             layer = Layer.objects.filter(id=layer_id)
-            layer = layer.values('legend', 'name')
+            layer = layer.values('legend', 'name', 'layer_type', 'url', 'arcgis_layers')
 
             # layer ID must be a string here
             data_layers[layer_id] = {}
@@ -82,8 +82,14 @@ class OceanStorySectionBase(MediaItem):
                 continue
             layer = layer[0]
 
+            data_layers[layer_id]['id'] = layer_id
             data_layers[layer_id]['name'] = layer['name']
             data_layers[layer_id]['legend'] = layer['legend']
+            data_layers[layer_id]['legend_source'] = 'img'
+            data_layers[layer_id]['arcgis_layers'] = layer['arcgis_layers']
+            if (layer['legend'] == u'' or layer['legend'] == None) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
+                data_layers[layer_id]['legend_source'] = 'url'
+                data_layers[layer_id]['legend'] = "%s" % layer['url'].split('/export')[0]
 
         s = {
             'view': {
