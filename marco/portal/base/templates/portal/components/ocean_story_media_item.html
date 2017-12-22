@@ -2,8 +2,14 @@
 {% if item.media_position == 'left' and item.media_image %}
 <div class="story-with-media-left">
 {% endif %}
+{% if item.media_position == 'left' and item.media_embed_url %}
+<div class="story-with-media-left embedded-media">
+{% endif %}
 {% if item.media_position == 'right' and item.media_image %}
 <div class="story-with-media-right">
+{% endif %}
+{% if item.media_position == 'right' and item.media_embed_url %}
+<div class="story-with-media-right embedded-media">
 {% endif %}
 
     {% if item.media_position == 'left' %}
@@ -41,6 +47,12 @@
 {% if item.media_position == 'left' and item.media_image %}
 </div>
 {% endif %}
+{% if item.media_position == 'left' and item.media_embed_url %}
+</div>
+{% endif %}
 {% if item.media_position == 'right' and item.media_image %}
+</div>
+{% endif %}
+{% if item.media_position == 'right' and item.media_embed_url %}
 </div>
 {% endif %}
