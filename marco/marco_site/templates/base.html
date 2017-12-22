@@ -28,6 +28,7 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}classless-page{% endblock %} {% block layout %}base{% endblock %}-layout">
+{% block header_tag %}
 <header>
     {% block header %}
     <nav class="navbar navbar-default {% block navbar-extra-classes %}navbar-fixed-top{% endblock %}" role="navigation">
@@ -37,6 +38,7 @@
     </nav>
     {% endblock %}
 </header>
+{% endblock %} <!-- header_tag -->
 
 <div>
     {% block outer_content %}
@@ -79,7 +81,9 @@
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
 
 <div class="container transparent-sticky-footer">
+  {% block sticky_footer %}
     {% feedback %}
+  {% endblock %} <!-- Sticky footer -->
 </div>
 
 
