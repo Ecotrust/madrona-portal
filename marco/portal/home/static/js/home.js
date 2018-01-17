@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // documentation for slick carousel http://kenwheeler.github.io/slick/
   $(".carousel").slick({
     arrows: true,
     dots: true,

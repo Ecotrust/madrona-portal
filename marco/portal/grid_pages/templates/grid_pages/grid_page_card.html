@@ -1,5 +1,9 @@
 {% extends "portal/components/card.html" %}
 
 {% block media %}
-	<div class="badge">{{ item.metric|default:"NEED" }}</div>
+	{% if 'collaborate' in item.url %}
+		<img src='/static/brand/marco_marker.svg' style="width: 34px; height: auto;" />
+	{% else %}
+		<div class="badge">{{ item.metric|default:"NEED" }}</div>
+	{% endif %}
 {% endblock %}
