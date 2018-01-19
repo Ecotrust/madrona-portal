@@ -6,7 +6,7 @@
 
 .carousel,
 .slide-wrap {
-    height: 320px;
+    height: 240px;
 }
 
 .carousel a,
@@ -94,7 +94,7 @@
 @media only screen and (min-width: 480px) {
     .carousel,
     .slide-wrap {
-        height: 360px;
+        height: 240px;
     }
     .slide-title {
         font-size: 1.3125em;
@@ -115,10 +115,10 @@
     }
 }
 
-@media only screen and (min-width: 700px) {
+@media only screen and (min-width: 768px) {
     .carousel,
     .slide-wrap {
-        height: 420px;
+        height: 240px;
     }
     .slide-title {
         font-size: 2em;
@@ -144,20 +144,20 @@
     }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 992px) {
     .carousel,
     .slide-wrap {
-        height: 480px;
+        height: 313px;
     }
     .slide-title {
         font-size: 4em;
     }
 }
 
-@media only screen and (min-width: 1120px) {
+@media only screen and (min-width: 1200px) {
     .carousel,
     .slide-wrap {
-        height: 500px;
+        height: 380px;
     }
     .slide-title {
         font-size: 5.125em;
