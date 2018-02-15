@@ -47,7 +47,10 @@
     right: 0;
     top: 0;
 }
-
+.slide-bg img {
+   width: 100%;
+   height: auto;
+}
 .slide-content {
     margin: 0 auto;
     padding: 30px 0 30px;
