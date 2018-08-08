@@ -24,9 +24,13 @@ def theme(request, theme_slug):
 
     layers = theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order')
     sub_layers = theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=False).order_by('order')
-                          
-    return render_to_response(template, RequestContext(request, {
-        'theme': theme,
-        'layers': layers,
-        'sub_layers': sub_layers,
-    }));
+
+    return render_to_response(
+        template,
+        {
+            'theme': theme,
+            'layers': layers,
+            'sub_layers': sub_layers,
+        },
+        context_instance=RequestContext(request)
+    );
