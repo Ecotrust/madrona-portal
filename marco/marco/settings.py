@@ -109,6 +109,9 @@ INSTALLED_APPS = (
     'django_social_share',
     'mapgroups',
     'import_export',
+
+    # Multilayer Dimensions in Data Manager
+    'nested_admin',
 )
 
 AUTHENTICATION_BACKENDS = (
