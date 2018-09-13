@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 from p97settings import IniParser
 from os.path import abspath, dirname
-from social.backends.google import GooglePlusAuth
+# from social.backends.google import GooglePlusAuth
 
 # Absolute filesystem path to the Django project directory:
 PROJECT_ROOT = dirname(dirname(dirname(abspath(__file__))))
@@ -104,21 +104,34 @@ INSTALLED_APPS = (
     'explore',
 
     # Account management
-    'social.apps.django_app.default',
+    # 'social.apps.django_app.default',
     'accounts.apps.AccountsAppConfig',
-    'django_social_share',
+    # 'django_social_share',
     'mapgroups',
     'import_export',
+
+    'social_django',
 
     # Multilayer Dimensions in Data Manager
     'nested_admin',
 )
 
+# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GoogleOAuth2',
-    # 'social.backends.google.GoogleOpenId',
-    'social.backends.facebook.FacebookOAuth2',
-    'social.backends.twitter.TwitterOAuth',
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
+    'social_core.backends.twitter.TwitterOAuth',
+    # 'social_core.backends.yahoo.YahooOpenId',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    # 'social.backends.google.GoogleOAuth2',
+    # 'social.backends.facebook.FacebookOAuth2',
+    # 'social.backends.twitter.TwitterOAuth',
+
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -133,6 +146,8 @@ MIDDLEWARE_CLASSES = (
     'wagtail.wagtailcore.middleware.SiteMiddleware',
     'wagtail.wagtailredirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 )
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
@@ -218,7 +233,8 @@ from django.conf import global_settings
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     'django.core.context_processors.request',
-    'social.apps.django_app.context_processors.backends',
+    # 'social.apps.django_app.context_processors.backends',
+    'social_django.context_processors.backends',
     'portal.base.context_processors.search_disabled',
 )
 
@@ -317,43 +333,53 @@ SOCIAL_AUTH_PIPELINE = (
     # format to create the user instance later. On some cases the details are
     # already part of the auth response from the provider, but sometimes this
     # could hit a provider API.
-    'social.pipeline.social_auth.social_details',
+    # 'social.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_details',
 
     # Get the social uid from whichever service we're authing thru. The uid is
     # the unique identifier of the given user in the provider.
-    'social.pipeline.social_auth.social_uid',
+    # 'social.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_uid',
 
     # Verifies that the current auth process is valid within the current
     # project, this is were emails and domains whitelists are applied (if
     # defined).
-    'social.pipeline.social_auth.auth_allowed',
+    # 'social.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.auth_allowed',
 
     # Checks if the current social-account is already associated in the site.
-    'social.pipeline.social_auth.social_user',
+    # 'social.pipeline.social_auth.social_user',
+    'social_core.pipeline.social_auth.social_user',
 
     # Make up a username for this person, appends a random string at the end if
     # there's any collision.
-    'social.pipeline.user.get_username',
+    # 'social.pipeline.user.get_username',
+    'social_core.pipeline.user.get_username',
 
     # Confirm with the user that they really want to make an account, also
     # make them enter an email address if they somehow didn't
     'accounts.pipeline.confirm_account',
 
     # Send a validation email to the user to verify its email address.
-    'social.pipeline.mail.mail_validation',
+    # 'social.pipeline.mail.mail_validation',
+    'social_core.pipeline.mail.mail_validation',
 
     # Create a user account if we haven't found one yet.
-    'social.pipeline.user.create_user',
+    # 'social.pipeline.user.create_user',
+    'social_core.pipeline.user.create_user',
 
     # Create the record that associated the social account with this user.
-    'social.pipeline.social_auth.associate_user',
+    # 'social.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.associate_user',
 
     # Populate the extra_data field in the social record with the values
     # specified by settings (and the default ones like access_token, etc).
-    'social.pipeline.social_auth.load_extra_data',
+    # 'social.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.load_extra_data',
 
     # Update the user record with any changed info from the auth service.
-    'social.pipeline.user.user_details',
+    # 'social.pipeline.user.user_details',
+    'social_core.pipeline.user.user_details',
 
     # Set up default django permission groups for new users.
     'accounts.pipeline.set_user_permissions',
