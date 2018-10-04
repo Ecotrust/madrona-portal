@@ -43,16 +43,16 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
                     ocean_story_results.append(item)
                 elif isinstance(item, (Event, News, Story)):
                     calendar_news_results.append(item)
-                elif '/data-needs-and-priorities/' in item.url:
+                elif item.url and '/data-needs-and-priorities/' in item.url:
                     data_needs_results.append(item)
-                elif '/resources/' in item.url:
+                elif item.url and '/resources/' in item.url:
                     resources_results.append(item)
 
         # search themes from data_catalog
         for theme in Theme.objects.filter(visible=True, display_name__icontains=query_string):
             theme_results.append(theme)
 
-        # search layers from data_catalog   
+        # search layers from data_catalog
         layer_results.extend(Layer.objects.exclude(layer_type='placeholder').filter(themes__visible=True, name__icontains=query_string))
 
     return render_to_response(template, RequestContext(request, {
