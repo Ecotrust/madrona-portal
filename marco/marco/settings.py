@@ -311,12 +311,9 @@ SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
-# from django.contrib.auth.models import User
-# SOCIAL_AUTH_USER_MODEL = User
-
 # Our authentication pipeline
 SOCIAL_AUTH_PIPELINE = (
-    # 'accounts.pipeline.clean_session',
+    'accounts.pipeline.clean_session',
 
     # Get the information we can about the user and return it in a simple
     # format to create the user instance later. On some cases the details are
@@ -351,17 +348,11 @@ SOCIAL_AUTH_PIPELINE = (
     # a similar email address. Disabled by default.
     # 'social_core.pipeline.social_auth.associate_by_email',
 
-    'accounts.pipeline.debug',
-
     # Create a user account if we haven't found one yet.
     'social_core.pipeline.user.create_user',
 
-    'accounts.pipeline.debug',
-
     # Create the record that associated the social account with this user.
     'social_core.pipeline.social_auth.associate_user',
-
-    'accounts.pipeline.debug',
 
     # Populate the extra_data field in the social record with the values
     # specified by settings (and the default ones like access_token, etc).
