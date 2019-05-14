@@ -35,7 +35,7 @@ def image_delete(sender, instance, **kwargs):
     instance.file.delete(False)
 
 class PortalRendition(AbstractRendition):
-    image = models.ForeignKey('PortalImage', related_name='renditions')
+    image = models.ForeignKey(PortalImage, related_name='renditions')
 
     class Meta:
         unique_together = (
@@ -126,7 +126,7 @@ class DetailPageBase(PageBase):
         abstract = True
 
     feature_image = models.ForeignKey(
-        'PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
