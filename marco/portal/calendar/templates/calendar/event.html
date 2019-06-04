@@ -19,7 +19,7 @@
       </div>
       <div class="col-md-6 social-links">
         <p style="padding-bottom: 15px;">SHARE THIS EVENT</p>
-        
+
         {% load social_share %}
 
         {% post_to_facebook object_or_url %}
@@ -28,14 +28,12 @@
 
         <a class="fa-stack fa-lg" href="mailto:?subject=Mark%20your%20calendars%20for%20{{self.title}}%20on%20{{ self.date }}" target="_blank" title="Email">
             <i class="fa fa-circle fa-stack-2x gray"></i>
-            <i class="fa fa-envelope-o fa-stack-1x light-gray"></i>
+            <i class="far fa-envelope fa-stack-1x light-gray"></i>
         </a>
       </div>
   </div>
-{% endblock %} 
+{% endblock %}
 
 {% block nav_footer %}
  {% include "calendar/calendar_nav.html" %}
 {% endblock %}
-
-
