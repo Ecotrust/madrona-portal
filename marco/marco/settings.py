@@ -78,7 +78,7 @@ INSTALLED_APPS = (
     'compressor',
     'taggit',
     'modelcluster',
-    # 'rpc4django',
+    'rpc4django',
     'tinymce',
 
     'captcha',

@@ -12,6 +12,8 @@ from wagtail.images.edit_handlers import ImageChooserPanel
 
 from portal.ocean_stories.models import OceanStory
 
+from portal.base.models import PortalImage
+
 # The abstract model for related links, complete with panels
 class HomePageCarouselSlide(models.Model):
     title = models.CharField(max_length=255, blank=True)
@@ -33,7 +35,7 @@ class HomePageCarouselSlide(models.Model):
             return self.link_external
 
     slide_image = models.ForeignKey(
-        'base.PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -70,7 +72,7 @@ class HomePageCard(models.Model):
         on_delete=models.SET_NULL,
     )
     feature_image = models.ForeignKey(
-        'base.PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

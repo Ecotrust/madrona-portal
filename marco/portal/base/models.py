@@ -127,7 +127,7 @@ class DetailPageBase(PageBase):
         abstract = True
 
     feature_image = models.ForeignKey(
-        'PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

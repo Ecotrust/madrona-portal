@@ -14,6 +14,8 @@ from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
 from portal.base.models import MediaItem
 from portal.base.models import PageBase, DetailPageBase
 
+from portal.base.models import PortalImage
+
 class StorySection(Orderable, MediaItem):
     page = ParentalKey('Story', related_name='story_sections')
     header = models.CharField(max_length=255, blank=True)
@@ -41,7 +43,7 @@ class Story(Page):
         "stories, as well as below the headline and above any section content "
         "in the story page."))
     feature_image = models.ForeignKey(
-        'base.PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
