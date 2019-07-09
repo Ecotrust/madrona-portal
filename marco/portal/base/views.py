@@ -3,11 +3,11 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from wagtail.wagtailcore import models
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailimages.models import Image
-from wagtail.wagtailsearch.index import get_indexed_models
-from wagtail.wagtailsearch.backends import get_search_backend
+from wagtail.core import models
+from wagtail.core.models import Page
+from wagtail.images.models import Image
+from wagtail.search.index import get_indexed_models
+from wagtail.search.backends import get_search_backend
 
 from portal.base.models import PortalImage
 from portal.ocean_stories.models import OceanStory, OceanStories

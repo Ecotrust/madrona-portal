@@ -3,12 +3,12 @@ import re
 
 from django.db import models
 
-from wagtail.wagtailcore.models import Orderable
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+from wagtail.core.models import Orderable
+from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-from wagtail.wagtailsnippets.models import register_snippet
+from wagtail.snippets.models import register_snippet
 
 # The abstract model, complete with panels
 class MenuEntryBase(models.Model):

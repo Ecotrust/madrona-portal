@@ -1,4 +1,4 @@
-from itertools import izip_longest
+from itertools import zip_longest
 import json
 from data_manager.models import Layer
 
@@ -10,10 +10,10 @@ except ImportError:
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from wagtail.wagtailcore.models import Orderable
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel
+from wagtail.core.models import Orderable
+from wagtail.core.fields import RichTextField
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel
 from modelcluster.fields import ParentalKey
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem

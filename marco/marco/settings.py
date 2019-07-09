@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import os
-from p97settings import IniParser
+import configparser
 from os.path import abspath, dirname
 from social.backends.google import GooglePlusAuth
 
@@ -23,14 +23,32 @@ STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'config.ini'))
 
-cfg = IniParser()
+
+cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
 
-DEBUG = cfg.getboolean('APP', 'DEBUG', True)
-TEMPLATE_DEBUG = cfg.getboolean('APP', 'TEMPLATE_DEBUG', True)
+if 'APP' not in cfg.sections():
+    cfg['APP'] = {}
 
-SECRET_KEY = cfg.get('APP', 'SECRET_KEY', 'you forgot to set the secret key')
-ALLOWED_HOSTS = cfg.getlist('APP', 'ALLOWED_HOSTS')
+app_cfg = cfg['APP']
+
+DEBUG = app_cfg.getboolean('DEBUG', True)
+TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
+
+SECRET_KEY = app_cfg.get('SECRET_KEY', 'you forgot to set the secret key')
+host_list = app_cfg.get('ALLOWED_HOSTS')
+if type(host_list) == str:
+    if '[' in host_list and ']' in host_list:
+        import ast
+        ALLOWED_HOSTS = ast.literal_eval(host_list)
+    elif ',' in host_list:
+        ALLOWED_HOSTS = host_list.split(',')
+    else:
+        ALLOWED_HOSTS = [host_list]
+elif type(host_list) == list:
+    ALLOWED_HOSTS = host_list
+else:
+    ALLOWED_HOSTS = [str(host_list)]
 
 # Set logging to default, and then make admin error emails come through as HTML
 from django.utils.log import DEFAULT_LOGGING
@@ -41,7 +59,7 @@ LOGGING['handlers']['mail_admins']['include_html'] = True
 
 INSTALLED_APPS = (
     'marco_site',
-    'kombu.transport.django',
+    # 'kombu.transport.django',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,33 +69,33 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'django.contrib.webdesign',
+    # 'django.contrib.webdesign',
 
-    'p97settings',
+    # 'p97settings',
 
     'email_log',
     'djcelery_email',
     'compressor',
     'taggit',
     'modelcluster',
-    'rpc4django',
+    # 'rpc4django',
     'tinymce',
 
     'captcha',
 
-    'wagtail.wagtailcore',
-    'wagtail.wagtailadmin',
-    'wagtail.wagtaildocs',
-    'wagtail.wagtailsnippets',
-    'wagtail.wagtailusers',
-    'wagtail.wagtailsites',
-    'wagtail.wagtailimages',
-    'wagtail.wagtailembeds',
-    'wagtail.wagtailsearch',
-    'wagtail.wagtailredirects',
-    'wagtail.wagtailforms',
+    'wagtail.core',
+    'wagtail.admin',
+    'wagtail.documents',
+    'wagtail.snippets',
+    'wagtail.users',
+    'wagtail.sites',
+    'wagtail.images',
+    'wagtail.embeds',
+    'wagtail.search',
+    'wagtail.contrib.redirects',
+    'wagtail.contrib.forms',
 
-    'wagtail.contrib.wagtailsitemaps',
+    'wagtail.contrib.sitemaps',
 
     'portal.base',
     'portal.menu',
@@ -130,8 +148,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'wagtail.wagtailcore.middleware.SiteMiddleware',
-    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
+    'wagtail.core.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 )
 
@@ -145,28 +163,39 @@ ROOT_URLCONF = 'marco.urls'
 WSGI_APPLICATION = 'marco.wsgi.application'
 
 
+if 'DATABASE' not in cfg.sections():
+    cfg['DATABASE'] = {}
+
+db_cfg = cfg['DATABASE']
+
 default = {
-    'ENGINE': cfg.get('DATABASE', 'ENGINE',
+    'ENGINE': db_cfg.get('ENGINE',
                       'django.contrib.gis.db.backends.postgis'),
 }
 
 if default['ENGINE'].endswith('spatialite'):
-    SPATIALITE_LIBRARY_PATH = cfg.get('DATABASE', 'SPATIALITE_LIBRARY_PATH')
-    default['NAME'] = cfg.get('DATABASE', 'NAME', os.path.join(BASE_DIR, 'marco.db'))
+    SPATIALITE_LIBRARY_PATH = db_cfg.get('SPATIALITE_LIBRARY_PATH')
+    default['NAME'] = db_cfg.get('NAME', os.path.join(BASE_DIR, 'marco.db'))
 else:
-    default['NAME'] = cfg.get('DATABASE', 'NAME')
+    default['NAME'] = db_cfg.get('NAME')
     if cfg.has_option('DATABASE', 'USER'):
-        default['USER'] = cfg.get('DATABASE', 'USER')
-    default['HOST'] = cfg.get('DATABASE', 'HOST', 'localhost')
-    default['PORT'] = cfg.getint('DATABASE', 'PORT', 5432)
-    default['PASSWORD'] = cfg.get('DATABASE', 'PASSWORD')
+        default['USER'] = db_cfg.get('USER')
+    default['HOST'] = db_cfg.get('HOST', 'localhost')
+    default['PORT'] = db_cfg.getint('PORT', 5432)
+    if cfg.has_option('DATABASE', 'PASSWORD'):
+        default['PASSWORD'] = db_cfg.get('PASSWORD')
 
 DATABASES = {'default': default}
 
+if 'CACHES' not in cfg.sections():
+    cfg['CACHES'] = {}
+
+cache_cfg = cfg['DATABASE']
+
 CACHES = {
     'default': {
-        'BACKEND': cfg.get('CACHES', 'BACKEND'),
-        'LOCATION': cfg.get('CACHES', 'LOCATION'),
+        'BACKEND': cache_cfg.get('BACKEND'),
+        'LOCATION': cache_cfg.get('LOCATION'),
         'KEY_PREFIX': 'marco_portal',
         'OPTIONS': {
             'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
@@ -178,7 +207,7 @@ CACHES = {
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = cfg.get('APP', 'TIME_ZONE', 'UTC')
+TIME_ZONE = app_cfg.get('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -186,8 +215,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_ROOT = cfg.get('APP', 'STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
-STATIC_URL = cfg.get('APP', 'STATIC_URL', '/static/')
+STATIC_ROOT = app_cfg.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
+STATIC_URL = app_cfg.get('STATIC_URL', '/static/')
 
 STATICFILES_DIRS = (
     STYLES_DIR,
@@ -200,8 +229,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-MEDIA_ROOT = cfg.get('APP', 'MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
-MEDIA_URL = cfg.get('APP', 'MEDIA_URL', '/media/')
+MEDIA_ROOT = app_cfg.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+MEDIA_URL = app_cfg.get('MEDIA_URL', '/media/')
 
 # Django compressor settings
 COMPRESS_PRECOMPILERS = (
@@ -216,15 +245,35 @@ COMPRESS_OFFLINE = not DEBUG
 
 from django.conf import global_settings
 
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    'django.core.context_processors.request',
-    'social.apps.django_app.context_processors.backends',
-    'portal.base.context_processors.search_disabled',
-)
+# Removed due to this: https://stackoverflow.com/a/39315587 - RDH 7/8/2019
+# TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+#     'django.core.context_processors.request',
+#     'social.apps.django_app.context_processors.backends',
+#     'portal.base.context_processors.search_disabled',
+# )
 
-TEMPLATE_LOADERS = global_settings.TEMPLATE_LOADERS + (
-    'apptemplates.Loader',
-)
+
+# TEMPLATE_LOADERS = global_settings.TEMPLATE_LOADERS + (
+#     'apptemplates.Loader',
+# )
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.realpath(os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/')),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages'
+            ]
+        },
+    },
+]
 
 # Wagtail settings
 
@@ -238,7 +287,7 @@ WAGTAILSEARCH_RESULTS_TEMPLATE = 'portal/search_results.html'
 
 # WAGTAILSEARCH_BACKENDS = {
 #     'default': {
-#         'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch.ElasticSearch',
+#         'BACKEND': 'wagtail.search.backends.elasticsearch.ElasticSearch',
 #         # 'URLS': ['https://iu20e5efzd:dibenj5fn5@point-97-elasticsear-6230081365.us-east-1.bonsai.io'],
 #         'URLS': ['https://site:a379ac680e6aaa45f0c129c2cd28d064@bofur-us-east-1.searchly.com'],
 #         'INDEX': 'marco_portal',
@@ -291,15 +340,20 @@ SOCIAL_AUTH_GOOGLE_LOGIN_REDIRECT_URL = '/account/?login=google'
 #     'https://www.googleapis.com/auth/plus.profile.emails.read', # emails
 # )
 
-SOCIAL_AUTH_FACEBOOK_KEY = cfg.get('SOCIAL_AUTH', 'FACEBOOK_KEY', '')
-SOCIAL_AUTH_FACEBOOK_SECRET = cfg.get('SOCIAL_AUTH', 'FACEBOOK_SECRET', '')
+if 'SOCIAL_AUTH' not in cfg.sections():
+    cfg['SOCIAL_AUTH'] = {}
+
+social_cfg = cfg['SOCIAL_AUTH']
+
+SOCIAL_AUTH_FACEBOOK_KEY = social_cfg.get('FACEBOOK_KEY', '')
+SOCIAL_AUTH_FACEBOOK_SECRET = social_cfg.get('FACEBOOK_SECRET', '')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile,email']
 
-SOCIAL_AUTH_TWITTER_KEY = cfg.get('SOCIAL_AUTH', 'TWITTER_KEY', '')
-SOCIAL_AUTH_TWITTER_SECRET = cfg.get('SOCIAL_AUTH', 'TWITTER_SECRET', '')
+SOCIAL_AUTH_TWITTER_KEY = social_cfg.get('TWITTER_KEY', '')
+SOCIAL_AUTH_TWITTER_SECRET = social_cfg.get('TWITTER_SECRET', '')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = cfg.get('SOCIAL_AUTH', 'GOOGLE_KEY', '')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = cfg.get('SOCIAL_AUTH', 'GOOGLE_SECRET', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = social_cfg.get('GOOGLE_KEY', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = social_cfg.get('GOOGLE_SECRET', '')
 #SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = True
 
@@ -365,25 +419,35 @@ SOCIAL_AUTH_PIPELINE = (
     'accounts.pipeline.clean_session',
 )
 
-EMAIL_HOST = cfg.get('EMAIL', 'HOST', 'localhost')
-EMAIL_PORT = cfg.getint('EMAIL', 'PORT', 8025)
+if 'EMAIL' not in cfg.sections():
+    cfg['EMAIL'] = {}
+
+email_cfg = cfg['EMAIL']
+
+EMAIL_HOST = email_cfg.get('HOST', 'localhost')
+EMAIL_PORT = email_cfg.getint('PORT', 8025)
 if cfg.has_option('EMAIL', 'HOST_USER') and \
         cfg.has_option('EMAIL', 'HOST_PASSWORD'):
-    EMAIL_HOST_USER = cfg.get('EMAIL', 'HOST_USER')
-    EMAIL_HOST_PASSWORD = cfg.get('EMAIL', 'HOST_PASSWORD')
+    EMAIL_HOST_USER = email_cfg.get('HOST_USER')
+    EMAIL_HOST_PASSWORD = email_cfg.get('HOST_PASSWORD')
 
-EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 CELERY_EMAIL_BACKEND = 'email_log.backends.EmailBackend'
 
 DEFAULT_FROM_EMAIL = "MARCO Portal Team <portal@midatlanticocean.org>"
 SERVER_EMAIL = "MARCO Site Errors <developers@pointnineseven.com>"
 # for mail to admins/managers only
-EMAIL_SUBJECT_PREFIX = cfg.get('APP', 'EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
+EMAIL_SUBJECT_PREFIX = app_cfg.get('EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
 
-CELERY_RESULT_BACKEND = cfg.get('CELERY', 'RESULT_BACKEND', '')
-BROKER_URL = cfg.get('CELERY', 'BROKER_URL', '')
+if 'CELERY' not in cfg.sections():
+    cfg['CELERY'] = {}
 
-GA_ACCOUNT = cfg.get('APP', 'GA_ACCOUNT', '')
+celery_cfg = cfg['CELERY']
+
+CELERY_RESULT_BACKEND = celery_cfg.get('RESULT_BACKEND', '')
+BROKER_URL = celery_cfg.get('BROKER_URL', '')
+
+GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 
 ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
 

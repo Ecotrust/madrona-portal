@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.wagtailcore.fields
+import wagtail.core.fields
 
 
 class Migration(migrations.Migration):
@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='oceanstories',
             name='description',
-            field=wagtail.wagtailcore.fields.RichTextField(null=True, blank=True),
+            field=wagtail.core.fields.RichTextField(null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='oceanstory',
             name='description',
-            field=wagtail.wagtailcore.fields.RichTextField(null=True, blank=True),
+            field=wagtail.core.fields.RichTextField(null=True, blank=True),
             preserve_default=True,
         ),
     ]

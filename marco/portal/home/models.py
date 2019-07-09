@@ -2,13 +2,13 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 
-from wagtail.wagtailcore.models import Orderable, Page
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+from wagtail.core.models import Orderable, Page
+from wagtail.core.fields import RichTextField
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
 from modelcluster.fields import ParentalKey
-from wagtail.wagtailimages.models import Image
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.images.models import Image
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 from portal.ocean_stories.models import OceanStory
 
@@ -21,7 +21,8 @@ class HomePageCarouselSlide(models.Model):
         'wagtailcore.Page',
         null=True,
         blank=True,
-        related_name='+'
+        related_name='+',
+        on_delete=models.SET_NULL,
     )
 
     @property
@@ -65,7 +66,8 @@ class HomePageCard(models.Model):
         'wagtailcore.Page',
         null=True,
         blank=True,
-        related_name='+'
+        related_name='+',
+        on_delete=models.SET_NULL,
     )
     feature_image = models.ForeignKey(
         'base.PortalImage',

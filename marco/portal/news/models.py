@@ -3,12 +3,12 @@ from datetime import date
 from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailcore.models import Page, Orderable
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.core.fields import RichTextField
+from wagtail.core.models import Page, Orderable
+from wagtail.images.edit_handlers import ImageChooserPanel
 
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel, \
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
     InlinePanel
 
 from portal.base.models import MediaItem

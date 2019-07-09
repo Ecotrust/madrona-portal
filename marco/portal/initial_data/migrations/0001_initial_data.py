@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 def create_initial_data(apps, schema_editor):
     home_page = Page.objects.get(url_path="/home/")

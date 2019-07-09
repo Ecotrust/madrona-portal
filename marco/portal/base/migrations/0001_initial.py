@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.wagtailadmin.taggable
-import wagtail.wagtailimages.models
+import wagtail.admin.taggable
+import wagtail.images.models
 from django.conf import settings
 import taggit.managers
 
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255, verbose_name='Title')),
-                ('file', models.ImageField(height_field=b'height', upload_to=wagtail.wagtailimages.models.get_upload_to, width_field=b'width', verbose_name='File')),
+                ('file', models.ImageField(height_field=b'height', upload_to=wagtail.images.models.get_upload_to, width_field=b'width', verbose_name='File')),
                 ('width', models.IntegerField(editable=False)),
                 ('height', models.IntegerField(editable=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(models.Model, wagtail.wagtailadmin.taggable.TagSearchable),
+            bases=(models.Model, wagtail.admin.taggable.TagSearchable),
         ),
         migrations.CreateModel(
             name='PortalRendition',

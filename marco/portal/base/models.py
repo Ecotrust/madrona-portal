@@ -4,12 +4,12 @@ from django.db.models.signals import pre_delete
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtailimages.models import AbstractImage, AbstractRendition, Image
+from wagtail.core.models import Page
+from wagtail.core.fields import RichTextField
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.images.models import AbstractImage, AbstractRendition, Image
 
 
 # Portal defines its own custom image class to replace wagtailimages.Image,
@@ -19,11 +19,12 @@ class PortalImage(AbstractImage):
     creator = models.CharField(max_length=255, blank=True)
     creator_URL = models.URLField(blank=True)
 
-    search_fields = AbstractImage.search_fields + (
+    search_fields = AbstractImage.search_fields + [
         index.SearchField('creator'),
-    )
+    ]
 
-    admin_form_fields = Image.admin_form_fields + (
+    admin_form_fields = (
+        *Image.admin_form_fields,
         'creator',
         'creator_URL'
     )
@@ -35,7 +36,7 @@ def image_delete(sender, instance, **kwargs):
     instance.file.delete(False)
 
 class PortalRendition(AbstractRendition):
-    image = models.ForeignKey('PortalImage', related_name='renditions')
+    image = models.ForeignKey('PortalImage', related_name='renditions', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -100,9 +101,9 @@ class PageBase(Page):
         abstract = True
 
     description = RichTextField(blank=True, null=True)
-    search_fields = Page.search_fields + ( # Inherit search_fields from Page
+    search_fields = Page.search_fields + [ # Inherit search_fields from Page
         index.SearchField('description'),
-    )
+    ]
 
     def get_sections_search_text(self):
         return '\n'.join(section.get_search_text() for section in self.sections.all())
