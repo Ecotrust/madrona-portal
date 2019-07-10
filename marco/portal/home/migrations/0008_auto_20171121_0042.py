@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='homepagecarousel',
             name='link',
-            field=models.URLField(null=True, verbose_name=b'Link', blank=True),
+            field=models.URLField(null=True, verbose_name='Link', blank=True),
             preserve_default=True,
         ),
     ]

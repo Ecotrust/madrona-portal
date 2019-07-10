@@ -9,7 +9,9 @@ import modelcluster.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0003_auto_20150122_2130'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0003_auto_20150122_2130'),
         ('home', '0005_remove_homepage_feature_image'),
     ]
 
@@ -41,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepagecarousel',
             name='link',
-            field=models.URLField(verbose_name=b'Link', blank=True),
+            field=models.URLField(verbose_name='Link', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(

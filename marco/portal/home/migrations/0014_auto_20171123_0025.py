@@ -10,7 +10,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('wagtailcore', '0023_alter_page_revision_on_delete_behaviour'),
-        ('base', '0004_auto_20171120_2310'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0004_auto_20171120_2310'),
         ('home', '0013_auto_20171123_0013'),
     ]
 
@@ -21,9 +23,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255, blank=True)),
                 ('body', wagtail.core.fields.RichTextField(null=True, blank=True)),
-                ('link_external', models.URLField(verbose_name=b'External link', blank=True)),
+                ('link_external', models.URLField(verbose_name='External link', blank=True)),
                 ('card_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', null=True)),
-                ('link_page', models.ForeignKey(related_name='+', blank=True, to='wagtailcore.Page', null=True)),
+                ('link_page', models.ForeignKey(related_name='+', blank=True, to='wagtailcore.Page', null=True, on_delete=django.db.models.deletion.SET_NULL)),
             ],
             options={
             },

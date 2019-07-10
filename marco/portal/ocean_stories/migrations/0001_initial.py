@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import wagtail.core.fields
 import modelcluster.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -16,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OceanStories',
             fields=[
-                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -26,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OceanStory',
             fields=[
-                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -41,7 +42,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=255)),
                 ('body', wagtail.core.fields.RichTextField()),
                 ('map_state', models.TextField()),
-                ('page', modelcluster.fields.ParentalKey(related_name=b'sections', to='ocean_stories.OceanStory')),
+                ('page', modelcluster.fields.ParentalKey(related_name='sections', to='ocean_stories.OceanStory')),
             ],
             options={
                 'ordering': ['sort_order'],

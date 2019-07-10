@@ -140,7 +140,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -151,7 +151,7 @@ MIDDLEWARE_CLASSES = (
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
-)
+]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
@@ -180,7 +180,8 @@ else:
     default['NAME'] = db_cfg.get('NAME')
     if cfg.has_option('DATABASE', 'USER'):
         default['USER'] = db_cfg.get('USER')
-    default['HOST'] = db_cfg.get('HOST', 'localhost')
+    if cfg.has_option('DATABASE', 'HOST'):
+        default['HOST'] = db_cfg.get('HOST', 'localhost')
     default['PORT'] = db_cfg.getint('PORT', 5432)
     if cfg.has_option('DATABASE', 'PASSWORD'):
         default['PASSWORD'] = db_cfg.get('PASSWORD')
@@ -474,9 +475,9 @@ WMS_PROXY_GENERIC_LAYER = 'generic'
 WMS_PROXY_TIME_LAYER = 'time'
 
 if False:
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
-    DEBUG_TOOLBAR_PANELS2 = (
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
+    INSTALLED_APPS += ['debug_toolbar',]
+    DEBUG_TOOLBAR_PANELS2 = [
         'debug_toolbar.panels.cache.CachePanel',
         'debug_toolbar.panels.headers.HeadersPanel',
         'debug_toolbar.panels.logging.LoggingPanel',
@@ -489,5 +490,5 @@ if False:
         'debug_toolbar.templates.panel.TemplatesPanel',
         'debug_toolbar.panels.timer.TimerPanel',
         # 'debug_toolbar.sql.panel.SQLPanel',
-    )
+    ]
     import debug_toolbar.panels

@@ -9,7 +9,9 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0003_auto_20150122_2130'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0003_auto_20150122_2130'),
         ('home', '0003_homepagecarousel'),
     ]
 

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import modelcluster.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -15,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HomePageCardSet',
             fields=[
-                ('homepagecard_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='home.HomePageCard')),
+                ('homepagecard_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='home.HomePageCard', on_delete=django.db.models.deletion.CASCADE)),
                 ('sort_order', models.IntegerField(null=True, editable=False, blank=True)),
                 ('cards', modelcluster.fields.ParentalKey(related_name='cards', to='home.HomePage')),
             ],

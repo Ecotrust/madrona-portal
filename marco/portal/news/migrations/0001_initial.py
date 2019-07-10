@@ -10,7 +10,9 @@ import wagtail.core.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0003_auto_20150122_2130'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0003_auto_20150122_2130'),
         ('wagtailcore', '0010_change_page_owner_to_null_on_delete'),
     ]
 
@@ -18,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='News',
             fields=[
-                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page', on_delete=django.db.models.deletion.CASCADE)),
                 ('description', wagtail.core.fields.RichTextField(null=True, blank=True)),
             ],
             options={
@@ -29,11 +31,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Story',
             fields=[
-                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('posted', models.DateField(help_text=b'Date story posted')),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page', on_delete=django.db.models.deletion.CASCADE)),
+                ('posted', models.DateField(help_text='Date story posted')),
                 ('map_link', models.TextField(help_text=b"A Marine Planner map url, or blank if this story isn't connected to a map.", max_length=4096, null=True, blank=True)),
                 ('description', wagtail.core.fields.RichTextField(help_text=b"The article's introductory content. Text here appears in the list of news stories, as well as below the headline and above any section content in the story page.", null=True, blank=True)),
-                ('feature_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', help_text=b'Image displayed on the news story list.', null=True)),
+                ('feature_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', help_text='Image displayed on the news story list.', null=True)),
             ],
             options={
                 'abstract': False,
@@ -47,7 +49,7 @@ class Migration(migrations.Migration):
                 ('sort_order', models.IntegerField(null=True, editable=False, blank=True)),
                 ('media_embed_url', models.URLField(blank=True)),
                 ('media_caption', models.CharField(max_length=255, blank=True)),
-                ('media_position', models.CharField(default=b'left', max_length=8, choices=[(b'left', b'left'), (b'right', b'right'), (b'full', b'full')])),
+                ('media_position', models.CharField(default='left', max_length=8, choices=[('left', 'left'), ('right', 'right'), ('full', 'full')])),
                 ('header', models.CharField(max_length=255, blank=True)),
                 ('body', wagtail.core.fields.RichTextField(blank=True)),
                 ('media_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', null=True)),

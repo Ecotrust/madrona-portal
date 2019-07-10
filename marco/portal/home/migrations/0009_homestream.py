@@ -5,6 +5,7 @@ from django.db import models, migrations
 import wagtail.core.fields
 import wagtail.core.blocks
 import wagtail.images.blocks
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -18,8 +19,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HomeStream',
             fields=[
-                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('home_body', wagtail.core.fields.StreamField([(b'heading', wagtail.core.blocks.CharBlock(classname=b'full title')), (b'paragraph', wagtail.core.blocks.RichTextBlock()), (b'image', wagtail.images.blocks.ImageChooserBlock())])),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page', on_delete=django.db.models.deletion.CASCADE)),
+                ('home_body', wagtail.core.fields.StreamField([('heading', wagtail.core.blocks.CharBlock(classname='full title')), ('paragraph', wagtail.core.blocks.RichTextBlock()), ('image', wagtail.images.blocks.ImageChooserBlock())])),
             ],
             options={
                 'abstract': False,
