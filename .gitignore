@@ -29,3 +29,5 @@ marco.db
 
 .bashrc
 dev_fixture.json
+env/
+marco/static/
