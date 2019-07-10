@@ -52,7 +52,7 @@ class Story(Page):
     )
 
     search_fields = (
-        index.FilterField('date'),
+        index.FilterField('latest_revision_created_at'),
         index.SearchField('title'),
         index.SearchField('description'),
     )
