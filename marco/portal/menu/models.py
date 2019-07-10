@@ -66,6 +66,9 @@ class MenuEntryBase(models.Model):
     def __unicode__(self):
         return self.text()
 
+    def __str__(self):
+        return self.text()
+
 # The real model which combines the abstract model, an
 # Orderable helper class, and what amounts to a ForeignKey link
 # to the model we want to add entries to (Menu)
@@ -99,6 +102,23 @@ class Menu(ClusterableModel):
     ]
 
     def __unicode__(self):
+        if self.active:
+            active = ''
+        else:
+            active = '(inactive)'
+
+        if self.footer:
+            position = 'Footer'
+        else:
+            position = 'Navbar'
+
+        s = '%s %d. <b>%s</b> %s' % (position, self.order, self.title, active)
+        if not self.active:
+            s = "<i style='color:#999'>%s</i>" % s
+
+        return mark_safe(s)
+
+    def __str__(self):
         if self.active:
             active = ''
         else:

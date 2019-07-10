@@ -84,17 +84,17 @@ INSTALLED_APPS = (
 
     'captcha',
 
-    'wagtail.core',
-    'wagtail.admin',
-    'wagtail.documents',
-    'wagtail.snippets',
-    'wagtail.users',
-    'wagtail.sites',
-    'wagtail.images',
-    'wagtail.embeds',
-    'wagtail.search',
-    'wagtail.contrib.redirects',
     'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
 
     'wagtail.contrib.sitemaps',
 
