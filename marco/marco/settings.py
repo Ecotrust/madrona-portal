@@ -19,6 +19,7 @@ PROJECT_ROOT = dirname(dirname(dirname(abspath(__file__))))
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
+COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
 STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'config.ini'))
@@ -204,6 +205,13 @@ CACHES = {
     }
 }
 
+# TODO: Remove this when caching is installed
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -221,6 +229,8 @@ STATIC_URL = app_cfg.get('STATIC_URL', '/static/')
 
 STATICFILES_DIRS = (
     STYLES_DIR,
+    COMPONENTS_DIR,
+    ASSETS_DIR,
 )
 
 STATICFILES_FINDERS = (
@@ -233,12 +243,14 @@ STATICFILES_FINDERS = (
 MEDIA_ROOT = app_cfg.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = app_cfg.get('MEDIA_URL', '/media/')
 
+
 # Django compressor settings
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'), # for wagtail
 )
 
-COMPRESS_OFFLINE = not DEBUG
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 
 
 
@@ -473,6 +485,8 @@ WMS_PROXY_TIME_DEFAULT = 'TIMEDEF'
 WMS_PROXY_TIME_ITEM = 'TIMEITEM'
 WMS_PROXY_GENERIC_LAYER = 'generic'
 WMS_PROXY_TIME_LAYER = 'time'
+
+
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]

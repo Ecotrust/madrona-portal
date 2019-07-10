@@ -1,6 +1,7 @@
 from django import template
 from django.template.loader import get_template
 from portal.menu.models import Menu
+from django.shortcuts import render
 
 register = template.Library()
 
@@ -8,7 +9,8 @@ register = template.Library()
 def menus(context, kind='header', menu_type='dropdown'):
     """Template tag to render all available menus.
     """
-    t = get_template("menu/tags/%s.html" % menu_type)
+    template_name = "menu/tags/%s.html" % menu_type
+    t = get_template(template_name)
 
     footer = (kind == 'footer')
     menus = Menu.objects.filter(active=True, footer=footer)
@@ -16,9 +18,11 @@ def menus(context, kind='header', menu_type='dropdown'):
     # path = context['request'].path
     # highlighted = any([path.startswith(e.destination) for e in menu.entries.all()])
     highlighted = False
-    return t.render(template.Context({
+    return_context = {
         # 'menu': menu,
         'menus': menus,
         'highlighted': highlighted,
         'request': context['request'],
-    }))
+    }
+
+    return render(context['request'], template_name, return_context)

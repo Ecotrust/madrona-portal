@@ -72,13 +72,13 @@
 
 {% ga %}
 {% compress js %}
-<script src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
+<script src="{% static 'jquery/dist/jquery.js' %}"></script>
 <script src="{% static 'bundles/marco_site.js' %}"></script>
 {% endcompress %}
 
 {% block extra_js %}{% endblock %}
 
-<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
+<script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
 
 <div class="container transparent-sticky-footer">
   {% block sticky_footer %}
