@@ -486,7 +486,16 @@ WMS_PROXY_TIME_ITEM = 'TIMEITEM'
 WMS_PROXY_GENERIC_LAYER = 'generic'
 WMS_PROXY_TIME_LAYER = 'time'
 
+MAP_LIBRARY = app_cfg.get('MAP_LIBRARY', 'ol5')
 
+if 'REGION' not in cfg.sections():
+    cfg['REGION'] = {}
+
+region_cfg = cfg['REGION']
+
+PROJECT_REGION = {
+    'name': region_cfg.get('NAME', 'Mid-Atlantic'),
+}
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
