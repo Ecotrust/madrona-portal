@@ -18,6 +18,7 @@ from wagtail.images import urls as wagtailimages_urls
 import mapgroups.urls
 import accounts.urls
 import explore.urls
+# import wcoa
 
 from rpc4django.views import serve_rpc_request
 from social.apps import django_app
@@ -32,6 +33,8 @@ admin.autodiscover()
 from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 wagtailsearch_register_signal_handlers()
 
+# if settings.PROJECT == 'WCOA":
+    # import wcoa.urls
 
 urlpatterns = [
     #'',
@@ -40,6 +43,8 @@ urlpatterns = [
     path('django-admin/', admin.site.urls),
 
     re_path(r'^rpc$', serve_rpc_request),
+
+    # path('wcoa/', include('wcoa.urls')),
 
     # https://github.com/omab/python-social-auth/issues/399
     # I want the psa urls to be inside the account urls, but PSA doesn't allow

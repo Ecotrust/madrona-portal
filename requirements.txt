@@ -33,7 +33,7 @@ django-nested-admin
 -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@dj2#egg=mp_proxy-dj2
 
 # WCOA app
--e git+https://github.com/Ecotrust/WCOA_Portal.git@master#egg=wcoa
+-e git+https://github.com/Ecotrust/wcoa.git@master#egg=wcoa-master
 
 celery>=4.0
 # Django-Celery is incompatible with py3/Django2
