@@ -33,8 +33,6 @@ if 'APP' not in cfg.sections():
 
 app_cfg = cfg['APP']
 
-LOCAL_SETTINGS = app_cfg.get('LOCAL_SETTINGS', None)
-
 DEBUG = app_cfg.getboolean('DEBUG', True)
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
@@ -140,6 +138,10 @@ INSTALLED_APPS = [
 PROJECT_APP = app_cfg.get('PROJECT_APP', False)
 if PROJECT_APP:
     INSTALLED_APPS.append(PROJECT_APP)
+
+PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
+if PROJECT_SETTINGS_FILE:
+    from PROJECT_APP.settings import *
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
