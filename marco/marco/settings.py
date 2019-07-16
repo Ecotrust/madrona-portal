@@ -36,8 +36,6 @@ app_cfg = cfg['APP']
 DEBUG = app_cfg.getboolean('DEBUG', True)
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
-# LOCAL_SETTING S = app_cfg.get('LOCAL_SETTINGS')
-
 SECRET_KEY = app_cfg.get('SECRET_KEY', 'you forgot to set the secret key')
 host_list = app_cfg.get('ALLOWED_HOSTS')
 if type(host_list) == str:
