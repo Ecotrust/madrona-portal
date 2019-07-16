@@ -494,7 +494,7 @@ if 'REGION' not in cfg.sections():
 region_cfg = cfg['REGION']
 
 PROJECT_REGION = {
-    'name': region_cfg.get('NAME', 'Mid-Atlantic'),
+    'name': region_cfg.get('NAME', 'Mid-Atlantic Ocean'),
     'init_zoom': region_cfg.getint('INIT_ZOOM', 7),
     'init_lat': region_cfg.getint('INIT_LAT', 39),
     'init_lon': region_cfg.getint('INIT_LON', -74),

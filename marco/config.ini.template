@@ -15,7 +15,7 @@ EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol5
 
 [REGION]
-NAME = Mid-Atlantic
+NAME = Mid-Atlantic Ocean
 INIT_ZOOM = 7
 INIT_LAT = 39
 INIT_LON = -74
