@@ -495,6 +495,11 @@ region_cfg = cfg['REGION']
 
 PROJECT_REGION = {
     'name': region_cfg.get('NAME', 'Mid-Atlantic'),
+    'init_zoom': region_cfg.getint('INIT_ZOOM', 7),
+    'init_lat': region_cfg.getint('INIT_LAT', 39),
+    'init_lon': region_cfg.getint('INIT_LON', -74),
+    'srid': region_cfg.getint('SRID', 4326),
+    'map': region_cfg.get('MAP', 'ocean'),
 }
 
 if False:

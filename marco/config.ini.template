@@ -16,6 +16,11 @@ MAP_LIBRARY = ol5
 
 [REGION]
 NAME = Mid-Atlantic
+INIT_ZOOM = 7
+INIT_LAT = 39
+INIT_LON = -74
+SRID = 4326
+MAP = ocean
 
 [CACHES]
 BACKEND = redis_cache.RedisCache
