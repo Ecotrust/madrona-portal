@@ -128,7 +128,6 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'accounts.apps.AccountsAppConfig',
     'django_social_share',
-    'social_django',
     'mapgroups',
     'import_export',
 
