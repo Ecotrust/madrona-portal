@@ -23,12 +23,16 @@ SRID = 4326
 MAP = ocean
 
 [CACHES]
-BACKEND = redis_cache.RedisCache
-LOCATION = /path/to/redis.sock
+BACKEND = django_redis.cache.RedisCache
+LOCATION = redis://127.0.0.1:6379/1
+CLIENT_CLASS = django_redis.client.DefaultClient
 
 [CELERY]
-RESULT_BACKEND = redis+socket:///path/to/redis.sock
-BROKER_URL = redis+socket:///path/to/redis.sock
+CELERY_RESULT_BACKEND = redis://localhost:6379
+BROKER_URL = redis://localhost:6379/0
+CELERY_BROKER_URL = redis://localhost:6379
+CELERY_ALWAYS_EAGER = False
+CELERY_DISABLE_RATE_LIMITS = True
 
 [DATABASE]
 ENGINE = django.contrib.gis.db.backends.postgis

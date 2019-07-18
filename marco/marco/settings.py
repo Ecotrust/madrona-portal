@@ -83,6 +83,8 @@ INSTALLED_APPS = (
     'tinymce',
 
     'captcha',
+    'social_django',
+    'django_redis',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -131,7 +133,7 @@ INSTALLED_APPS = (
 
     # Multilayer Dimensions in Data Manager
     'nested_admin',
-    'social_django',
+
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -195,21 +197,24 @@ if 'CACHES' not in cfg.sections():
 
 cache_cfg = cfg['DATABASE']
 
+# ------------------------------------------------------------------------------
+# Redis sessions and caching
+# ------------------------------------------------------------------------------
+# SESSION_ENGINE = 'redis_sessions.session'
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+SESSION_REDIS_HOST = 'localhost'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+
 CACHES = {
     'default': {
-        'BACKEND': cache_cfg.get('BACKEND'),
-        'LOCATION': cache_cfg.get('LOCATION'),
+        'BACKEND': cache_cfg.get('BACKEND', 'django_redis.cache.RedisCache'),
+        'LOCATION': cache_cfg.get('LOCATION', 'redis://127.0.0.1:6379/1'),
         'KEY_PREFIX': 'marco_portal',
         'OPTIONS': {
-            'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+            'CLIENT_CLASS': cache_cfg.get('CLIENT_CLASS', 'django_redis.client.DefaultClient'),
         }
-    }
-}
-
-# TODO: Remove this when caching is installed
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -458,8 +463,11 @@ if 'CELERY' not in cfg.sections():
 
 celery_cfg = cfg['CELERY']
 
-CELERY_RESULT_BACKEND = celery_cfg.get('RESULT_BACKEND', '')
-BROKER_URL = celery_cfg.get('BROKER_URL', '')
+CELERY_RESULT_BACKEND = celery_cfg.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379')
+BROKER_URL = celery_cfg.get('BROKER_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = celery_cfg.get('CELERY_BROKER_URL', 'redis://localhost:6379')
+CELERY_ALWAYS_EAGER = celery_cfg.get('CELERY_ALWAYS_EAGER', False)
+CELERY_DISABLE_RATE_LIMITS = celery_cfg.get('CELERY_DISABLE_RATE_LIMITS', True)
 
 GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 

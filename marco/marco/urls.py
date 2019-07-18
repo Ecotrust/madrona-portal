@@ -55,7 +55,7 @@ urlpatterns = [
     re_path(r'^documents/', include(wagtaildocs_urls)),
 
     # url(r'^data-catalog/', include('portal.data_catalog.urls')),
-    re_path(r'^data-catalog/([A-Za-z0-9_-]+)/$', data_catalog_views.theme),
+    re_path(r'^data-catalog/([A-Za-z0-9_-]+)/$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
     re_path(r'^data-catalog/[A-Za-z0-9_-]*/', include('explore.urls')),
     re_path(r'^data_manager/', include('data_manager.urls')),
     re_path(r'^styleguide/$', marco_site_views.styleguide, name='styleguide'),
