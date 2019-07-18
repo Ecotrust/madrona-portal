@@ -131,6 +131,7 @@ INSTALLED_APPS = (
 
     # Multilayer Dimensions in Data Manager
     'nested_admin',
+    'social_django',
 )
 
 AUTHENTICATION_BACKENDS = (
