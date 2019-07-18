@@ -15,7 +15,7 @@ django-wysiwyg
 django-recaptcha
 django-flatblocks
 django-nested-admin
-django_redis
+django-redis
 ### Until pull request is accepted, use Ecotrust fork of rpc4django
 # rpc4django
 -e git+https://github.com/Ecotrust/rpc4django.git@master#egg=rpc4django-ecotrust
