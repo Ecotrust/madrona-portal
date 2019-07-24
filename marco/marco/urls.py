@@ -1,6 +1,4 @@
 import os
-import configparser
-import importlib
 
 # from django.conf.urls import patterns, include, url
 from django.urls import re_path, include, path
@@ -34,15 +32,21 @@ admin.autodiscover()
 from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 wagtailsearch_register_signal_handlers()
 
-urlpatterns = [
+try:
+    from importlib import import_module
+    portal_app_urls = import_module(settings.PROJECT_APP + '.urls')
+    urlpatterns = portal_app_urls.urlpatterns
+except Exception as e:
+    urlpatterns = []
+
+
+urlpatterns += [
     #'',
     re_path(r'^sitemap\.xml$', sitemap),
 
     path('django-admin/', admin.site.urls),
 
     re_path(r'^rpc$', serve_rpc_request),
-
-    # path('wcoa/', include('wcoa.urls')),
 
     # https://github.com/omab/python-social-auth/issues/399
     # I want the psa urls to be inside the account urls, but PSA doesn't allow
@@ -76,28 +80,6 @@ urlpatterns = [
     re_path(r'', include(wagtail_urls)),
 ]
 
-# Check for project app
-from os.path import abspath, dirname
-PROJECT_ROOT = dirname(dirname(dirname(abspath(__file__))))
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'config.ini'))
-cfg = configparser.ConfigParser()
-cfg.read(CONFIG_FILE)
-
-if 'APP' not in cfg.sections():
-    cfg['APP'] = {}
-
-app_cfg = cfg['APP']
-
-PROJECT_APP = app_cfg.get('PROJECT_APP')
-if PROJECT_APP:
-    proj_app_urls = PROJECT_APP + '.urls'
-    proj_app_name = PROJECT_APP + '/'
-    # proj_app_urls is a string, so need to import using importlib
-    import_porj_app_ulrs = importlib.import_module(proj_app_urls)
-    proj_app_path = path(proj_app_name, include(proj_app_urls))
-    # insert at beginning of URLS hierarchy
-    urlpatterns.insert(1, proj_app_path)
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
