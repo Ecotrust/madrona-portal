@@ -58,7 +58,7 @@ LOGGING['handlers']['mail_admins']['include_html'] = True
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'marco_site',
     # 'kombu.transport.django',
 
@@ -133,8 +133,15 @@ INSTALLED_APPS = (
 
     # Multilayer Dimensions in Data Manager
     'nested_admin',
+]
 
-)
+PROJECT_APP = app_cfg.get('PROJECT_APP', False)
+if PROJECT_APP:
+    INSTALLED_APPS.append(PROJECT_APP)
+
+PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
+if PROJECT_SETTINGS_FILE:
+    from PROJECT_APP.settings import *
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',

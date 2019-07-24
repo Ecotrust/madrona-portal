@@ -2,6 +2,8 @@
 # Server-specific configuration goes here.
 
 [APP]
+PROJECT_APP = False
+?? * [ ] PROJECT_SETTINGS_FILE = False
 DEBUG = True
 TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = localhost
