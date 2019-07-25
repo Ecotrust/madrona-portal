@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'flatblocks',
+    'wagtailimportexport',
 
     'data_manager',
     'visualize',

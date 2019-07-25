@@ -3,6 +3,7 @@ Django
 wagtail
 
 # Tentative additions:
+wagtail-import-export
 python-social-auth
 social-auth-app-django
 python-jose>=3.0.0

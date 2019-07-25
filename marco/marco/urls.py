@@ -14,6 +14,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.images import urls as wagtailimages_urls
+from wagtailimportexport import urls as wagtailimportexport_urls
 
 import mapgroups.urls
 import accounts.urls
@@ -77,6 +78,8 @@ urlpatterns += [
     re_path(r'^join/', RedirectView.as_view(url='/account/register/')),
 
     re_path(r'^images/', include(wagtailimages_urls)),
+    re_path(r'', include(wagtail_urls)),
+    re_path(r'', include(wagtailimportexport_urls)),
     re_path(r'', include(wagtail_urls)),
 ]
 
