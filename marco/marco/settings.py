@@ -334,7 +334,10 @@ WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = False
 # Override the Image class used by wagtailimages with a custom one
 WAGTAILIMAGES_IMAGE_MODEL = 'base.PortalImage'
 
-FEEDBACK_IFRAME_URL = "//docs.google.com/a/pointnineseven.com/forms/d/1HMBSzAJ6QNpCOI01Z1CHHtrB0Fq6M081yXv5vBdBLm8/viewform?c=0&w=1"
+try:
+    FEEDBACK_IFRAME_URL
+except NameError as e:
+    FEEDBACK_IFRAME_URL = "//docs.google.com/forms/d/e/1FAIpQLSdi0nBoQK-3ia8rKtzh7cif0slzDCjA_ACH9Y_ryam-co6p8A/viewform?usp=sf_link"
 
 # madrona-features
 SHARING_TO_PUBLIC_GROUPS = ['Share with Public']
