@@ -80,11 +80,13 @@
 
 <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
 
-<div class="container transparent-sticky-footer">
-  {% block sticky_footer %}
-    {% feedback %}
-  {% endblock %} <!-- Sticky footer -->
-</div>
+{% block sticky_footer_wrap %}
+  <div class="container transparent-sticky-footer">
+    {% block sticky_footer %}
+      {% feedback %}
+    {% endblock %} <!-- Sticky footer -->
+  </div>
+{% endblock %}
 
 
 {% block top-level %}{% endblock %}
