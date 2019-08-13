@@ -61,6 +61,7 @@
     </div>
 </div>
 
+{% block footer_wrap %}
 <footer>
     {% block footer %}
     <div class="container">
@@ -68,7 +69,8 @@
     </div>
     {% endblock %}
 </footer>
-{% endblock %}
+{% endblock footer_wrap %}
+{% endblock outer_content %}
 
 {% ga %}
 {% compress js %}
