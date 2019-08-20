@@ -18,19 +18,20 @@ def theme_query():
     ).order_by('order')
 
 def theme(request, theme_slug):
-
+    from django.contrib.sites.shortcuts import get_current_site
+    site = get_current_site(request)
     theme = get_object_or_404(theme_query(), name=theme_slug)
     template = 'data_catalog/theme.html'
-
-    layers = theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order')
-    sub_layers = theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=False).order_by('order')
+    # layers = [x.dictCache(site.pk) for x in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order')]
+    layers = []
+    for layer in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order'):
+        layers.append(layer.dictCache(site.pk))
 
     return render_to_response(
         template,
         {
             'theme': theme,
             'layers': layers,
-            'sub_layers': sub_layers,
         },
         context_instance=RequestContext(request)
     );
