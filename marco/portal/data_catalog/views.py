@@ -11,7 +11,7 @@ def wagtail_feature_image(self):
 Theme.wagtail_feature_image = wagtail_feature_image
 
 def theme_query():
-    return Theme.objects.filter(visible=True).extra(
+    return Theme.objects.filter(visible=True).exclude(name='companion').extra(
         select={
             'layer_count': "SELECT COUNT(*) FROM data_manager_layer_themes as mm LEFT JOIN data_manager_layer as l ON mm.layer_id = l.id WHERE mm.theme_id = data_manager_theme.id AND l.layer_type != 'placeholder'"
         }
