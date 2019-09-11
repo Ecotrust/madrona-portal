@@ -1,4 +1,8 @@
-from itertools import zip_longest
+try:
+    from itertools import zip_longest
+except Exception as e:
+    # Py2 compatibility
+    from itertools import izip_longest as zip_longest
 import json
 from data_manager.models import Layer
 
@@ -24,7 +28,7 @@ def grouper(iterable, n, fillvalue=None):
     """
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
     args = [iter(iterable)] * n
-    return izip_longest(fillvalue=fillvalue, *args)
+    return zip_longest(fillvalue=fillvalue, *args)
 
 # The abstract model for ocean story sections, complete with panels
 class OceanStorySectionBase(MediaItem):
@@ -139,6 +143,29 @@ class OceanStory(DetailPageBase):
         index.SearchField('hook'),
         index.SearchField('get_sections_search_text'),
     )
+
+    def get_context(self, request):
+        from django.conf import settings
+        import importlib
+        context = super(OceanStory, self).get_context(request)
+        if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:
+            # Use mp-visualize code and set map library
+            context['MAP_LIBRARY'] = settings.MAP_LIBRARY
+            if hasattr(settings, 'PROJECT_REGION'):
+                context['REGION'] = settings.PROJECT_REGION
+            else:
+                context['REGION'] = {
+                    'name': 'Mid Atlantic',
+                    'init_zoom': 7,
+                    'init_lat': 39,
+                    'init_lon': -74,
+                    'srid': 4326,
+                    'map': 'ocean'
+                }
+        else:
+            # use old hard-coded pre-OL3 code.
+            context['MAP_LIBRARY'] = False
+        return context
 
     def as_json(self):
         # try:

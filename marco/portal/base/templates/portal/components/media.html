@@ -1,9 +1,12 @@
-{% load wagtailimages_tags wagtailembeds_tags %}
+<!-- RDH 20190910: Embeds is no good in this syntax. Cut out until we need to sort it out -->
+<!-- { load wagtailimages_tags wagtailembeds_tags %} -->
+{% load wagtailimages_tags %}
 {% if item.media_image %}
     {% image item.media_image fill-345x194 class="media-object" %}
 {% elif item.media_embed_url %}
     <div class="embed-responsive embed-responsive-16by9">
-        {{ item.media_embed_url|embed }}
+        <!--{ item.media_embed_url|embed }} -->
+        {{ item.media_embed_url }}
     </div>
 {% endif %}
 {% if item.media_caption %}
