@@ -1,4 +1,4 @@
-var _ = require('lodash');
+// var _ = require('lodash');
 
 /**
  * Binds a scroll listener to window.
@@ -8,9 +8,12 @@ var _ = require('lodash');
  * @param {array} selector jQuery selector defining page sections
  * @return {Object} with off() method.
  */
-module.exports = function(containerSelector, sectionSelector, callback) {
+// module.exports = function(containerSelector, sectionSelector, callback) {
+scrollSpy = function(containerSelector, sectionSelector, callback) {
   var container = $(containerSelector);
+  // var container = '.content';
   var sections = container.find(sectionSelector);
+  // var sections = $(container).find("a.anchor[id^='section-']");
   var currentIndex;
   var offset = 0;
 
@@ -18,9 +21,17 @@ module.exports = function(containerSelector, sectionSelector, callback) {
     // Get container scroll position
     var scrollTop = $(this).scrollTop();
 
-    var sectionIndex = _.findLastIndex(sections, function(s){
-      return scrollTop >= $(s).offset().top + offset;
-    })
+    var sectionIndex = -1;
+    for (var i = sections.length-1; i >= 0; i--) {
+      if (scrollTop >= $(sections[i]).offset().top + offset){
+        sectionIndex = i;
+        break;
+      }
+    }
+
+    // var sectionIndex = _.findLastIndex(sections, function(s){
+    //   return scrollTop >= $(s).offset().top + offset;
+    // })
 
     if (sectionIndex < 0) {
       sectionIndex = 0;
@@ -30,6 +41,7 @@ module.exports = function(containerSelector, sectionSelector, callback) {
       $(sections[sectionIndex]).addClass('active');
       currentIndex = sectionIndex;
       callback(currentIndex);
+      // return mapEngine.goToSection(currentIndex);
     }
   }
 

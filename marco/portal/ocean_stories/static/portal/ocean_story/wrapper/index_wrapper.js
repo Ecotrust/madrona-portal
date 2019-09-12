@@ -1,15 +1,17 @@
-var _ = require('lodash')
-    curtain = require('./curtain')
-    hackyMarineCadastreLayerConversion = require('./hacky_marine_cadastre_layer_conversion')
-    scrollSpy = require('./scroll_spy')
+// var _ = require('lodash')
+    // curtain = require('./curtain')
+    // hackyMarineCadastreLayerConversion = require('./hacky_marine_cadastre_layer_conversion')
+    // scrollSpy = require('./scroll_spy')
 //     // ol3MapEngine = require('./ol3_map_engine')
 //     oceanStoryMap = require('./map')
-    polyfills = require('./polyfills');
+    // polyfills = require('./polyfills');
 
-// function mount(mapElement, story, animate) {
+function mount(mapElement, story, animate) {
 //
   // var map;
 //   var mapEngine = ol3MapEngine(mapElement[0], animate);
+
+  app.wrapper.map.setMouseWheelZoom(false);
 
   function bindScrollAnimationToLinks(selector) {
     if (animate) {
@@ -54,22 +56,28 @@ var _ = require('lodash')
     mapEngine.updateSize();
   }));
 
-  $.getJSON("/data_manager/api/layers/", function(data) {
-
+  // $.getJSON("/data_manager/api/layers/", function(data) {
+  $.getJSON("/data_manager/get_json", function(data) {  // TODO: We want to use the above call, but need
+                                                        //   to see what fields are needed to add the layers (see
+                                                        //   app.wrapper.map.postProcessLayer in ol5_map.js)
+    data = data.layers;
     var dataLayers = _.indexBy(data, 'id');
-    _.each(dataLayers, function(d) {
-      if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
-        hackyMarineCadastreLayerConversion(d);
-      }
-    })
-    // map = oceanStoryMap(mapEngine, story, dataLayers);
-    mapEngine.updateMap(story, dataLayers);
+  //   _.each(dataLayers, function(d) {
+  //     if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
+  //       hackyMarineCadastreLayerConversion(d);
+  //     }
+  //   })
+    // os_map = oceanStoryMap(mapEngine, story, dataLayers);
+    os_map = mapEngine.updateMap(story, dataLayers);
     scrollSpy('.content', 'a.anchor[id^=\'section-\']', function(sectionIndex){
-      return map.goToSection(sectionIndex);
+      // return os_map.goToSection(story, sectionIndex);
+      return os_map.goToSection(sectionIndex);
     })
   });
-// }
+}
 //
 // module.exports = mount;
 //
 // window.oceanStory = module.exports;
+window.oceanStory = mount;
+app.init();

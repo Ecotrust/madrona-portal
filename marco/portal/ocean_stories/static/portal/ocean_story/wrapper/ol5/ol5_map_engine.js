@@ -1,12 +1,11 @@
-map = app.map;
-
 mapEngine = {};
+
 mapEngine.updateSize = function() {
-  map.updateSize();
+  app.map.updateSize();
 };
 
 mapEngine.setView = function(center, zoom, callback) {
-  app.wrapper.map.setCenter(center);
+  app.wrapper.map.setCenter(center[0], center[1]);
   app.wrapper.map.setZoom(zoom);
   callback();
 }
@@ -33,8 +32,7 @@ mapEngine.updateMap = function(story, layerCatalog) {
 
   function normalizeSection(data) {
     data.view = {
-      // center: _.map(data.view.center, parseFloat),
-      center: ol.proj.transform(data.view.center, "EPSG:4326", map.getView().getProjection().code_),
+      center: _.map(data.view.center, parseFloat),
       zoom: parseInt(data.view.zoom),
     };
   }
@@ -52,8 +50,10 @@ mapEngine.updateMap = function(story, layerCatalog) {
   }
 
   function setBaseLayer(layer) {
-    app.setBasemap('layer');
-    currentBaseLayer = layer;
+    if (layer) {
+      app.wrapper.map.setBasemap(layer);
+      currentBaseLayer = layer;
+    }
 
   }
 
@@ -64,8 +64,14 @@ mapEngine.updateMap = function(story, layerCatalog) {
         return false;
       }
       // create new layer, add to map, hide it, add to dataLayers at [ID]
-      var layerObj = mapEngine.typeCreateHandlers[layerCatalog[id].layer_type](layerCatalog[id]);
-      mapEngine.hideLayer(layerObj);
+      // var layerObj = mapEngine.typeCreateHandlers[layerCatalog[id].layer_type](layerCatalog[id]);
+      var layerObj = app.addLayerToMap(layerCatalog[id]);
+      if (layerObj.hasOwnProperty('layer')) {
+        layerObj = layerObj.layer;
+      }
+      // app.wrapper.map.addLayer(layerObj);
+      // mapEngine.hideLayer(layerObj);
+      // mapEngine.showLayer(layerObj);
       dataLayers[id] = layerObj;
     }
     return dataLayers[id];
@@ -104,6 +110,7 @@ mapEngine.updateMap = function(story, layerCatalog) {
         setBaseLayer(s.baseLayer);
         setDataLayers(s.dataLayers);
       });
+
     },
   };
 
