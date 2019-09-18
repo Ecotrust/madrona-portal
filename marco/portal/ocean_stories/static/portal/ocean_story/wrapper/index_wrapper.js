@@ -56,11 +56,32 @@ function mount(mapElement, story, animate) {
     mapEngine.updateSize();
   }));
 
+  /* recursive function to pull out all layer, sublayer, and companion layer objects */
+  function getAllLayers(current_layers, layers_list) {
+    if (typeof(current_layers) != "object") {
+      current_layers = {};
+    }
+    for (var i = 0; i < layers_list.length; i++) {
+      if (Object.keys(current_layers).indexOf(layers_list[i].id) < 0) {
+        current_layers[layers_list[i].id] = layers_list[i];
+        if (layers_list[i].hasOwnProperty('subLayers') && layers_list[i].subLayers.length > 0) {
+          current_layers = getAllLayers(current_layers, layers_list[i].subLayers);
+        }
+        if (layers_list[i].hasOwnProperty('companion_layers') && layers_list[i].companion_layers.length > 0) {
+          current_layers = getAllLayers(current_layers, layers_list[i].companion_layers);
+        }
+      }
+    }
+    return current_layers;
+  }
+
   // $.getJSON("/data_manager/api/layers/", function(data) {
-  $.getJSON("/data_manager/get_json", function(data) {  // TODO: We want to use the above call, but need
-                                                        //   to see what fields are needed to add the layers (see
-                                                        //   app.wrapper.map.postProcessLayer in ol5_map.js)
-    data = data.layers;
+  $.getJSON("/data_manager/get_json", function(data) {  
+    if (data.hasOwnProperty('layers')) {
+      // data = data.layers;
+      data = getAllLayers({}, data.layers);
+    }
+
     var dataLayers = _.indexBy(data, 'id');
   //   _.each(dataLayers, function(d) {
   //     if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
