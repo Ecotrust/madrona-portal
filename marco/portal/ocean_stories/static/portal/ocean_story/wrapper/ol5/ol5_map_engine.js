@@ -5,12 +5,15 @@ mapEngine.updateSize = function() {
 };
 
 mapEngine.setView = function(center, zoom, callback) {
-  if (app.wrapper.map.hasOwnProperty('animateView')) {
-    app.wrapper.map.animateView(center, zoom, 1200);
-  } else {
-    app.wrapper.map.setCenter(center[0], center[1]);
-    app.wrapper.map.setZoom(zoom);
-  }
+  setTimeout(function() {
+    if (app.wrapper.map.hasOwnProperty('animateView')) {
+      app.wrapper.map.animateView(center, zoom, 1200);
+    } else {
+      app.wrapper.map.setCenter(center[0], center[1]);
+      app.wrapper.map.setZoom(zoom);
+    }
+
+  }, 500);
   callback();
 }
 
