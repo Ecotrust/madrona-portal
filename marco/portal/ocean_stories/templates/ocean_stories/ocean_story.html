@@ -1,140 +1,18 @@
 {% extends "cms/section.html" %}
-{% load wagtailcore_tags static %}
 
 {% block extra_css %}
-  {% if MAP_LIBRARY %}
-    {% if MAP_LIBRARY == 'ol5' %}
-      <!-- <link rel="stylesheet" href="{% static 'visualize/css/ol5.css' %}" /> -->
-      <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
-      <link rel="stylesheet" href="{% static 'portal/ocean_story/css/ocean_story.css' %}" type="text/css">
-    {% endif %} <!-- OL5 -->
-
-  {% else %}
-    <link rel="stylesheet" href="{% static 'ol3-unofficial/ol.css' %}" />
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.4/ol.css" /> -->
-  {% endif %} <!-- MAP_LIBRARY -->
+  {% include "ocean_stories/extra_css.html" %}
 {% endblock %}
 
 {% block navbar-extra-classes %}navbar-fixed-top{% endblock %}
 
 {% block header %}
     {{ block.super }}
-    <div class="curtain-container">
-        <div class="curtain">
-            {% if MAP_LIBRARY %}
-              <div id="map"></div>
-            {% else %}
-              <div id="ocean-story-map"></div>
-            {% endif %}
-        </div>
-        {% if self.explore_title %}
-            <div class="curtain overlay">
-                <a target="_blank" class="btn btn-default btn-lg view-data" href='{{ self.explore_url }}'><span class="icon icon-marco oversized"></span>&nbsp; {{ self.explore_title }}</a>
-            </div>
-        {% endif %}
-        <div class="intro overlay">
-            <div class="center">
-                <div class="container">
-                    <div class="ocean-story-n"><span>OCEAN STORY #{{ self.get_prev_siblings.count|add:1 }}</span></div>
-                    {% if self.hook %}<div class="hook">{{ self.hook }}</div>{% endif %}
-                </div>
-            </div>
-            {% with page=self.os_prev_sibling %}
-                {% if page %}
-                    <a class="previous-page" href="{% pageurl page %}">
-                        <i class="fa fa-2x fa-caret-left"></i>
-                    </a>
-                {% endif %}
-            {% endwith %}
-            {% with page=self.os_next_sibling %}
-                {% if page %}
-                    <a class="next-page" href="{% pageurl page %}">
-                        <i class="fa fa-2x fa-caret-right"></i>
-                    </a>
-                {% endif %}
-            {% endwith %}
-        </div>
-        <a href="#page-header" class="learn-more animate">
-            <table style="width:100%;">
-                <tr>
-                    <td style="line-height:0;"><i class="fa fa-angle-double-down fa-2x"></i></i></td>
-                </tr>
-                <tr>
-                    <td style="line-height:0;">learn more</td>
-                </tr>
-            </table>
-        </a>
-    </div>
+    {% include "ocean_stories/header.html" %}
 {% endblock %}
 
 {% block content %}
-    <script src="{% static 'jquery/dist/jquery.js' %}"></script>
-    {% if self.sections %}
-        {% for section in self.sections.all %}
-            <a style="clear:right" class="anchor" id="section-{{forloop.counter}}"></a>
-            {% if section.map_legend %}
-            <section class="has-legend">
-                <div class="legend-well
-                    {# if there's a section title, move the legend in line with the top of the body text #}
-                    {% if not section.title %}no-headline{% endif %}">
-                    <div class="well">
-                        <p style="text-align: center">
-                            <a target="_blank" href="{{ section.parsed_map_state.url }}" title="View data layers in Marine Planner"><span class="icon icon-marco"></span></a> <strong class="deep-blue">Legend</strong></p>
-                            {% for legend in section.parsed_map_state.dataLayers.values %}
-                            <p class="font-condensed">
-                              {{ legend.name }}
-                              <br>
-                              {% if legend.legend_source == 'url' %}
-                              <span class='layer_{{ legend.id }}_legend'>Loading...</span>
-                              <script>
-                                $.ajax({
-                                  url: "{{ legend.legend }}/legend?f=json",
-                                }).done(function(data) {
-                                  legend_json = JSON.parse(data);
-                                  name = "{{ legend.name }}";
-                                  layers = "{{ legend.arcgis_layers }}".split(',');
-                                  id = "{{ legend.id }}";
-                                  url = "{{ legend.legend }}";
-                                  html = '';
-                                  for (var i = 0; i < layers.length; i++){
-                                    layer_id = layers[i];
-                                    layer = {};
-                                    for (var j = 0; j < legend_json.layers.length; j++) {
-                                      if (legend_json.layers[j].layerId == layer_id){
-                                        layer = legend_json.layers[j];
-                                        break;
-                                      }
-                                    }
-                                    html += "<table><tbody>";
-                                    for (var k = 0; k < layer.legend.length; k++) {
-                                      entry = layer.legend[k];
-                                      html += "<tr valign='middle'>";
-                                      html += "<td><img src=\"" + url + "/" + layer_id + "/images/" + entry.url + "\"></td>";
-                                      html += "<td>" + entry.label + "<td>";
-                                      html += "</tr>";
-                                    }
-                                    html += "</tbody></table>";
-                                  }
-                                  $('.layer_' + id + '_legend').html(html);
-                                });
-                              </script>
-                              {% else %}
-                              <img src="{{ legend.legend }}">
-                              {% endif %}
-                            </p>
-                            {% endfor %}
-                    </div>
-                </div>
-            {% else %}
-            <section class="no-legend">
-            {% endif %}
-                <div class="section-body">
-                    <h2>{{ section.title }}</h2>
-                    {% include "portal/components/ocean_story_media_item.html" with item=section only %}
-                </div>
-            </section>
-        {% endfor %}
-    {% endif %}
+    {% include "ocean_stories/content.html" %}
 {% endblock %}
 
 {% block nav_footer %}
@@ -142,64 +20,5 @@
 {% endblock %}
 
 {% block extra_js %}
-  {% if MAP_LIBRARY %}
-    <script src="{% static 'jquery-migrate/jquery-migrate.min.js' %}"></script>
-    <script src="{% static 'jquery.bbq/jquery.ba-bbq.js' %}"></script>
-    <script src="{% static 'js/lib/lodash.min.js' %}"></script>
-
-    <script src="{% static 'js/lib/knockout-3.3.0.js' %}"></script>
-    <script src="{% static 'js/lib/knockout.mapping-2.4.1.js' %}"></script>
-    <script src="{% static 'js/knockout-bindings.js' %}"></script>
-
-    <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
-
-    <!-- <script src="{% static 'js/app.js' %}"></script> -->
-    <script src="/static/js/fixtures.js"></script>
-
-    <script type="text/javascript">
-      app.map_tech = '{{ MAP_LIBRARY }}';
-      app.region = {{ REGION | safe }};
-    </script>
-
-    <script src="{% static 'js/wrappers/wrapper_init.js' %}"></script>
-    <!-- LOAD MAP WRAPPERS -->
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_layers.js"></script>
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_wrapper.js"></script>
-    <script src="{% static 'js/map.js' %}"></script>
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_map.js"></script>
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_map_library.js"></script>
-    <!-- <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_controls.js"></script>
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_events.js"></script> -->
-    <!-- LOAD MAP FOR ALL NON-OL2 TECHS -->
-    <!-- <script src="{% static 'js/contextual_menu.js' %}"></script> -->
-
-    <script src="{% static 'js/models.js' %}"></script>
-    <script src="{% static 'js/server.js' %}"></script>
-    <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_state.js"></script>
-    <script src="{% static 'js/state.js' %}"></script>
-    <!-- <script src="{% static 'js/' %}wrappers/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_app.js"></script> -->
-    <!-- <script src="{% static 'js/app.js' %}"></script> -->
-    <script src="{% static 'js/events.js' %}"></script>
-
-    <script src="{% static 'portal/ocean_story/wrapper' %}/{{ MAP_LIBRARY }}/{{ MAP_LIBRARY }}_map_engine.js"></script>
-    <script src="{% static 'portal/ocean_story' %}/curtain.js"></script>
-    <!-- <script src="{% static 'portal/ocean_story' %}/hacky_marine_cadastre_layer_conversion.js"></script> -->
-    <script src="{% static 'portal/ocean_story' %}/scroll_spy.js"></script>
-    <!-- <script src="{% static 'portal/ocean_story' %}/polyfills.js"></script> -->
-
-    <script src="{% static 'portal/ocean_story/wrapper' %}/index_wrapper.js"></script>
-    {% if MAP_LIBRARY == 'ol5' %}
-    {% endif %} <!-- OL5 -->
-
-  {% else %}
-    <script src="{% static 'ol3-unofficial/ol.js' %}"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.4/ol-debug.js"></script> -->
-    <script src="{% static 'bundles/ocean_story.js' %}"></script>
-  {% endif %} <!-- MAP_LIBRARY -->
-  <script type="text/javascript">
-    $(document).ready(function() {
-      oceanStory($('#map'), {{ self.as_json|safe }}, true);
-    })
-  </script>
-
+  {% include "ocean_stories/extra_js.html" %}
 {% endblock %}

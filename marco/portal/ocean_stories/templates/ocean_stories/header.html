@@ -1,0 +1,47 @@
+{% load wagtailcore_tags static %}
+<div class="curtain-container">
+    <div class="curtain">
+        {% if MAP_LIBRARY %}
+          <div id="map"></div>
+        {% else %}
+          <div id="ocean-story-map"></div>
+        {% endif %}
+    </div>
+    {% if self.explore_title %}
+        <div class="curtain overlay">
+            <a target="_blank" class="btn btn-default btn-lg view-data" href='{{ self.explore_url }}'><span class="icon icon-marco oversized"></span>&nbsp; {{ self.explore_title }}</a>
+        </div>
+    {% endif %}
+    <div class="intro overlay">
+        <div class="center">
+            <div class="container">
+                <div class="ocean-story-n"><span>OCEAN STORY #{{ self.get_prev_siblings.count|add:1 }}</span></div>
+                {% if self.hook %}<div class="hook">{{ self.hook }}</div>{% endif %}
+            </div>
+        </div>
+        {% with page=self.os_prev_sibling %}
+            {% if page %}
+                <a class="previous-page" href="{% pageurl page %}">
+                    <i class="fa fa-2x fa-caret-left"></i>
+                </a>
+            {% endif %}
+        {% endwith %}
+        {% with page=self.os_next_sibling %}
+            {% if page %}
+                <a class="next-page" href="{% pageurl page %}">
+                    <i class="fa fa-2x fa-caret-right"></i>
+                </a>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <a href="#page-header" class="learn-more animate">
+        <table style="width:100%;">
+            <tr>
+                <td style="line-height:0;"><i class="fa fa-angle-double-down fa-2x"></i></i></td>
+            </tr>
+            <tr>
+                <td style="line-height:0;">learn more</td>
+            </tr>
+        </table>
+    </a>
+</div>
