@@ -21,7 +21,14 @@
                             $.ajax({
                               url: "{{ legend.legend }}/legend?f=json",
                             }).done(function(data) {
-                              legend_json = JSON.parse(data);
+                              if ( typeof(data) == "object") {
+                                legend_json = data;
+                              } else if (typeof(data) == "string") {
+                                legend_json = JSON.parse(data);
+                              } else {
+                                // punt
+                                legend_json = data;
+                              }
                               name = "{{ legend.name }}";
                               layers = "{{ legend.arcgis_layers }}".split(',');
                               id = "{{ legend.id }}";

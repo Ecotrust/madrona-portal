@@ -71,21 +71,38 @@ mapEngine.updateMap = function(story, layerCatalog) {
         return false;
       }
       // create new layer, add to map, hide it, add to dataLayers at [ID]
-      // var layerObj = mapEngine.typeCreateHandlers[layerCatalog[id].layer_type](layerCatalog[id]);
       var layerObj = app.addLayerToMap(layerCatalog[id]);
       if (layerObj.hasOwnProperty('layer')) {
         layerObj = layerObj.layer;
       }
-      // app.wrapper.map.addLayer(layerObj);
-      // mapEngine.hideLayer(layerObj);
-      // mapEngine.showLayer(layerObj);
       dataLayers[id] = layerObj;
     }
     return dataLayers[id];
   }
 
-  function setDataLayers(layers) {
-    var layerKeys = Object.keys(layers)
+
+  function setDataLayers(layers, hashLayerOverrides) {
+    var layerKeys = Object.keys(layers);
+    var overrideKeys = Object.keys(hashLayerOverrides);
+
+    for (var i = 0; i < layerKeys.length; i++) {
+      if (overrideKeys.indexOf(layerKeys[i]) >= 0) {
+        var layer = layers[layerKeys[i]];
+        var override = hashLayerOverrides[layerKeys[i]];
+        var l = fetchDataLayer(layer.id);
+        l.setOpacity(override.opacity);
+        if (!l.hasOwnProperty('state_') || !l.state_) {
+          l.state_ = {};
+        }
+        l.state_.zIndex = override.order;
+        l.state_.opacity = override.opacity;
+        l.state_.visible = override.display;
+        if (!l.state_.hasOwnProperty('layer')) {
+          l.state_.layer = l;
+        }
+      }
+    }
+    app.wrapper.map.sortLayers();
 
     // trim unused layers
     _.each(_.difference(visibleDataLayers, layerKeys), function(id) {
@@ -103,6 +120,34 @@ mapEngine.updateMap = function(story, layerCatalog) {
       }
     });
     visibleDataLayers = layerKeys;
+
+
+  }
+
+  function parseHash(url) {
+    var hashObject = {};
+    var hashParams = new URLSearchParams(url);
+    var layerParams = hashParams.getAll('dls[]');
+    var layerOrder = 0;
+    while(layerParams.length > 2) {
+      // RDH: this handles a case where both layer id and opacity are 1
+      var newHashLayer = {'id':1, 'opacity':1, 'order': layerOrder};
+      for (var i = 0; i < 3; i++) {
+        if ([true, "True", 'true'].indexOf(layerParams[i])>= 0 ) {
+          newHashLayer.display = true;
+        } else if ( layerParams[i] >= newHashLayer.id && layerParams[i].toString().indexOf('.') < 0) {
+          newHashLayer.id = parseInt(layerParams[i]);
+        } else if (parseFloat(layerParams[i]) <= 1) {
+          newHashLayer.opacity = parseFloat(layerParams[i]);
+        }
+      }
+      if (newHashLayer.hasOwnProperty('display') && newHashLayer.display) {
+        hashObject[newHashLayer.id.toString()] = newHashLayer;
+      }
+      layerParams = layerParams.slice(3);
+      layerOrder ++;
+    }
+    return hashObject;
   }
 
   return {
@@ -115,7 +160,7 @@ mapEngine.updateMap = function(story, layerCatalog) {
 
       mapEngine.setView(s.view.center, s.view.zoom, function(){
         setBaseLayer(s.baseLayer);
-        setDataLayers(s.dataLayers);
+        setDataLayers(s.dataLayers, parseHash(s.url));
       });
 
     },
