@@ -1,0 +1,4 @@
+{% include "data_catalog/includes/cacheless_init_layer_info.html" %}
+{% for sublayer in sub_layers %}
+    {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=sublayer %}
+{% endfor %}

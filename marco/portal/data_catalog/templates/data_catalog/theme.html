@@ -1,6 +1,13 @@
 {% extends "data_catalog/override-detail.html" %}
+{% load static %}
 
 {% block title %}Data Catalog: {{theme.display_name}}{% endblock %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'data_catalog/css/data_catalog_themes.css' %}" type="text/css">
+{% endblock %}
+
 {% block body_class %}data-theme-page{% endblock %}
 
 {% block back_text %}Data catalog{% endblock %}
@@ -15,7 +22,11 @@
   {% if layers %}
     <div class="layer-list">
       {% for layer in layers %}
-        {{ layer.catalog_html }}
+          <!-- { layer.catalog_html}} -->
+        {% include "data_catalog/includes/cacheless_layer_catalog_info.html" %}
+        {% for sublayer in layer.sublayers %}
+            {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=sublayer %}
+        {% endfor %}
       {% endfor %}
     </div>
   {% endif %}
@@ -31,9 +42,10 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
+<script type="text/javascript">
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
 </script>
+<script type="text/javascript" src="{% static 'data_catalog/js/data_catalog_themes.js' %}"></script>
 {% endblock %}
