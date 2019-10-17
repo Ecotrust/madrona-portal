@@ -1,0 +1,18 @@
+a.view-in-map {
+  margin-top: 2rem;
+  position: absolute;
+}
+
+a.view-in-map:hover {
+  font-weight: bold;
+}
+
+div.layer-loading-panel {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+}
+
+body.data-theme-page .catalog-padding .layer-info {
+    border-bottom: 1px solid #b1b3b5;
+    padding: 20px 0 20px 0 !important;
