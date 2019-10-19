@@ -23,10 +23,18 @@
     <div class="layer-list">
       {% for layer in layers %}
           <!-- { layer.catalog_html}} -->
-        {% include "data_catalog/includes/cacheless_layer_catalog_info.html" %}
+        {% include "data_catalog/includes/cacheless_init_layer_info.html" %}
+        {% if layer.sublayers|length > 0 %}
+        <div id="collapse-parent-{{ layer.id }}" class="collapse in">
+        {% endif %}
         {% for sublayer in layer.sublayers %}
+          <div class="sublayer-entry">
             {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=sublayer %}
+          </div>
         {% endfor %}
+        {% if layer.sublayers|length > 0 %}
+        </div>
+        {% endif %}
       {% endfor %}
     </div>
   {% endif %}
