@@ -575,15 +575,19 @@
 	        var layer = layers[layerKeys[i]];
 	        var override = hashLayerOverrides[layerKeys[i]];
 	        var l = fetchDataLayer(layer.id);
-	        l.setOpacity(override.opacity);
-	        if (!l.hasOwnProperty('state_') || !l.state_) {
-	          l.state_ = {};
-	        }
-	        l.state_.zIndex = override.order;
-	        l.state_.opacity = override.opacity;
-	        l.state_.visible = override.display;
-	        if (!l.state_.hasOwnProperty('layer')) {
-	          l.state_.layer = l;
+	        if (l) {
+	          if ('setOpacity' in l) {
+	            l.setOpacity(override.opacity);
+	          }
+	          if (!l.hasOwnProperty('state_') || !l.state_) {
+	            l.state_ = {};
+	          }
+	          l.state_.zIndex = override.order;
+	          l.state_.opacity = override.opacity;
+	          l.state_.visible = override.display;
+	          if (!l.state_.hasOwnProperty('layer')) {
+	            l.state_.layer = l;
+	          }
 	        }
 	      }
 	    }
