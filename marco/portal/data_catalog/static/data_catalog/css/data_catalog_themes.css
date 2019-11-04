@@ -1,0 +1,51 @@
+a.parent-collapse,
+a.view-in-map {
+  margin-top: 2rem;
+  position: absolute;
+}
+
+a.parent-collapse:hover,
+a.view-in-map:hover {
+  font-weight: bold;
+}
+
+a.layer-name::before {
+  content: "▾ "; }
+
+a.layer-name.collapsed::before {
+  content: "▸ "; }
+
+a.parent-collapse::before {
+  content: "Hide ";
+}
+
+a.parent-collapse.collapsed::before {
+  content: "Show ";
+}
+
+a.layer-name:focus {
+  text-decoration: unset;
+}
+a.layer-name:hover {
+  text-decoration: underline;
+}
+
+div.layer-loading-panel {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+}
+
+body.data-theme-page .catalog-padding .sublayer-entry .layer-info section:last-child,
+body.data-theme-page .catalog-padding .layer-info {
+    border-bottom: 1px solid #b1b3b5;
+    padding: 20px 0 20px 0 !important;
+}
+
+body.data-theme-page .catalog-padding .sublayer-entry:last-child section.layer-info{
+  border: none !important;
+}
+
+div.sublayer-entry {
+  padding-left: 5vw;
+}

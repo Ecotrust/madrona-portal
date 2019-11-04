@@ -24,8 +24,8 @@ def theme(request, theme_slug):
     template = 'data_catalog/theme.html'
     # layers = [x.dictCache(site.pk) for x in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order')]
     layers = []
-    for layer in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order'):
-        layers.append(layer.dictCache(site.pk))
+    for layer in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('name'):
+        layers.append(layer.shortDict(site.pk))
 
     return render_to_response(
         template,
