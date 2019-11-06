@@ -97,7 +97,6 @@ INSTALLED_APPS = [
     'wagtail.search',
     'wagtail.admin',
     'wagtail.core',
-    
     'wagtail.contrib.styleguide',
     'wagtail.contrib.sitemaps',
 
@@ -513,7 +512,7 @@ WMS_PROXY_TIME_ITEM = 'TIMEITEM'
 WMS_PROXY_GENERIC_LAYER = 'generic'
 WMS_PROXY_TIME_LAYER = 'time'
 
-MAP_LIBRARY = app_cfg.get('MAP_LIBRARY', 'ol5')
+MAP_LIBRARY = app_cfg.get('MAP_LIBRARY', 'ol6')
 
 if 'REGION' not in cfg.sections():
     cfg['REGION'] = {}
