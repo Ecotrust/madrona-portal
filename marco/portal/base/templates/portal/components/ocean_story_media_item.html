@@ -30,9 +30,12 @@
 
     <div class="story-media-body">
         <div class="item-text">
-            {% block body %}
-                {{ item.body|richtext }}
+          {% block body %}
+            {{ item.body|richtext }}
+            {% block stream_body %}
+              {% include_block item.stream_body %}
             {% endblock %}
+          {% endblock %}
         </div>
     </div>
 

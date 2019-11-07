@@ -15,12 +15,13 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from wagtail.core.models import Orderable
-from wagtail.core.fields import RichTextField
+from wagtail.core.fields import RichTextField, StreamField
 from wagtail.search import index
-from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
 from modelcluster.fields import ParentalKey
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem
+from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -34,6 +35,14 @@ def grouper(iterable, n, fillvalue=None):
 class OceanStorySectionBase(MediaItem):
     title = models.CharField(max_length=255, blank=True)
     body = RichTextField(blank=True)
+    stream_body = StreamField(
+        [
+            ('rich_text', RichTextBlock()),
+            ('raw_html', RawHTMLBlock()),
+        ],
+        null=True,
+        blank=True
+    )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "
        "display the map's legend to the right of the the section text."))
@@ -42,6 +51,7 @@ class OceanStorySectionBase(MediaItem):
         FieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
         FieldPanel('body', classname="full"),
+        StreamFieldPanel('stream_body'),
         FieldPanel('map_state'),
         FieldPanel('map_legend'),
     ]
