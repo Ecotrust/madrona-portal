@@ -14,7 +14,7 @@ TIME_ZONE = UTC
 GA_ACCOUNT = You forgot to set the google analytics account
 STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
-MAP_LIBRARY = ol5
+MAP_LIBRARY = ol6
 
 [REGION]
 NAME = Mid-Atlantic Ocean
