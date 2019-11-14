@@ -50,3 +50,11 @@ social-auth-app-django==3.1.0
 django-tinymce==2.0.4
 django-nested-admin==3.0.21
 django-taggit==0.21.6
+
+# JSONB issues on PG 9.3
+django-pgjsonb==0.0.32
+Pillow==4.3.0
+six==1.12.0
+django-appconf==1.0.2
+South==1.0
+Unidecode==0.04.21
