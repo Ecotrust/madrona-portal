@@ -216,13 +216,14 @@ COMPRESS_OFFLINE = not DEBUG
 
 from django.conf import global_settings
 
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + [
+# RDH 20191114 - if tuple, make into a list
+TEMPLATE_CONTEXT_PROCESSORS = [x for x in global_settings.TEMPLATE_CONTEXT_PROCESSORS] + [
     'django.core.context_processors.request',
     'social_django.context_processors.backends',
     'portal.base.context_processors.search_disabled',
 ]
 
-TEMPLATE_LOADERS = global_settings.TEMPLATE_LOADERS + [
+TEMPLATE_LOADERS = [x for x in global_settings.TEMPLATE_LOADERS] + [
     'apptemplates.Loader',
 ]
 

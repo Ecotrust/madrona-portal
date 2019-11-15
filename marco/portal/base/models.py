@@ -19,14 +19,19 @@ class PortalImage(AbstractImage):
     creator = models.CharField(max_length=255, blank=True)
     creator_URL = models.URLField(blank=True)
 
-    search_fields = AbstractImage.search_fields + (
+    search_fields = [x for x in AbstractImage.search_fields] + [
         index.SearchField('creator'),
-    )
+    ]
 
     admin_form_fields = Image.admin_form_fields + (
         'creator',
         'creator_URL'
     )
+
+    @classmethod
+    def creatable_subpage_models(cls):
+        import ipdb; ipdb.set_trace()
+        print(cls)
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
 @receiver(pre_delete, sender=PortalImage)
@@ -100,9 +105,9 @@ class PageBase(Page):
         abstract = True
 
     description = RichTextField(blank=True, null=True)
-    search_fields = Page.search_fields + ( # Inherit search_fields from Page
+    search_fields = [x for x in Page.search_fields] + [ # Inherit search_fields from Page
         index.SearchField('description'),
-    )
+    ]
 
     def get_sections_search_text(self):
         return '\n'.join(section.get_search_text() for section in self.sections.all())
