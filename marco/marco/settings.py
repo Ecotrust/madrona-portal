@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 import configparser
 from os.path import abspath, dirname
-from social.backends.google import GooglePlusAuth
+# from social.backends.google import GooglePlusAuth
 
 # Absolute filesystem path to the Django project directory:
 PROJECT_ROOT = dirname(dirname(dirname(abspath(__file__))))
