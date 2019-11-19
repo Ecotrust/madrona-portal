@@ -77,6 +77,9 @@ mapEngine.updateMap = function(story, layerCatalog) {
       }
       dataLayers[id] = layerObj;
     }
+    if (!(dataLayers[id] instanceof layerModel)) {
+      dataLayers[id] = app.viewModel.getLayerById(id);
+    }
     return dataLayers[id];
   }
 
@@ -89,17 +92,32 @@ mapEngine.updateMap = function(story, layerCatalog) {
       if (overrideKeys.indexOf(layerKeys[i]) >= 0) {
         var layer = layers[layerKeys[i]];
         var override = hashLayerOverrides[layerKeys[i]];
-        var l = fetchDataLayer(layer.id);
-        l.setOpacity(override.opacity);
-        if (!l.hasOwnProperty('state_') || !l.state_) {
-          l.state_ = {};
-        }
-        l.state_.zIndex = override.order;
-        l.state_.opacity = override.opacity;
-        l.state_.visible = override.display;
-        if (!l.state_.hasOwnProperty('layer')) {
-          l.state_.layer = l;
-        }
+        // RDH 20191119 - this is not a layermodel, but on object: enforce this and use timeout to watch for fullyloaded
+        var loopTime = 0;
+        function layerTestLoop () {
+          setTimeout(function() {
+            var mapLayer = app.viewModel.getLayerById(layer.id);
+            if (!(mapLayer instanceof layerModel && mapLayer.fullyLoaded) && loopTime < 10) {
+              loopTime ++;
+              layerTestLoop();
+            } else {
+              dataLayers[layer.id] = mapLayer;
+              var l = fetchDataLayer(layer.id);
+              l.opacity(override.opacity);
+              if (!l.hasOwnProperty('state_') || !l.state_) {
+                l.state_ = {};
+              }
+              l.state_.zIndex = override.order;
+              l.state_.opacity = override.opacity;
+              l.state_.visible = override.display;
+              if (!l.state_.hasOwnProperty('layer')) {
+                l.state_.layer = l;
+              }
+            }
+          }, 100);
+        };
+        layerTestLoop();
+
       }
     }
     app.wrapper.map.sortLayers();
