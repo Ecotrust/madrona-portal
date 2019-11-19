@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     # 'django.contrib.webdesign',
+    'django.contrib.humanize',
 
     # 'p97settings',
 
