@@ -17,12 +17,12 @@ EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol6
 
 [REGION]
-NAME = Mid-Atlantic Ocean
-INIT_ZOOM = 7
-INIT_LAT = 39
-INIT_LON = -74
-SRID = 4326
-MAP = ocean
+#NAME = Mid-Atlantic Ocean
+#INIT_ZOOM = 7
+#INIT_LAT = 39
+#INIT_LON = -74
+#SRID = 4326
+#MAP = ocean
 
 [CACHES]
 BACKEND = django_redis.cache.RedisCache
