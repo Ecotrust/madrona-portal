@@ -9,7 +9,7 @@
     <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %}</title>
     {% block extra_css %}{% endblock %}
     {% block favicon %}
-      <link rel="shortcut icon" href="{% static 'favicon.ico?v=1' %}" />
+      <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
     {% endblock favicon %}
     {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'marco_site.scss' %}" />
