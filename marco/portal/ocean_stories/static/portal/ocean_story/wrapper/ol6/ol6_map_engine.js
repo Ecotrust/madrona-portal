@@ -28,11 +28,11 @@ mapEngine.typeCreateHandlers = {
 };
 
 mapEngine.hideLayer = function(layer) {
-  layer.setVisible(false);
+  layer.setInvisible();
 };
 
 mapEngine.showLayer = function(layer) {
-  layer.setVisible(true);
+  layer.setVisible();
 };
 
 mapEngine.updateMap = function(story, layerCatalog) {
@@ -88,6 +88,17 @@ mapEngine.updateMap = function(story, layerCatalog) {
     var layerKeys = Object.keys(layers);
     var overrideKeys = Object.keys(hashLayerOverrides);
 
+    // Hide layers from old state
+    for (var i = 0; i < visibleDataLayers.length; i++) {
+      if (layerKeys.indexOf(visibleDataLayers[i]) < 0) {
+        var old_layer = app.viewModel.getLayerById(visibleDataLayers[i]);
+        if (old_layer instanceof layerModel) {
+          old_layer.setInvisible();
+        }
+      }
+    }
+
+    // Add layers from new state
     for (var i = 0; i < layerKeys.length; i++) {
       if (overrideKeys.indexOf(layerKeys[i]) >= 0) {
         var layer = layers[layerKeys[i]];
@@ -101,6 +112,7 @@ mapEngine.updateMap = function(story, layerCatalog) {
               loopTime ++;
               layerTestLoop();
             } else {
+              mapLayer.setVisible();
               dataLayers[layer.id] = mapLayer;
               var l = fetchDataLayer(layer.id);
               l.opacity(override.opacity);
