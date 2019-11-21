@@ -15,6 +15,7 @@ GA_ACCOUNT = You forgot to set the google analytics account
 STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol6
+COMPRESS_ENABLED = True
 
 [REGION]
 #NAME = Mid-Atlantic Ocean

@@ -270,7 +270,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'), # for wagtail
 )
 
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = app_cfg.getboolean('COMPRESS_ENABLED', True)
 COMPRESS_OFFLINE = True
 
 
