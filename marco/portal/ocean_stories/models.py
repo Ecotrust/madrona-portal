@@ -49,7 +49,7 @@ class OceanStorySectionBase(MediaItem):
     panels = [
         FieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
-        StreamFieldPanel('body', classname="full"),
+        StreamFieldPanel('body'),
         FieldPanel('map_state'),
         FieldPanel('map_legend'),
     ]
