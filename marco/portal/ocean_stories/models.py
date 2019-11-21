@@ -15,7 +15,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from wagtail.core.models import Orderable
-from wagtail.core.fields import RichTextField, StreamField
+from wagtail.core.fields import StreamField
 from wagtail.search import index
 from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
 from modelcluster.fields import ParentalKey
@@ -34,8 +34,7 @@ def grouper(iterable, n, fillvalue=None):
 # The abstract model for ocean story sections, complete with panels
 class OceanStorySectionBase(MediaItem):
     title = models.CharField(max_length=255, blank=True)
-    body = RichTextField(blank=True)
-    stream_body = StreamField(
+    body = StreamField(
         [
             ('rich_text', RichTextBlock()),
             ('raw_html', RawHTMLBlock()),
@@ -50,8 +49,7 @@ class OceanStorySectionBase(MediaItem):
     panels = [
         FieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
-        FieldPanel('body', classname="full"),
-        StreamFieldPanel('stream_body'),
+        StreamFieldPanel('body', classname="full"),
         FieldPanel('map_state'),
         FieldPanel('map_legend'),
     ]
