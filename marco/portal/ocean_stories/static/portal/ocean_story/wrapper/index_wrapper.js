@@ -62,21 +62,30 @@ function mount(mapElement, story, animate) {
       current_layers = {};
     }
     for (var i = 0; i < layers_list.length; i++) {
-      if (Object.keys(current_layers).indexOf(layers_list[i].id) < 0) {
-        current_layers[layers_list[i].id] = layers_list[i];
-        if (layers_list[i].hasOwnProperty('subLayers') && layers_list[i].subLayers.length > 0) {
-          current_layers = getAllLayers(current_layers, layers_list[i].subLayers);
+      try {
+        if (Object.keys(current_layers).indexOf(layers_list[i].id) < 0) {
+          current_layers[layers_list[i].id] = layers_list[i];
+          if (layers_list[i].hasOwnProperty('subLayers') && layers_list[i].subLayers.length > 0) {
+            current_layers = getAllLayers(current_layers, layers_list[i].subLayers);
+          }
+          if (layers_list[i].hasOwnProperty('companion_layers') && layers_list[i].companion_layers.length > 0) {
+            current_layers = getAllLayers(current_layers, layers_list[i].companion_layers);
+          }
         }
-        if (layers_list[i].hasOwnProperty('companion_layers') && layers_list[i].companion_layers.length > 0) {
-          current_layers = getAllLayers(current_layers, layers_list[i].companion_layers);
-        }
+
+      } catch (e) {
+        console.log(e);
+        console.log('layers_list length: ' + layers_list.length);
+        console.log('index: ' + i);
+        console.log('layers_list[i]: ' + layers_list[i]);
       }
+
     }
     return current_layers;
   }
 
   // $.getJSON("/data_manager/api/layers/", function(data) {
-  $.getJSON("/data_manager/get_json", function(data) {  
+  $.getJSON("/data_manager/get_json", function(data) {
     if (data.hasOwnProperty('layers')) {
       // data = data.layers;
       data = getAllLayers({}, data.layers);
