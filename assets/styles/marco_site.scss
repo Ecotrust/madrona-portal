@@ -102,9 +102,14 @@ p + p {
     margin-top: 1em;
 }
 
+div.embedded-media .thumbnail {
+  min-width: 55%;
+}
+
 .caption {
     font-size: 14px;
     color: $medium-gray;
+    max-width: fit-content;
 }
 
 .description .rich-text, .description .rich-text p {
@@ -117,4 +122,3 @@ p + p {
 /* todo: add an assets/styles static directory to all of the sub projects */
 @import "accounts/accounts.scss";
 @import "marine_planner.scss";
-
