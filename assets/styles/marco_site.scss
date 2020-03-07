@@ -109,6 +109,7 @@ div.embedded-media .thumbnail {
 .caption {
     font-size: 14px;
     color: $medium-gray;
+    max-width: 345px;
     max-width: fit-content;
 }
 
