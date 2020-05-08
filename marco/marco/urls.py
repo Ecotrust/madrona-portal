@@ -83,6 +83,9 @@ urlpatterns += [
     re_path(r'', include(wagtail_urls)),
 ]
 
+if hasattr(settings, 'HANDLER_404'):
+    handler404 = settings.HANDLER_404
+
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
