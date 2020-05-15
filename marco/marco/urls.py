@@ -1,69 +1,92 @@
 import os
 
-from django.conf.urls import patterns, include, url
+# from django.conf.urls import patterns, include, url
+from django.urls import re_path, include, path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 
 from django.views.generic.base import RedirectView, TemplateView
 
-from wagtail.wagtailadmin import urls as wagtailadmin_urls
-from wagtail.wagtailsearch import urls as wagtailsearch_urls
-from wagtail.wagtaildocs import urls as wagtaildocs_urls
-from wagtail.wagtailcore import urls as wagtail_urls
-from wagtail.contrib.wagtailsitemaps.views import sitemap
-from wagtail.wagtailimages import urls as wagtailimages_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.search import urls as wagtailsearch_urls
+from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.contrib.sitemaps.views import sitemap
+from wagtail.images import urls as wagtailimages_urls
+from wagtailimportexport import urls as wagtailimportexport_urls
 
 import mapgroups.urls
 import accounts.urls
 import explore.urls
 
+from rpc4django.views import serve_rpc_request
+from social.apps import django_app
+from portal.base import views as base_views
+from portal.data_catalog import views as data_catalog_views
+from marco_site import views as marco_site_views
+
 admin.autodiscover()
 
 
 # Register search signal handlers
-from wagtail.wagtailsearch.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
+from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 wagtailsearch_register_signal_handlers()
 
+try:
+    from importlib import import_module
+    portal_app_urls = import_module(settings.PROJECT_APP + '.urls')
+    urlpatterns = portal_app_urls.urlpatterns
+except Exception as e:
+    urlpatterns = []
 
-urlpatterns = patterns('',
-    url('^sitemap\.xml$', sitemap),
 
-    url(r'^django-admin/', include(admin.site.urls)),
+urlpatterns += [
+    #'',
+    re_path(r'^sitemap\.xml$', sitemap),
 
-    url(r'^rpc$', 'rpc4django.views.serve_rpc_request'),
+    path('django-admin/', admin.site.urls),
+
+    re_path(r'^rpc$', serve_rpc_request),
 
     # https://github.com/omab/python-social-auth/issues/399
     # I want the psa urls to be inside the account urls, but PSA doesn't allow
     # nested namespaces. It will likely be fixed in 0.22
-    url('^account/auth/', include('social_django.urls', namespace='social')),
-    url(r'^account/', include(accounts.urls.urls(namespace='account'))),
-    url(r'^collaborate/groups/', include(mapgroups.urls.urls(namespace='groups'))),
-    url(r'^groups/', include(mapgroups.urls.urls(namespace='groups'))),
-    url(r'^g/', RedirectView.as_view(url='/groups/')), # 301
 
-    url(r'^admin/', include(wagtailadmin_urls)),
-    url(r'^search/', 'portal.base.views.search'),
-    url(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^account/auth/', include('social.apps.django_app.urls'), name='social'),
+    # url('^account/auth/', include('social_django.urls', namespace='social')),
+    re_path(r'^account/', include('accounts.urls'), name='account'),
+    re_path(r'^collaborate/groups/', include('mapgroups.urls'), name='groups'),
+    re_path(r'^groups/', include('mapgroups.urls'), name='groups'),
+    re_path(r'^g/', RedirectView.as_view(url='/groups/')), # 301
+
+    re_path(r'^admin/', include(wagtailadmin_urls)),
+    re_path(r'^search/', base_views.search),
+    re_path(r'^documents/', include(wagtaildocs_urls)),
 
     # url(r'^data-catalog/', include('portal.data_catalog.urls')),
-    url(r'^data-catalog/([A-Za-z0-9_-]+)/$', 'portal.data_catalog.views.theme'),
-    url(r'^data-catalog/[A-Za-z0-9_-]*/', include('explore.urls')),
-    url(r'^data_manager/', include('data_manager.urls')),
-    url(r'^styleguide/$', 'marco_site.views.styleguide', name='styleguide'),
-    url(r'^planner/', include('visualize.urls')),
-    url(r'^embed/', include('visualize.urls')),
-    url(r'^visualize/', include('visualize.urls')),
-    url(r'^features/', include('features.urls')),
-    url(r'^scenario/', include('scenarios.urls')),
-    url(r'^drawing/', include('drawing.urls')),
-    url(r'^proxy/', include('mp_proxy.urls')),
+    re_path(r'^data-catalog/([A-Za-z0-9_-]+)/$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
+    re_path(r'^data-catalog/[A-Za-z0-9_-]*/', include('explore.urls')),
+    re_path(r'^data_manager/', include('data_manager.urls')),
+    re_path(r'^styleguide/$', marco_site_views.styleguide, name='styleguide'),
+    re_path(r'^planner/', include('visualize.urls')),
+    re_path(r'^embed/', include('visualize.urls')),
+    re_path(r'^visualize/', include('visualize.urls')),
+    re_path(r'^features/', include('features.urls')),
+    re_path(r'^scenario/', include('scenarios.urls')),
+    re_path(r'^drawing/', include('drawing.urls')),
+    re_path(r'^proxy/', include('mp_proxy.urls')),
 
-    url(r'^join/', RedirectView.as_view(url='/account/register/')),
+    re_path(r'^join/', RedirectView.as_view(url='/account/register/')),
 
-    url(r'^images/', include(wagtailimages_urls)),
-    url(r'', include(wagtail_urls)),
-)
+    re_path(r'^images/', include(wagtailimages_urls)),
+    re_path(r'', include(wagtail_urls)),
+    re_path(r'', include(wagtailimportexport_urls)),
+    re_path(r'', include(wagtail_urls)),
+]
+
+if hasattr(settings, 'HANDLER_404'):
+    handler404 = settings.HANDLER_404
 
 
 if settings.DEBUG:

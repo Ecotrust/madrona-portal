@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='oceanstory',
             name='display_home_page',
-            field=models.BooleanField(default=True, help_text=b'Check to display this ocean story on the home page'),
+            field=models.BooleanField(default=True, help_text='Check to display this ocean story on the home page'),
             preserve_default=True,
         ),
     ]

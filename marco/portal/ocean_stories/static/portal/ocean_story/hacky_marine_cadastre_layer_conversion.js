@@ -1,6 +1,7 @@
-var _ = require('lodash');
+// var _ = require('lodash');
 
-module.exports = function(l) {
+// module.exports = function(l) {
+hackyMarineCadastreLayerConversion = function(l) {
   l.layer_type = "Cadastre";
   l.url = l.url.replace(
     /^(http:\/\/coast.noaa.gov\/arcgis)\/rest\/(services\/MarineCadastre\/[^/]+\/MapServer)\/export$/,

@@ -1,4 +1,8 @@
-from itertools import izip_longest
+try:
+    from itertools import zip_longest
+except Exception as e:
+    # Py2 compatibility
+    from itertools import izip_longest as zip_longest
 import json
 from data_manager.models import Layer
 
@@ -10,13 +14,14 @@ except ImportError:
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from wagtail.wagtailcore.models import Orderable
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel
+from wagtail.core.models import Orderable
+from wagtail.core.fields import StreamField
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
 from modelcluster.fields import ParentalKey
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem
+from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -24,12 +29,19 @@ def grouper(iterable, n, fillvalue=None):
     """
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
     args = [iter(iterable)] * n
-    return izip_longest(fillvalue=fillvalue, *args)
+    return zip_longest(fillvalue=fillvalue, *args)
 
 # The abstract model for ocean story sections, complete with panels
 class OceanStorySectionBase(MediaItem):
     title = models.CharField(max_length=255, blank=True)
-    body = RichTextField(blank=True)
+    body = StreamField(
+        [
+            ('rich_text', RichTextBlock()),
+            ('raw_html', RawHTMLBlock()),
+        ],
+        null=True,
+        blank=True
+    )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "
        "display the map's legend to the right of the the section text."))
@@ -37,7 +49,7 @@ class OceanStorySectionBase(MediaItem):
     panels = [
         FieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
-        FieldPanel('body', classname="full"),
+        StreamFieldPanel('body'),
         FieldPanel('map_state'),
         FieldPanel('map_legend'),
     ]
@@ -142,6 +154,29 @@ class OceanStory(DetailPageBase):
         index.SearchField('hook'),
         index.SearchField('get_sections_search_text'),
     )
+
+    def get_context(self, request):
+        from django.conf import settings
+        import importlib
+        context = super(OceanStory, self).get_context(request)
+        if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:
+            # Use mp-visualize code and set map library
+            context['MAP_LIBRARY'] = settings.MAP_LIBRARY
+            if hasattr(settings, 'PROJECT_REGION'):
+                context['REGION'] = settings.PROJECT_REGION
+            else:
+                context['REGION'] = {
+                    'name': 'Mid Atlantic',
+                    'init_zoom': 7,
+                    'init_lat': 39,
+                    'init_lon': -74,
+                    'srid': 4326,
+                    'map': 'ocean'
+                }
+        else:
+            # use old hard-coded pre-OL3 code.
+            context['MAP_LIBRARY'] = False
+        return context
 
     def as_json(self):
         # try:

@@ -2,14 +2,16 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.wagtailcore.fields
+import wagtail.core.fields
 import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0003_auto_20150122_2130'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0003_auto_20150122_2130'),
         ('home', '0003_homepagecarousel'),
     ]
 
@@ -17,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='description',
-            field=wagtail.wagtailcore.fields.RichTextField(null=True, blank=True),
+            field=wagtail.core.fields.RichTextField(null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AddField(

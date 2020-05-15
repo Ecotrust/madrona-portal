@@ -8,7 +8,9 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0003_auto_20150122_2130'),
+        # RDH I'm restarting the base migrations due to incompatibility with django/wagtail upgrade
+        ('base', '__first__'),
+        # ('base', '0003_auto_20150122_2130'),
         ('ocean_stories', '0006_auto_20150121_2319'),
     ]
 
@@ -22,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='oceanstorysection',
             name='media_embed_url',
-            field=models.URLField(verbose_name=b'Embed URL', blank=True),
+            field=models.URLField(verbose_name='Embed URL', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -34,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='oceanstorysection',
             name='media_position',
-            field=models.CharField(default=b'left', max_length=8, choices=[(b'left', b'left'), (b'right', b'right'), (b'full', b'full')]),
+            field=models.CharField(default='left', max_length=8, choices=[('left', 'left'), ('right', 'right'), ('full', 'full')]),
             preserve_default=True,
         ),
     ]

@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='menu',
             name='is_user_menu',
-            field=models.BooleanField(default=False, help_text=b'If this menu is the User Menu, check this box.'),
+            field=models.BooleanField(default=False, help_text='If this menu is the User Menu, check this box.'),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='menuentry',
             name='display_options',
-            field=models.CharField(default=b'A', max_length=1, choices=[(b'A', b'Always display'), (b'I', b'Display only to logged-in users'), (b'O', b'Display only to anonymous users'), (b'S', b'Display only to staff and administrators')]),
+            field=models.CharField(default='A', max_length=1, choices=[('A', 'Always display'), ('I', 'Display only to logged-in users'), ('O', 'Display only to anonymous users'), ('S', 'Display only to staff and administrators')]),
             preserve_default=True,
         ),
     ]

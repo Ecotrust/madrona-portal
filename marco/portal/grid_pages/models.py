@@ -1,11 +1,11 @@
 from django.db import models
 from modelcluster.fields import ParentalKey
 
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel, \
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, \
     MultiFieldPanel
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailcore.models import Orderable
-from wagtail.wagtailsearch import index
+from wagtail.core.fields import RichTextField
+from wagtail.core.models import Orderable
+from wagtail.search import index
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem
 

@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='menu',
             name='active',
-            field=models.BooleanField(default=False, help_text=b'To display this menu, check this box. '),
+            field=models.BooleanField(default=False, help_text='To display this menu, check this box. '),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='menu',
             name='footer',
-            field=models.BooleanField(default=False, help_text=b'Select to display this menu in the footer rather than in the nav bar. (Only the first three menus will display.)'),
+            field=models.BooleanField(default=False, help_text='Select to display this menu in the footer rather than in the nav bar. (Only the first three menus will display.)'),
             preserve_default=True,
         ),
     ]

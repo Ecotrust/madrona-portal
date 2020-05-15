@@ -1,0 +1,78 @@
+{% load wagtailcore_tags static %}
+<script src="{% static 'jquery/dist/jquery.js' %}"></script>
+{% if self.sections %}
+    {% for section in self.sections.all %}
+        <a style="clear:right" class="anchor" id="section-{{forloop.counter}}"></a>
+        {% if section.map_legend %}
+        <section class="has-legend">
+            <div class="legend-well
+                {# if there's a section title, move the legend in line with the top of the body text #}
+                {% if not section.title %}no-headline{% endif %}">
+                <div class="well">
+                  <p style="text-align: center">
+                    <a target="_blank" href="{{ section.parsed_map_state.url }}" title="View data layers in Marine Planner"><span class="icon icon-marco"></span></a> <strong class="deep-blue">Legend</strong>
+                  </p>
+                  {% for legend in section.parsed_map_state.dataLayers.values %}
+                    {% if legend.legend %}
+                      <p class="font-condensed">
+                        {{ legend.name }}
+                        <br>
+                        {% if legend.legend_source == 'url' %}
+                        <span class='layer_{{ legend.id }}_legend'>Loading...</span>
+                        <script>
+                          $.ajax({
+                            url: "{{ legend.legend }}/legend?f=json",
+                          }).done(function(data) {
+                            if ( typeof(data) == "object") {
+                              legend_json = data;
+                            } else if (typeof(data) == "string") {
+                              legend_json = JSON.parse(data);
+                            } else {
+                              // punt
+                              legend_json = data;
+                            }
+                            name = "{{ legend.name }}";
+                            layers = "{{ legend.arcgis_layers }}".split(',');
+                            id = "{{ legend.id }}";
+                            url = "{{ legend.legend }}";
+                            html = '';
+                            for (var i = 0; i < layers.length; i++){
+                              layer_id = layers[i];
+                              layer = {};
+                              for (var j = 0; j < legend_json.layers.length; j++) {
+                                if (legend_json.layers[j].layerId == layer_id){
+                                  layer = legend_json.layers[j];
+                                  break;
+                                }
+                              }
+                              html += "<table><tbody>";
+                              for (var k = 0; k < layer.legend.length; k++) {
+                                entry = layer.legend[k];
+                                html += "<tr valign='middle'>";
+                                html += "<td><img src=\"" + url + "/" + layer_id + "/images/" + entry.url + "\"></td>";
+                                html += "<td>" + entry.label + "<td>";
+                                html += "</tr>";
+                              }
+                              html += "</tbody></table>";
+                            }
+                            $('.layer_' + id + '_legend').html(html);
+                          });
+                        </script>
+                        {% else %}
+                        <img src="{{ legend.legend }}">
+                        {% endif %}
+                      </p>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+            </div>
+        {% else %}
+        <section class="no-legend">
+        {% endif %}
+            <div class="section-body">
+                <h2>{{ section.title }}</h2>
+                {% include "portal/components/ocean_story_media_item.html" with item=section only %}
+            </div>
+        </section>
+    {% endfor %}
+{% endif %}

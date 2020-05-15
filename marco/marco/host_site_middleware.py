@@ -1,5 +1,5 @@
 from django.conf import settings
-class HostSiteMiddleware:
+class HostSiteMiddleware(object):
     """Middleware to dynamically switch settings.SITE_ID based on the HTTP_HOST
     header used in the request.
 
@@ -14,6 +14,12 @@ class HostSiteMiddleware:
     Among other things, this is not a general solution for multitenancy in
     django. It may also not be compatible with future versions of django.
     """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+        
     def process_request(self, request):
         name = request.META.get('HTTP_HOST')
         name = name.split(":")[0] # strip off the port number, if present
@@ -23,4 +29,3 @@ class HostSiteMiddleware:
             settings.SITE_ID = s.id
         except Site.DoesNotExist:
             pass
-

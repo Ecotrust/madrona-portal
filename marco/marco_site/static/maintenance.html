@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+{% load static %}
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,9 @@
 
 
 
-  <link rel="shortcut icon" href="/static/favicon.ico?v=1" />
-  <link rel="stylesheet" href="/static/css/marco_site.css" />
-  <link rel="stylesheet" href="/static/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="shortcut icon" href="{% static 'favicon.ico?v=1' %}" />
+  <link rel="stylesheet" href="{% static 'css/marco_site.css' %}" />
+  <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
 </head>
 <body class="page-styleguide base-layout">
   <div class="container">

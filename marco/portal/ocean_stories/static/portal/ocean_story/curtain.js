@@ -55,4 +55,4 @@ var bindCurtain = function(elements, isCollapsed) {
 
 }
 
-module.exports = bindCurtain;
+curtain = bindCurtain;

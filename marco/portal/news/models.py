@@ -3,16 +3,18 @@ from datetime import date
 from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailcore.models import Page, Orderable
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.core.fields import RichTextField
+from wagtail.core.models import Page, Orderable
+from wagtail.images.edit_handlers import ImageChooserPanel
 
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel, \
+from wagtail.search import index
+from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
     InlinePanel
 
 from portal.base.models import MediaItem
 from portal.base.models import PageBase, DetailPageBase
+
+from portal.base.models import PortalImage
 
 class StorySection(Orderable, MediaItem):
     page = ParentalKey('Story', related_name='story_sections')
@@ -41,7 +43,7 @@ class Story(Page):
         "stories, as well as below the headline and above any section content "
         "in the story page."))
     feature_image = models.ForeignKey(
-        'base.PortalImage',
+        PortalImage,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -50,7 +52,7 @@ class Story(Page):
     )
 
     search_fields = (
-        index.FilterField('date'),
+        index.FilterField('latest_revision_created_at'),
         index.SearchField('title'),
         index.SearchField('description'),
     )

@@ -1,0 +1,400 @@
+div.curtain-container {
+    /* margin-bottom: -$navbar-height; */
+    margin-bottom: -50px;
+}
+
+.curtain {
+  position: fixed;
+  width: 100%;
+  /* background: $gray-dark; */
+  background: #84837d;
+  overflow: hidden;
+  z-index: 800;
+  /* @include box-shadow(0 0px 20px $gray); */
+  @include box-shadow(0 0px 20px #b1b3b5);
+}
+
+.overlay {
+  z-index: 900;
+  background: transparent;
+  pointer-events: none;
+}
+
+.curtain.overlay { // view data button
+    z-index: 901;
+}
+
+.clickable {
+  pointer-events: auto;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+
+    @include translate(0, -50%);
+}
+
+
+.ocean-story-page #ocean-story-map {
+  cursor: inherit;
+  position: relative;
+  top: 50%;
+  width: 100%;
+  -webkit-transform: translate(0, -50%);
+  -ms-transform: translate(0, -50%);
+  -o-transform: translate(0, -50%);
+  transform: translate(0, -50%);
+}
+
+.ocean-story-page #map.full {
+  height: calc(100vh - 50px);
+}
+
+.ocean-story-page #map.half {
+    height: 40vh;
+}
+
+  /* #map {
+    &.full {
+      height: calc(100vh - #{$navbar-height});
+      height: calc(100vh - 50px);
+    }
+    &.half {
+      height: 40vh;
+    }
+    cursor: inherit;
+    position: relative;
+    top: 50%;
+    width: 100%;
+
+        @include translate(0, -50%);
+    }
+  */
+.ocean-story-page {
+  @extend .navbar-transparent;
+
+  .view-data {
+    @extend .clickable;
+    z-index: 900;
+    position: absolute;
+    @extend .font-medium;
+    font-size: 13px;
+    right: 8px;
+    bottom: 8px;
+    .icon {
+      /* color: $brand-success; */
+      color: #00a564;
+    }
+  }
+
+  .intro {
+    width: 100%;
+    text-shadow:0px 0px .1em black;
+    /* height: calc(100vh - #{$navbar-height}); */
+    height: calc(100vh - 50px);
+    position: relative;
+    .ocean-story-n {
+      font-family: "Roboto Condensed";
+      font-size: 16pt;
+      text-transform: uppercase;
+      margin-bottom: 0.5em;
+
+      > span {
+        /* border-bottom: 4px solid $brand-warning; */
+        border-bottom: 4px solid #eab13a;
+      }
+    }
+    .hook {
+      font-size: 51pt;
+      line-height: 61pt;
+      font-weight: 600;
+    }
+    .center {
+      background-color: rgba(46,46,46,0.5);
+      text-align: center;
+      color: white;
+      text-shadow: 0px 0px 8px #666;
+      padding: 6em;
+    }
+    a.next-page, a.previous-page {
+      @extend .clickable;
+      background: rgba(white, .5);
+      color: white;
+      font-size: 2.5em;
+      padding: 15px;
+      position: absolute;
+      top: 50%;
+
+        @include translate(0, -50%);
+    }
+    a.next-page {
+      right: 0;
+    }
+    a.previous-page {
+      left: 0;
+    }
+  }
+
+  .learn-more {
+    display: block;
+    font-size: 1.25em;
+    /* height: $navbar-height; */
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    /*font-style: italic;*/
+    font-weight: bold;
+    margin-top: 0px;
+    // z-index: 90;
+
+    &:before {
+        background: rgba(#e7e7e8, 1);
+        bottom: 0;
+        content: '';
+        position: absolute;
+        left: 50%;
+        height: 140%;
+        transform: translate(-50%,0);
+        width: 16rem;
+        z-index: -1;
+    }
+  }
+
+  a.anchor {
+    display: block;
+    position: relative;
+    top: -40vh;
+    visibility: hidden;
+  }
+
+  &.section-layout {
+
+      .page-header {
+        margin: 0 auto;
+        text-align: center;
+        width: 100%;
+
+        .title-line {
+            margin: 10rem 0 4rem;
+        }
+
+        h1 {
+            /* color: $brand-primary; */
+            color: #22408f;
+            width: 100%;
+        }
+
+        .description {
+            margin: 0 auto;
+            position: relative;
+            width: 66%;
+
+            &:after {
+                /* background: $dark-gray; */
+                background: #58585b;
+                bottom: -4rem;
+                content: '';
+                left: 30%;
+                height: 1px;
+                position: absolute;
+                width: 40%;
+            }
+
+            .rich-text {
+                p {
+                    color: black;
+                    font-weight: normal;
+                    margin-bottom: 4rem;
+                }
+            }
+        }
+    }
+  }
+
+  .content {
+    section {
+      // .text-block returns a width a 75% as the only style
+      // WHYYYY??? not sure why this is set to be 75% width so commenting out for now
+      // @extend .text-block;
+      margin: 1rem auto 2rem;
+      width: 84%;
+
+      &.no-legend {
+          .section-body {
+              width: 100%;
+          }
+      }
+
+      &.has-legend {
+          .section-body {
+              width: 75%;
+          }
+      }
+    }
+
+    .section-body {
+        h2 {
+            margin: 6rem 0 2rem;
+        }
+
+        .rich-text {
+            font-size: 1.1875em;
+            line-height: 1.6375;
+        }
+    }
+
+    .story-media-left,
+    .story-media-right {
+        // width: 30%;
+        img {
+            max-width: 100%;
+        }
+    }
+
+    .story-media-left {
+        padding: 8px 20px 10px 0;
+        float: left;
+    }
+    .story-media-right {
+        padding: 8px 0 10px 20px;
+        float: right;
+    }
+
+    .media-full {
+        img {
+            max-width: 100%;
+        }
+    }
+  }
+
+  a.anchor.active + * {
+    > h2 {
+      /*color: $brand-success;*/
+    }
+  }
+
+  a.animate {
+    -webkit-animation: bounce 3s 3s ease-out;
+    -moz-animation: bounce 3s 3s ease-out;
+    -o-animation: bounce 3s 3s ease-out;
+    animation: bounce 3s 3s ease-out;
+  }
+
+  .footer-nav {
+    margin-top: 10em;
+    .nav-text {
+      color: black;
+    }
+    .btn {
+      font-weight: bold;
+    }
+  }
+}
+
+@-webkit-keyframes bounce {
+  0% {
+  -webkit-transform:translateY(0);
+    opacity: 1;
+  }
+  33% {
+    -webkit-transform:translateY(-25%);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+  66% {
+  -webkit-transform:translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform:translateY(0);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+}
+
+/* Mozilla Firefox 15 below */
+@-moz-keyframes bounce {
+  0% {
+  -moz-transform:translateY(0);
+    opacity: 1;
+  }
+  33% {
+    -moz-transform:translateY(-25%);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+  66% {
+  -moz-transform:translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    -moz-transform:translateY(0);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+}
+
+/* Opera 12.0 */
+@-o-keyframes bounce {
+  0% {
+  -o-transform:translateY(0);
+    opacity: 1;
+  }
+  33% {
+    -o-transform:translateY(-25%);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+  66% {
+  -o-transform:translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    -o-transform:translateY(0);
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+}
+
+/* W3, Opera 12+, Firefox 16+ */
+@keyframes bounce {
+0% {
+transform:translateY(0);
+  opacity: 1;
+}
+33% {
+  transform:translateY(-25%);
+  padding-bottom: 12px;
+  opacity: 1;
+}
+66% {
+transform:translateY(35%);
+  opacity: 1;
+}
+100% {
+  transform:translateY(0);
+  padding-bottom: 12px;
+  opacity: 1;
+}
+}
+
+.legend-well {
+    float: right;
+    width: 200px;
+    margin-top: 84px;
+}
+
+.legend-well.no-headline {
+    margin-top: 18px;
+}
+
+.legend-well > .well {
+    text-align:left;
+    background-color: white;
+    overflow-y: auto;
+    max-height: 400px;
+}

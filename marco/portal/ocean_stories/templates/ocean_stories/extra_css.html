@@ -1,0 +1,12 @@
+{% load wagtailcore_tags static %}
+{% if MAP_LIBRARY %}
+  {% if MAP_LIBRARY == 'ol5' %}
+    <!-- <link rel="stylesheet" href="{% static 'visualize/css/ol5.css' %}" /> -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'portal/ocean_story/css/ocean_story.css' %}" type="text/css">
+  {% endif %} <!-- OL5 -->
+
+{% else %}
+  <link rel="stylesheet" href="{% static 'ol3-unofficial/ol.css' %}" />
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.4/ol.css" /> -->
+{% endif %} <!-- MAP_LIBRARY -->

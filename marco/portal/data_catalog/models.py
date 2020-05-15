@@ -1,4 +1,4 @@
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 from portal.base.models import PageBase
 from .views import theme_query
