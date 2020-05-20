@@ -18,7 +18,7 @@ django-flatblocks==0.9.4
 django-import-export==0.7.0
 django-libsass==0.8
 django-modelcluster==1.1
-django-nested-admin==3.3.0
+django-nested-admin==3.0.21
 django-picklefield==0.3.2
 django-proxy==1.2.1
 django-recaptcha<2.0
@@ -48,12 +48,12 @@ libsass==0.20.0
 -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@405f83d8da2c4eee8cf11aef7790e7e1da8c2d7c#egg=madrona_scenarios
 # -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@35de687173028b8c8b9c75512059cb7357d357c3#egg=mapgroups
 MarkupPy==1.14
-# -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@fcaf2acb35f90d715fb9228c5a678fe996739833#egg=mp_accounts
+-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@fcaf2acb35f90d715fb9228c5a678fe996739833#egg=mp_accounts
 # -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@66f5ff702e8cd8844ed2b29cea4e55b71191a31c#egg=mp_data_manager
-# -e git+https://github.com/MidAtlanticPortal/mp-drawing.git@407ff8a1bc42e4239160cd7dfa567baf5de31044#egg=mp_drawing
+-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@407ff8a1bc42e4239160cd7dfa567baf5de31044#egg=mp_drawing
 # -e git+https://github.com/MidAtlanticPortal/mp-explore.git@7a30f473b59b8aff3289adfdb5683ed2f7abfa2c#egg=mp_explore
 # -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@787973d1736987d0beb4a0a9021ee82e74fca791#egg=mp_proxy
-# -e git+https://github.com/MidAtlanticPortal/mp-visualize.git@4777495f3f01e508b98900a6a0f3a20aae955678#egg=mp_visualize
+-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@4777495f3f01e508b98900a6a0f3a20aae955678#egg=mp_visualize
 
 -e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@ce88216d17866d044ce540d8d8f3e3d9b937bc4e#egg=madrona_analysistools
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@031069b337bc27f30d2e7d4126409590ad22d2df#egg=madrona_features
@@ -62,15 +62,15 @@ MarkupPy==1.14
 #-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@bdd08ec98d9f2de38388d78cba25dc2b173b635c#egg=madrona_scenarios
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@857747b3302680633fea23bb1d9e0bcf7af1021a#egg=mapgroups
 # Markdown==3.1.1
--e git+https://github.com/MidAtlanticPortal/mp-accounts.git@559de770d6b58ba2520af971f3581e96372932f2#egg=mp_accounts
+# -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@559de770d6b58ba2520af971f3581e96372932f2#egg=mp_accounts
 -e git+https://github.com/MidAtlanticPortal/mp-clipping.git@66f9b6a51ffb4f089160faf29485403839499af4#egg=mp_clipping
 # -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@ddec59255d6f48d528153643b468d0f9e50b4f4c#egg=mp_data_manager
 -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@e8925956338d6ad2a9338db977480d85d8d454c8#egg=mp_data_manager
--e git+https://github.com/MidAtlanticPortal/mp-drawing.git@0d29e5551a138d43666ecc24f55d14a0298328a7#egg=mp_drawing
+# -e git+https://github.com/MidAtlanticPortal/mp-drawing.git@0d29e5551a138d43666ecc24f55d14a0298328a7#egg=mp_drawing
 -e git+https://github.com/MidAtlanticPortal/mp-explore.git@0428b8fbc8fce3365916b435200770aadea8628f#egg=mp_explore
 # -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@882982d1022009f9302eb7924372c9b718cba88a#egg=mp_proxy
 -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@2100141b425c5e10ac9093232032e0142e103d53#egg=mp_proxy
--e git+https://github.com/MidAtlanticPortal/mp-visualize.git@5a11139f9104e7771ed2532e13c2f69dfb29d2b3#egg=mp_visualize
+# -e git+https://github.com/MidAtlanticPortal/mp-visualize.git@5a11139f9104e7771ed2532e13c2f69dfb29d2b3#egg=mp_visualize
 
 numpy==1.18.4
 oauthlib==3.1.0
