@@ -45,7 +45,7 @@ libsass==0.20.0
 # -e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@ea93e540aaaf960f554bc18fb5581c7a6ae8b414#egg=madrona_analysistools
 # -e git+https://github.com/MidAtlanticPortal/madrona-features.git@cf37dbaa07c90f32e3c8d7b7a348b579847102d6#egg=madrona_features
 # -e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@3d0688b4402cdf2e5efaadf83e94431e2ed52563#egg=madrona_manipulators
-# -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@405f83d8da2c4eee8cf11aef7790e7e1da8c2d7c#egg=madrona_scenarios
+-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@405f83d8da2c4eee8cf11aef7790e7e1da8c2d7c#egg=madrona_scenarios
 # -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@35de687173028b8c8b9c75512059cb7357d357c3#egg=mapgroups
 MarkupPy==1.14
 # -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@fcaf2acb35f90d715fb9228c5a678fe996739833#egg=mp_accounts
@@ -59,13 +59,13 @@ MarkupPy==1.14
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@031069b337bc27f30d2e7d4126409590ad22d2df#egg=madrona_features
 -e git+https://github.com/MidAtlanticPortal/madrona-forms.git@be8162814452f257eac0ae4608bd782aa35ae0b6#egg=madrona_forms
 -e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@1b2083a77f2f87db98431dd7762f8d64222bfd7f#egg=madrona_manipulators
--e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@bdd08ec98d9f2de38388d78cba25dc2b173b635c#egg=madrona_scenarios
+#-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@bdd08ec98d9f2de38388d78cba25dc2b173b635c#egg=madrona_scenarios
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@857747b3302680633fea23bb1d9e0bcf7af1021a#egg=mapgroups
 # Markdown==3.1.1
 -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@559de770d6b58ba2520af971f3581e96372932f2#egg=mp_accounts
 -e git+https://github.com/MidAtlanticPortal/mp-clipping.git@66f9b6a51ffb4f089160faf29485403839499af4#egg=mp_clipping
 # -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@ddec59255d6f48d528153643b468d0f9e50b4f4c#egg=mp_data_manager
--e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@b2cae81d27cac70e39fe52ca8793e5d761bcd4e0#egg=mp_data_manager
+-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@e8925956338d6ad2a9338db977480d85d8d454c8#egg=mp_data_manager
 -e git+https://github.com/MidAtlanticPortal/mp-drawing.git@0d29e5551a138d43666ecc24f55d14a0298328a7#egg=mp_drawing
 -e git+https://github.com/MidAtlanticPortal/mp-explore.git@0428b8fbc8fce3365916b435200770aadea8628f#egg=mp_explore
 # -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@882982d1022009f9302eb7924372c9b718cba88a#egg=mp_proxy
