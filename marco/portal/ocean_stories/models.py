@@ -1,3 +1,4 @@
+from django.conf import settings
 try:
     from itertools import zip_longest
 except Exception as e:
@@ -13,15 +14,21 @@ except ImportError:
 
 from django.db import models
 from django.core.exceptions import ValidationError
-
-from wagtail.core.models import Orderable
-from wagtail.core.fields import StreamField
-from wagtail.search import index
-from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
 from modelcluster.fields import ParentalKey
-
 from portal.base.models import PageBase, DetailPageBase, MediaItem
-from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+else:
+    from wagtail.wagtailcore.models import Orderable
+    from wagtail.wagtailcore.fields import StreamField
+    from wagtail.wagtailsearch import index
+    from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.wagtailcore.blocks import RichTextBlock, RawHTMLBlock
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -156,7 +163,6 @@ class OceanStory(DetailPageBase):
     )
 
     def get_context(self, request):
-        from django.conf import settings
         import importlib
         context = super(OceanStory, self).get_context(request)
         if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:

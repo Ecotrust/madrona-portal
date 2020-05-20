@@ -4,9 +4,12 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import taggit.managers
-import wagtail.core.models
-import wagtail.images.models
-import wagtail.search.index
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.images.models as wagtail_image_models
+    import wagtail.search.index as wagtail_search_index
+else:
+    import wagtail.wagtailimages.models as wagtail_image_models
+    import wagtail.wagtailsearch.index as wagtail_search_index
 
 
 class Migration(migrations.Migration):
@@ -24,7 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255, verbose_name='title')),
-                ('file', models.ImageField(height_field='height', upload_to=wagtail.images.models.get_upload_to, verbose_name='file', width_field='width')),
+                ('file', models.ImageField(height_field='height', upload_to=wagtail_image_models.get_upload_to, verbose_name='file', width_field='width')),
                 ('width', models.IntegerField(editable=False, verbose_name='width')),
                 ('height', models.IntegerField(editable=False, verbose_name='height')),
                 ('created_at', models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='created at')),
@@ -42,14 +45,14 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(wagtail.search.index.Indexed, models.Model),
+            bases=(wagtail_search_index.Indexed, models.Model),
         ),
         migrations.CreateModel(
             name='PortalRendition',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('filter_spec', models.CharField(db_index=True, max_length=255)),
-                ('file', models.ImageField(height_field='height', upload_to=wagtail.images.models.get_rendition_upload_to, width_field='width')),
+                ('file', models.ImageField(height_field='height', upload_to=wagtail_image_models.get_rendition_upload_to, width_field='width')),
                 ('width', models.IntegerField(editable=False)),
                 ('height', models.IntegerField(editable=False)),
                 ('focal_point_key', models.CharField(blank=True, default='', editable=False, max_length=16)),
