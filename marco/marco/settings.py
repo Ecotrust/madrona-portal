@@ -57,8 +57,50 @@ LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
 # Application definition
+try:
+    # Thanks to tgandor for this inspiration to handle two different wagtail
+    #      versions conditionally while performing this terrible merge:
+    #   https://djangosnippets.org/snippets/3048/
+    __import__('wagtail.contrib.forms')
+    # Wagtail v2
+    WAGTAIL_VERSION = 2
+    INSTALLED_APPS = [
+        'wagtail.contrib.forms',
+        'wagtail.contrib.redirects',
+        'wagtail.embeds',
+        'wagtail.sites',
+        'wagtail.users',
+        'wagtail.snippets',
+        'wagtail.documents',
+        'wagtail.images',
+        'wagtail.search',
+        'wagtail.admin',
+        'wagtail.core',
+        'wagtail.contrib.styleguide',
+        'wagtail.contrib.sitemaps',
 
-INSTALLED_APPS = [
+        'django_redis',
+    ]
+except ImportError as e:
+    print(e)
+    # Wagtail v1 for merging in old MidA Portal
+    WAGTAIL_VERSION = 1
+    INSTALLED_APPS = [
+        'wagtail.wagtailcore',
+        'wagtail.wagtailadmin',
+        'wagtail.wagtaildocs',
+        'wagtail.wagtailsnippets',
+        'wagtail.wagtailusers',
+        'wagtail.wagtailsites',
+        'wagtail.wagtailimages',
+        'wagtail.wagtailembeds',
+        'wagtail.wagtailsearch',
+        'wagtail.wagtailredirects',
+        'wagtail.wagtailforms',
+        'wagtail.contrib.wagtailsitemaps',
+    ]
+
+INSTALLED_APPS += [
     'marco_site',
     # 'kombu.transport.django',
 
@@ -85,21 +127,7 @@ INSTALLED_APPS = [
 
     'captcha',
     'social_django',
-    'django_redis',
-
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-    'wagtail.contrib.styleguide',
-    'wagtail.contrib.sitemaps',
+    # 'django_redis',
 
     'portal.base',
     'portal.menu',
@@ -127,11 +155,11 @@ INSTALLED_APPS = [
     'explore',
 
     # Account management
+    'social.apps.django_app.default',
     'accounts.apps.AccountsAppConfig',
     'django_social_share',
     'mapgroups',
     'import_export',
-    'social_django',
 
     # Multilayer Dimensions in Data Manager
     'nested_admin',
@@ -152,10 +180,10 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
         print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.google.GoogleOpenId',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
+    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOpenId',
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -410,47 +438,47 @@ SOCIAL_AUTH_PIPELINE = (
     # format to create the user instance later. On some cases the details are
     # already part of the auth response from the provider, but sometimes this
     # could hit a provider API.
-    'social_core.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_details',
 
     # Get the social uid from whichever service we're authing thru. The uid is
     # the unique identifier of the given user in the provider.
-    'social_core.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.social_uid',
 
     # Verifies that the current auth process is valid within the current
     # project, this is were emails and domains whitelists are applied (if
     # defined).
-    'social_core.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.auth_allowed',
 
     # Checks if the current social-account is already associated in the site.
-    'social_core.pipeline.social_auth.social_user',
+    'social.pipeline.social_auth.social_user',
 
     # Make up a username for this person, appends a random string at the end if
     # there's any collision.
-    'social_core.pipeline.user.get_username',
+    'social.pipeline.user.get_username',
 
     # Confirm with the user that they really want to make an account, also
     # make them enter an email address if they somehow didn't
     # 'accounts.pipeline.confirm_account',
 
     # Send a validation email to the user to verify its email address.
-    'social_core.pipeline.mail.mail_validation',
+    'social.pipeline.mail.mail_validation',
 
     # Associates the current social details with another user account with
     # a similar email address. Disabled by default.
-    # 'social_core.pipeline.social_auth.associate_by_email',
+    # 'social.pipeline.social_auth.associate_by_email',
 
     # Create a user account if we haven't found one yet.
-    'social_core.pipeline.user.create_user',
+    'social.pipeline.user.create_user',
 
     # Create the record that associated the social account with this user.
-    'social_core.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.associate_user',
 
     # Populate the extra_data field in the social record with the values
     # specified by settings (and the default ones like access_token, etc).
-    'social_core.pipeline.social_auth.load_extra_data',
+    'social.pipeline.social_auth.load_extra_data',
 
     # Update the user record with any changed info from the auth service.
-    'social_core.pipeline.user.user_details',
+    'social.pipeline.user.user_details',
 
     # Set up default django permission groups for new users.
     'accounts.pipeline.set_user_permissions',
@@ -458,7 +486,7 @@ SOCIAL_AUTH_PIPELINE = (
     # Grab relevant information from the social provider (avatar)
     'accounts.pipeline.get_social_details',
 
-    # 'social_core.pipeline.debug.debug',
+    # 'social.pipeline.debug.debug',
     'accounts.pipeline.clean_session',
 )
 

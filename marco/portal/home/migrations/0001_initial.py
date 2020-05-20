@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '__latest__'),
+        ('wagtailcore', '0023_alter_page_revision_on_delete_behaviour'),
     ]
 
     operations = [

@@ -34,7 +34,6 @@ class Migration(migrations.Migration):
         ('data_gaps', '0001_initial'),
         ('data_catalog', '0001_initial'),
         ('home', '0001_initial'),
-    
     ]
 
     operations = [
