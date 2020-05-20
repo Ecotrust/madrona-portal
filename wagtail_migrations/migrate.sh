@@ -22,6 +22,7 @@ sudo -u postgres psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_top
 sudo -u postgres psql ocean_portal < $infile;
 
 # Install requirements to standalone virtualenv
+sudo rm -r $ENV
 python3 -m virtualenv $ENV;
 $PIP install -r $PROJ/wagtail_migrations/requirements_wagtail_1.3.1.txt
 cp $PROJ/wagtail_migrations/libgeos_1_9.py $ENV/lib/python3.6/site-packages/django/contrib/gis/geos/libgeos.py

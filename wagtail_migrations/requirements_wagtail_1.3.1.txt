@@ -23,6 +23,7 @@ django-picklefield==0.3.2
 django-proxy==1.2.1
 django-recaptcha<2.0
 django-redis<2.0.1
+django-redis-cache==2.0.0
 django-social-share==1.4.0
 django-taggit==0.18.3
 django-tinymce==3.0.2
@@ -57,7 +58,7 @@ MarkupPy==1.14
 -e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@ce88216d17866d044ce540d8d8f3e3d9b937bc4e#egg=madrona_analysistools
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@031069b337bc27f30d2e7d4126409590ad22d2df#egg=madrona_features
 -e git+https://github.com/MidAtlanticPortal/madrona-forms.git@be8162814452f257eac0ae4608bd782aa35ae0b6#egg=madrona_forms
--e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@b3641443dea08ebcbc2ed97e306eac1f15f3f000#egg=madrona_manipulators
+-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@1b2083a77f2f87db98431dd7762f8d64222bfd7f#egg=madrona_manipulators
 -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@bdd08ec98d9f2de38388d78cba25dc2b173b635c#egg=madrona_scenarios
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@857747b3302680633fea23bb1d9e0bcf7af1021a#egg=mapgroups
 # Markdown==3.1.1

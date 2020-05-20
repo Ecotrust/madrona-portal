@@ -78,8 +78,6 @@ try:
         'wagtail.core',
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
-
-        'django_redis',
     ]
 except ImportError as e:
     print(e)
@@ -99,6 +97,14 @@ except ImportError as e:
         'wagtail.wagtailforms',
         'wagtail.contrib.wagtailsitemaps',
     ]
+
+try:
+    __import__('django_redis')
+    REDIS_PACKAGE_NAME = 'django_redis'
+    INSTALLED_APPS += ['django_redis',]
+except ImportError as e:
+    REDIS_PACKAGE_NAME = 'redis_cache'
+
 
 INSTALLED_APPS += [
     'marco_site',
@@ -250,16 +256,28 @@ SESSION_REDIS_HOST = 'localhost'
 SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 0
 
-CACHES = {
-    'default': {
-        'BACKEND': cache_cfg.get('BACKEND', 'django_redis.cache.RedisCache'),
-        'LOCATION': cache_cfg.get('LOCATION', 'redis://127.0.0.1:6379/1'),
-        'KEY_PREFIX': 'marco_portal',
-        'OPTIONS': {
-            'CLIENT_CLASS': cache_cfg.get('CLIENT_CLASS', 'django_redis.client.DefaultClient'),
+if REDIS_PACKAGE_NAME == 'redis_cache':
+    {
+        'default': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': '/home/midatlantic/run/redis.sock',
+            'KEY_PREFIX': 'marco_portal',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'redis_cache.client.DefaultClient'
+            },
         }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': cache_cfg.get('BACKEND', 'django_redis.cache.RedisCache'),
+            'LOCATION': cache_cfg.get('LOCATION', 'redis://127.0.0.1:6379/1'),
+            'KEY_PREFIX': 'marco_portal',
+            'OPTIONS': {
+                'CLIENT_CLASS': cache_cfg.get('CLIENT_CLASS', 'django_redis.client.DefaultClient'),
+            }
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
