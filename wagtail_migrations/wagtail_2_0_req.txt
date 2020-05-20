@@ -1,0 +1,4 @@
+draftjs-exporter==2.0.0
+html5lib==0.999999999
+Unidecode==0.4.21
+wagtail==2.0.2

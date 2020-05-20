@@ -1,0 +1,100 @@
+amqp==2.5.2
+beautifulsoup4==4.8.2
+billiard==3.6.3.0
+celery==4.4.2
+certifi==2020.4.5.1
+cffi==1.14.0
+chardet==3.0.4
+cryptography==2.9.2
+defusedxml==0.6.0
+diff-match-patch==20181111
+Django==2.2.12
+django-appconf==1.0.4
+django-celery-email==3.0.0
+django-compressor==2.4
+django-email-log==0.2.0
+django-flatblocks==0.9.4
+django-import-export==2.1.0
+django-libsass==0.8
+django-modelcluster==5.0.1
+django-nested-admin==3.3.0
+django-picklefield==2.1.1
+django-proxy==1.2.1
+django-recaptcha==2.0.6
+django-redis==4.11.0
+django-social-share==1.4.0
+django-taggit==1.2.0
+django-tinymce==3.0.2
+django-treebeard==4.3.1
+django-wysiwyg==0.8.0
+djangorestframework==3.11.0
+draftjs-exporter==2.1.7
+ecdsa==0.15
+elasticsearch==7.7.0
+et-xmlfile==1.0.1
+html5lib==1.0.1
+httplib2==0.17.3
+idna==2.9
+importlib-metadata==1.6.0
+jdcal==1.4.1
+kombu==4.6.8
+l18n==2018.5
+libsass==0.20.0
+-e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@ea93e540aaaf960f554bc18fb5581c7a6ae8b414#egg=madrona_analysistools
+-e git+https://github.com/MidAtlanticPortal/madrona-features.git@cf37dbaa07c90f32e3c8d7b7a348b579847102d6#egg=madrona_features
+-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@3d0688b4402cdf2e5efaadf83e94431e2ed52563#egg=madrona_manipulators
+-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@405f83d8da2c4eee8cf11aef7790e7e1da8c2d7c#egg=madrona_scenarios
+-e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@35de687173028b8c8b9c75512059cb7357d357c3#egg=mapgroups
+MarkupPy==1.14
+-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@fcaf2acb35f90d715fb9228c5a678fe996739833#egg=mp_accounts
+-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@66f5ff702e8cd8844ed2b29cea4e55b71191a31c#egg=mp_data_manager
+-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@407ff8a1bc42e4239160cd7dfa567baf5de31044#egg=mp_drawing
+-e git+https://github.com/MidAtlanticPortal/mp-explore.git@7a30f473b59b8aff3289adfdb5683ed2f7abfa2c#egg=mp_explore
+-e git+https://github.com/MidAtlanticPortal/mp-proxy.git@787973d1736987d0beb4a0a9021ee82e74fca791#egg=mp_proxy
+-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@4777495f3f01e508b98900a6a0f3a20aae955678#egg=mp_visualize
+numpy==1.18.4
+oauthlib==3.1.0
+odfpy==1.4.1
+openpyxl==3.0.3
+OWSLib==0.19.2
+-e git+https://github.com/Ecotrust/p97-nursery.git@78babb5ba76272c52e8a5761386b690fa12dce56#egg=p97_nursery
+Pillow==7.1.2
+psycopg2-binary==2.8.5
+pyasn1==0.4.8
+pycparser==2.20
+pygdal==2.2.3.6
+PyJWT==1.7.1
+pyproj==2.6.1.post1
+pyshp==2.1.0
+python-dateutil==2.8.1
+python-jose==3.1.0
+python-monkey-business==1.0.0
+python-social-auth==0.3.6
+python3-openid==3.1.0
+pytz==2020.1
+PyYAML==5.3.1
+querystring-parser==1.2.4
+rcssmin==1.0.6
+redis==3.5.2
+requests==2.23.0
+requests-oauthlib==1.3.0
+rjsmin==1.1.0
+-e git+https://github.com/Ecotrust/rpc4django.git@7412df7ab14e628f04b34d73b87e30013fe9c671#egg=rpc4django
+rsa==4.0
+six==1.14.0
+social-auth-app-django==3.1.0
+social-auth-core==3.3.3
+soupsieve==2.0
+sqlparse==0.3.1
+tablib==1.1.0
+Unidecode==1.1.1
+urllib3==1.25.9
+vine==1.3.0
+wagtail==2.9
+wagtail-import-export==0.2
+webencodings==0.5.1
+Willow==1.3
+xlrd==1.2.0
+XlsxWriter==1.2.8
+xlwt==1.3.0
+zipp==3.1.0
