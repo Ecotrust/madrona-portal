@@ -1,19 +1,29 @@
 import os
-
-# from django.conf.urls import patterns, include, url
-from django.urls import re_path, include, path
+try:
+    from django.urls import re_path, include, path
+except ModuleNotFoundError as e:
+    from django.conf.urls import patterns, include, url as re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 
 from django.views.generic.base import RedirectView, TemplateView
 
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.search import urls as wagtailsearch_urls
-from wagtail.documents import urls as wagtaildocs_urls
-from wagtail.core import urls as wagtail_urls
-from wagtail.contrib.sitemaps.views import sitemap
-from wagtail.images import urls as wagtailimages_urls
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.admin import urls as wagtailadmin_urls
+    from wagtail.search import urls as wagtailsearch_urls
+    from wagtail.documents import urls as wagtaildocs_urls
+    from wagtail.core import urls as wagtail_urls
+    from wagtail.contrib.sitemaps.views import sitemap
+    from wagtail.images import urls as wagtailimages_urls
+else:
+    from wagtail.wagtailadmin import urls as wagtailadmin_urls
+    from wagtail.wagtailsearch import urls as wagtailsearch_urls
+    from wagtail.wagtaildocuments import urls as wagtaildocs_urls
+    from wagtail.wagtailcore import urls as wagtail_urls
+    from wagtail.wagtailcontrib.sitemaps.views import sitemap
+    from wagtail.wagtailimages import urls as wagtailimages_urls
+
 from wagtailimportexport import urls as wagtailimportexport_urls
 
 import mapgroups.urls
@@ -45,7 +55,7 @@ urlpatterns += [
     #'',
     re_path(r'^sitemap\.xml$', sitemap),
 
-    path('django-admin/', admin.site.urls),
+    re_path(r'django-admin/', admin.site.urls),
 
     re_path(r'^rpc$', serve_rpc_request),
 
