@@ -45,7 +45,8 @@ libsass==0.20.0
 # -e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@ea93e540aaaf960f554bc18fb5581c7a6ae8b414#egg=madrona_analysistools
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features
 # -e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@3d0688b4402cdf2e5efaadf83e94431e2ed52563#egg=madrona_manipulators
--e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios
+# -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios
+-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@wagtail_1_3_merge#egg=madrona_scenarios
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=mapgroups
 MarkupPy==1.14
 -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts
@@ -65,7 +66,7 @@ MarkupPy==1.14
 # -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@559de770d6b58ba2520af971f3581e96372932f2#egg=mp_accounts
 -e git+https://github.com/MidAtlanticPortal/mp-clipping.git@66f9b6a51ffb4f089160faf29485403839499af4#egg=mp_clipping
 # -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@ddec59255d6f48d528153643b468d0f9e50b4f4c#egg=mp_data_manager
--e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@e8925956338d6ad2a9338db977480d85d8d454c8#egg=mp_data_manager
+-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@dj1py3#egg=mp_data_manager
 # -e git+https://github.com/MidAtlanticPortal/mp-drawing.git@0d29e5551a138d43666ecc24f55d14a0298328a7#egg=mp_drawing
 # -e git+https://github.com/MidAtlanticPortal/mp-explore.git@0428b8fbc8fce3365916b435200770aadea8628f#egg=mp_explore
 # -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@882982d1022009f9302eb7924372c9b718cba88a#egg=mp_proxy

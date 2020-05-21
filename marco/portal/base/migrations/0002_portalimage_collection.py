@@ -11,15 +11,19 @@ else:
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('wagtailcore', '0045_assign_unlock_grouppagepermission'),
-        ('base', '0001_initial'),
-    ]
+    if settings.WAGTAIL_VERSION > 1:
+        dependencies = [
+            ('wagtailcore', '0045_assign_unlock_grouppagepermission'),
+            ('base', '0001_initial'),
+        ]
 
-    operations = [
-        migrations.AddField(
-            model_name='portalimage',
-            name='collection',
-            field=models.ForeignKey(default=wagtail_core_models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
-        ),
-    ]
+        operations = [
+            migrations.AddField(
+                model_name='portalimage',
+                name='collection',
+                field=models.ForeignKey(default=wagtail_core_models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
+            ),
+        ]
+    else:
+        dependencies = []
+        operations = []

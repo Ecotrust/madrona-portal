@@ -41,7 +41,6 @@ class PortalImage(AbstractImage):
 
     @classmethod
     def creatable_subpage_models(cls):
-        import ipdb; ipdb.set_trace()
         print(cls)
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
