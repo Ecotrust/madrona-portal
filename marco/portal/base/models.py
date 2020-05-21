@@ -54,9 +54,14 @@ class PortalRendition(AbstractRendition):
     image = models.ForeignKey('PortalImage', related_name='renditions', on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (
-            ('image', 'filter_spec', 'focal_point_key'),
-        )
+        if settings.WAGTAIL_VERSION > 1:
+            unique_together = (
+                ('image', 'filter_spec', 'focal_point_key'),
+            )
+        else:
+            unique_together = (
+                ('image', 'filter', 'focal_point_key'),
+            )
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
 @receiver(pre_delete, sender=PortalRendition)

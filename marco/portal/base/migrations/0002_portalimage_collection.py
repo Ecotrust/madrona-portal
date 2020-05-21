@@ -2,7 +2,11 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import wagtail.core.models
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.models as wagtail_core_models
+else:
+    import wagtail.wagtailcore.models as wagtail_core_models
 
 
 class Migration(migrations.Migration):
@@ -16,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='portalimage',
             name='collection',
-            field=models.ForeignKey(default=wagtail.core.models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
+            field=models.ForeignKey(default=wagtail_core_models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
         ),
     ]

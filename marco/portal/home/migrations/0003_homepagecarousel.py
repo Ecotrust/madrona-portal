@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.core.fields
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.fields as wagtail_core_fields
+else:
+    import wagtail.wagtailcore.fields as wagtail_core_fields
 import django.db.models.deletion
 import modelcluster.fields
 
@@ -26,7 +30,7 @@ class Migration(migrations.Migration):
                 ('media_caption', models.CharField(max_length=255, blank=True)),
                 ('media_position', models.CharField(default='left', max_length=8, choices=[('left', 'left'), ('right', 'right'), ('full', 'full')])),
                 ('title', models.CharField(max_length=255, blank=True)),
-                ('body', wagtail.core.fields.RichTextField(blank=True)),
+                ('body', wagtail_core_fields.RichTextField(blank=True)),
                 ('media_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', null=True)),
                 ('slide', modelcluster.fields.ParentalKey(related_name='slide', to='home.HomePage')),
             ],

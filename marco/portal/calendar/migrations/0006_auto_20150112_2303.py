@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.core.fields
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.fields as wagtail_core_fields
+else:
+    import wagtail.wagtailcore.fields as wagtail_core_fields
 
 
 class Migration(migrations.Migration):
@@ -15,13 +19,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='calendar',
             name='description',
-            field=wagtail.core.fields.RichTextField(null=True, blank=True),
+            field=wagtail_core_fields.RichTextField(null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='event',
             name='description',
-            field=wagtail.core.fields.RichTextField(null=True, blank=True),
+            field=wagtail_core_fields.RichTextField(null=True, blank=True),
             preserve_default=True,
         ),
     ]
