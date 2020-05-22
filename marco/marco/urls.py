@@ -1,8 +1,8 @@
 import os
 try:
-    from django.urls import re_path, include, path
-except ModuleNotFoundError as e:
-    from django.conf.urls import patterns, include, url as re_path
+    from django.urls import re_path, include
+except (ModuleNotFoundError, ImportError):
+    from django.conf.urls import include, url as re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin

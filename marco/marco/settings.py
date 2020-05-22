@@ -80,7 +80,7 @@ try:
         'wagtail.contrib.sitemaps',
     ]
 except ImportError as e:
-    print(e)
+    # print(e)
     # Wagtail v1 for merging in old MidA Portal
     WAGTAIL_VERSION = 1
     INSTALLED_APPS = [
