@@ -201,10 +201,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
+
+if WAGTAIL_VERSION > 1:
+    MIDDLEWARE += [
+        'wagtail.core.middleware.SiteMiddleware',
+        'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    ]
+else:
+    MIDDLEWARE += [
+        'wagtail.wagtailcore.middleware.SiteMiddleware',
+        'wagtail.wagtailredirects.middleware.RedirectMiddleware',
+    ]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)

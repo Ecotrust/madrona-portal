@@ -38,7 +38,7 @@ mv $PROJ/marco/portal/base/migrations/0002_portalimage_collection.py $PROJ/wagta
 $MIGRATE 1
 $PYTHON $DJ migrate data_manager 0023
 
-for version in '1_04' '1_05' '1_06' '1_07' '1_08' #'1_09' '1_10' '1_11' '1_12' '1_13'
+for version in '1_04' '1_05' '1_06' '1_07' '1_08' '1_09' '1_10' '1_11' '1_12' '1_13'
 do
   # rm -r $ENV/lib/python3.6/site-packages/~*
 
@@ -56,7 +56,7 @@ do
   #   $PYTHON $DJ migrate base 0002
   # fi
 
-  $MIGRATE 1
+  # $MIGRATE 1
 done
 
 # for version in '2_0' '2_1' '2_2' '2_3' '2_4' '2_5' '2_6' '2_7' '2_8' '2_9'
