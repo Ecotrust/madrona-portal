@@ -53,13 +53,12 @@ do
   # $MIGRATE 1
 done
 
-# for VER in '2_0' '2_1' '2_2' '2_3' '2_4' '2_5' '2_6' '2_7' '2_8' '2_9'
-# do
-#   RESULT=1
-#   while [$RESULT -eq 1 ]
-#   do
-#     $PIP install -r $PROJ/wagtail_migrations/wagtail_$VER.sh
-#     RESULT=$?
-#   done
-#   $MIGRATE 2
-# done
+for VER in '2_00' '2_01' '2_02' '2_03' '2_04' '2_05' '2_06' '2_07' '2_08' '2_09'
+do
+  echo '************************************'
+  echo '************************************'
+  echo '****           '$VER'            *****'
+  echo '************************************'
+  echo '************************************'
+  $PROJ/wagtail_migrations/wagtail_$VER.sh
+done
