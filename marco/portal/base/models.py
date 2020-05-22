@@ -54,7 +54,7 @@ class PortalRendition(AbstractRendition):
     # Wagtail 1.8 deviates drastically from Wagtail 1.7. We need to support both for
     #   the automated migration from wagtail 1.3 to 2.9
     import wagtail
-    if wagtail.VERSION[0] > 0 and (wagtail.VERSION[0] > 1 or wagtail.VERSION[1] > 7):
+    if hasattr(wagtail, 'VERSION') and wagtail.VERSION[0] > 0 and (wagtail.VERSION[0] > 1 or wagtail.VERSION[1] > 7):
         class Meta:
             unique_together = (
                 ('image', 'filter_spec', 'focal_point_key'),
