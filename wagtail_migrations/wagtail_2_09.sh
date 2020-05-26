@@ -6,8 +6,8 @@ PIP=$ENV/bin/pip;
 
 # 2_09
 $PIP uninstall wagtail -y
-$PIP uninstall beautifulsoup -y
-$PIP install "beautifulsoup==4.8.2"
+$PIP uninstall beautifulsoup4 -y
+$PIP install "beautifulsoup4==4.8.2"
 $PIP install "wagtail==2.9"
 
 PYTHON=$ENV/bin/python3;

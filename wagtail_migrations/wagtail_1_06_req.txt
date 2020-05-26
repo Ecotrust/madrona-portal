@@ -1,3 +1,0 @@
-html5lib==0.999999
-wagtail==1.6.3
-Willow==0.3.1

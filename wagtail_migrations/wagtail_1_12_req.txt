@@ -1,2 +1,0 @@
-wagtail==1.12.6
-Willow==0.4
