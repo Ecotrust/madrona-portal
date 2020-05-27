@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('focal_point_width', models.PositiveIntegerField(blank=True, null=True)),
                 ('focal_point_height', models.PositiveIntegerField(blank=True, null=True)),
                 ('file_size', models.PositiveIntegerField(editable=False, null=True)),
-                ('file_hash', models.CharField(blank=True, editable=False, max_length=40)),
+                # ('file_hash', models.CharField(blank=True, editable=False, max_length=40)),
                 ('creator', models.CharField(blank=True, max_length=255)),
                 ('creator_URL', models.URLField(blank=True)),
                 ('tags', taggit.managers.TaggableManager(blank=True, help_text=None, through='taggit.TaggedItem', to='taggit.Tag', verbose_name='tags')),
@@ -57,6 +57,7 @@ class Migration(migrations.Migration):
                 ('width', models.IntegerField(editable=False)),
                 ('height', models.IntegerField(editable=False)),
                 ('focal_point_key', models.CharField(blank=True, default='', editable=False, max_length=16)),
+                ('filter', models.ForeignKey(related_name='+', to='wagtailimages.Filter')),
                 ('image', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='renditions', to='base.PortalImage')),
             ],
             options={

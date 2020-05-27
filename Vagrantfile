@@ -33,6 +33,7 @@ Vagrant.configure("2") do |config|
     # folder, and the third is the path on the host to the actual folder.
     # config.vm.share_folder "project", "/home/vagrant/marco_portal2", "."
     config.vm.synced_folder "./", "/usr/local/apps/ocean_portal"
+    # config.vm.synced_folder "../mida-portal/", "/usr/local/apps/mida-portal"
 
     # Enable provisioning with a shell script.
     # config.vm.provision :shell, :path => "scripts/vagrant_provision.sh", :args => "'marco_portal2' 'marco' 'marco_portal'", :privileged => false

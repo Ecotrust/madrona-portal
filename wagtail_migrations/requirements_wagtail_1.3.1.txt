@@ -59,6 +59,8 @@ MarkupPy==1.14
 -e git+https://github.com/MidAtlanticPortal/madrona-forms.git@master#egg=madrona_forms
 -e git+https://github.com/MidAtlanticPortal/mp-clipping.git@master#egg=mp_clipping
 
+-e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
+
 numpy==1.18.4
 oauthlib==3.1.0
 odfpy==1.4.1

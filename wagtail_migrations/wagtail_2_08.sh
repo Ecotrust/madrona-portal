@@ -28,5 +28,5 @@ $PYTHON $DJ migrate wagtailforms
 
 $PYTHON $DJ migrate auth 0011
 $PYTHON $DJ migrate admin 0003
-cp $PROJ/wagtail_migrations/0002_portalimage_collection.py $PROJ/marco/portal/base/migrations/
-$PYTHON $DJ migrate base 0002
+# cp $PROJ/wagtail_migrations/0002_portalimage_collection.py $PROJ/marco/portal/base/migrations/
+# $PYTHON $DJ migrate base 0002

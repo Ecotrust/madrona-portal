@@ -34,7 +34,9 @@ $PIP install -r $PROJ/wagtail_migrations/requirements_wagtail_1.3.1.txt
 cp $PROJ/wagtail_migrations/libgeos_1_9.py $ENV/lib/python3.6/site-packages/django/contrib/gis/geos/libgeos.py
 cp $PROJ/wagtail_migrations/wagtailimportexport/wagtail_hooks_py2.py $ENV/lib/python3.6/site-packages/wagtailimportexport/wagtail_hooks.py
 cp $PROJ/wagtail_migrations/wagtailimportexport/views_py2.py $ENV/lib/python3.6/site-packages/wagtailimportexport/views.py
-mv $PROJ/marco/portal/base/migrations/0002_portalimage_collection.py $PROJ/wagtail_migrations/
+# mv $PROJ/marco/portal/base/migrations/0002_portalimage_collection.py $PROJ/wagtail_migrations/
+mv $PROJ/marco/portal/base/migrations/0002_auto_20200526_2354.py $PROJ/wagtail_migrations/
+mv $PROJ/marco/portal/base/migrations/0003_auto_20200526_2357.py $PROJ/wagtail_migrations/
 # $MIGRATE 1
 
 $PYTHON $DJ migrate data_manager 0023
