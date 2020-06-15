@@ -41,6 +41,7 @@ cp $PROJ/wagtail_migrations/wagtailimportexport/views_py2.py $ENV/lib/python3.6/
 mv $PROJ/marco/portal/base/migrations/0002_auto_20200526_2354.py $PROJ/wagtail_migrations/
 mv $PROJ/marco/portal/base/migrations/0003_auto_20200526_2357.py $PROJ/wagtail_migrations/
 mv $PROJ/marco/portal/base/migrations/0004_auto_20200613_0023.py $PROJ/wagtail_migrations/
+mv $PROJ/marco/portal/base/migrations/0005_portalimage_file_hash.py $PROJ/wagtail_migrations/
 # $MIGRATE 1
 
 $PYTHON $DJ migrate data_manager 0023
