@@ -20,3 +20,6 @@ $PYTHON $DJ migrate wagtailimages
 $PYTHON $DJ migrate wagtailredirects
 # $PYTHON $DJ migrate wagtailsearch
 # $PYTHON $DJ migrate wagtailusers
+
+cp $PROJ/wagtail_migrations/0005_portalimage_file_hash.py $PROJ/marco/portal/base/migrations/
+$PYTHON $DJ migrate base 0005
