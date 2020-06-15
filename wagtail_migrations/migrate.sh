@@ -21,6 +21,9 @@ fi
 
 echo "Input SQL file: $infile";
 
+echo "Checking out Wagtail 1.x compatible code-base..."
+git checkout wagtail-1x
+
 # Prep and load the DB
 sudo -u postgres dropdb ocean_portal;
 sudo -u postgres createdb -O postgres ocean_portal;
@@ -55,6 +58,9 @@ do
 
   # $MIGRATE 1
 done
+
+echo "Checking out Wagtail 2.x compatible code-base..."
+git checkout wagtail-migration
 
 for VER in '2_00' '2_01' '2_02' '2_03' '2_04' '2_05' '2_06' '2_07' '2_08' '2_09'
 do
