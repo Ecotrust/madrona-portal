@@ -9,8 +9,8 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.search import index
     from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
 else:
-    from wagtail.wagtailsearch import index
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
 
 from portal.base.models import PageBase,DetailPageBase
 

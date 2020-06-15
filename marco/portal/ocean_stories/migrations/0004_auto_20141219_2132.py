@@ -6,7 +6,7 @@ from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
     import wagtail.core.fields as wagtail_core_fields
 else:
-    import wagtail.wagtailcore.fields as wagtail_core_fields
+    import wagtail.core.fields as wagtail_core_fields
 
 
 class Migration(migrations.Migration):

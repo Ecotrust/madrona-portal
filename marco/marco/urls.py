@@ -19,14 +19,14 @@ if settings.WAGTAIL_VERSION > 1:
     # Register search signal handlers
     from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 else:
-    from wagtail.wagtailadmin import urls as wagtailadmin_urls
-    from wagtail.wagtailsearch import urls as wagtailsearch_urls
-    from wagtail.wagtaildocs import urls as wagtaildocs_urls
-    from wagtail.wagtailcore import urls as wagtail_urls
+    from wagtail.admin import urls as wagtailadmin_urls
+    from wagtail.search import urls as wagtailsearch_urls
+    from wagtail.docs import urls as wagtaildocs_urls
+    from wagtail.core import urls as wagtail_urls
     from wagtail.contrib.wagtailsitemaps.views import sitemap
-    from wagtail.wagtailimages import urls as wagtailimages_urls
+    from wagtail.images import urls as wagtailimages_urls
     # Register search signal handlers
-    from wagtail.wagtailsearch.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
+    from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 
 from wagtailimportexport import urls as wagtailimportexport_urls
 

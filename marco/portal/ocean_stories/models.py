@@ -24,11 +24,11 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
     from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
 else:
-    from wagtail.wagtailcore.models import Orderable
-    from wagtail.wagtailcore.fields import StreamField
-    from wagtail.wagtailsearch import index
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.wagtailcore.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.

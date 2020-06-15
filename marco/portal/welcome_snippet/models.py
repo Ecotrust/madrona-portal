@@ -15,14 +15,14 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
 else:
-    from wagtail.wagtailcore.models import Orderable
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
-    from wagtail.wagtailsnippets.models import register_snippet
-    from wagtail.wagtailcore.fields import RichTextField
+    from wagtail.snippets.models import register_snippet
+    from wagtail.core.fields import RichTextField
 
-    from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-    from wagtail.wagtailimages.models import AbstractImage, AbstractRendition
+    from wagtail.images.edit_handlers import ImageChooserPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition
 
 class WelcomePageEntry(Orderable):
     welcome_page = ParentalKey('WelcomePage', related_name='entries')

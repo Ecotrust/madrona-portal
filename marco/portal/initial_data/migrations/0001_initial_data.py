@@ -6,7 +6,7 @@ from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
     from wagtail.core.models import Page
 else:
-    from wagtail.wagtailcore.models import Page
+    from wagtail.core.models import Page
 
 def create_initial_data(apps, schema_editor):
     home_page = Page.objects.get(url_path="/home/")

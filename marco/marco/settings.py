@@ -84,17 +84,17 @@ except ImportError as e:
     # Wagtail v1 for merging in old MidA Portal
     WAGTAIL_VERSION = 1
     INSTALLED_APPS = [
-        'wagtail.wagtailcore',
-        'wagtail.wagtailadmin',
-        'wagtail.wagtaildocs',
-        'wagtail.wagtailsnippets',
-        'wagtail.wagtailusers',
-        'wagtail.wagtailsites',
-        'wagtail.wagtailimages',
-        'wagtail.wagtailembeds',
-        'wagtail.wagtailsearch',
-        'wagtail.wagtailredirects',
-        'wagtail.wagtailforms',
+        'wagtail.core',
+        'wagtail.admin',
+        'wagtail.docs',
+        'wagtail.snippets',
+        'wagtail.users',
+        'wagtail.sites',
+        'wagtail.images',
+        'wagtail.embeds',
+        'wagtail.search',
+        'wagtail.redirects',
+        'wagtail.forms',
         'wagtail.contrib.wagtailsitemaps',
     ]
 
@@ -213,8 +213,8 @@ if WAGTAIL_VERSION > 1:
     ]
 else:
     MIDDLEWARE += [
-        'wagtail.wagtailcore.middleware.SiteMiddleware',
-        'wagtail.wagtailredirects.middleware.RedirectMiddleware',
+        'wagtail.core.middleware.SiteMiddleware',
+        'wagtail.redirects.middleware.RedirectMiddleware',
     ]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the

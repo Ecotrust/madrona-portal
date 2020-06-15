@@ -13,12 +13,12 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
 else:
-    from wagtail.wagtailcore.models import Page
-    from wagtail.wagtailcore.fields import RichTextField
-    from wagtail.wagtailsearch import index
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,MultiFieldPanel
-    from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-    from wagtail.wagtailimages.models import AbstractImage, AbstractRendition, Image
+    from wagtail.core.models import Page
+    from wagtail.core.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.images.edit_handlers import ImageChooserPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition, Image
 
 
 

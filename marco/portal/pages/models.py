@@ -6,9 +6,9 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.admin.edit_handlers import FieldPanel
     from wagtail.search import index
 else:
-    from wagtail.wagtailcore.fields import RichTextField
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel
-    from wagtail.wagtailsearch import index
+    from wagtail.core.fields import RichTextField
+    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.search import index
 
 from portal.base.models import PageBase
 

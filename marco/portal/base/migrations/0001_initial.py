@@ -8,8 +8,8 @@ if settings.WAGTAIL_VERSION > 1:
     import wagtail.images.models as wagtail_image_models
     import wagtail.search.index as wagtail_search_index
 else:
-    import wagtail.wagtailimages.models as wagtail_image_models
-    import wagtail.wagtailsearch.index as wagtail_search_index
+    import wagtail.images.models as wagtail_image_models
+    import wagtail.search.index as wagtail_search_index
 
 
 class Migration(migrations.Migration):
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('width', models.IntegerField(editable=False)),
                 ('height', models.IntegerField(editable=False)),
                 ('focal_point_key', models.CharField(blank=True, default='', editable=False, max_length=16)),
-                ('filter', models.ForeignKey(related_name='+', to='wagtailimages.Filter')),
+                ('filter', models.ForeignKey(related_name='+', to='wagtailimages.Filter', on_delete=django.db.models.deletion.CASCADE)),
                 ('image', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='renditions', to='base.PortalImage')),
             ],
             options={

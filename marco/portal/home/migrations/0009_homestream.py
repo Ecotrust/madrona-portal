@@ -8,9 +8,9 @@ if settings.WAGTAIL_VERSION > 1:
     import wagtail.core.blocks as wagtail_core_blocks
     import wagtail.images.blocks as wagtail_images_blocks
 else:
-    import wagtail.wagtailcore.fields as wagtail_core_fields
-    import wagtail.wagtailcore.blocks as wagtail_core_blocks
-    import wagtail.wagtailimages.blocks as wagtail_images_blocks
+    import wagtail.core.fields as wagtail_core_fields
+    import wagtail.core.blocks as wagtail_core_blocks
+    import wagtail.images.blocks as wagtail_images_blocks
 import django.db.models.deletion
 
 

@@ -12,9 +12,9 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
     from wagtail.snippets.models import register_snippet
 else:
-    from wagtail.wagtailcore.models import Orderable
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
-    from wagtail.wagtailsnippets.models import register_snippet
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.snippets.models import register_snippet
 
 
 # The abstract model, complete with panels

@@ -3,7 +3,7 @@ from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
     from wagtail.core.models import Page
 else:
-    from wagtail.wagtailcore.models import Page
+    from wagtail.core.models import Page
 
 
 from portal.base.models import PageBase

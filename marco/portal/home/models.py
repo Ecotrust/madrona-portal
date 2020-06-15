@@ -13,12 +13,12 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.images.models import Image
     from wagtail.images.edit_handlers import ImageChooserPanel
 else:
-    from wagtail.wagtailcore.models import Orderable, Page
-    from wagtail.wagtailcore.fields import RichTextField
-    from wagtail.wagtailsearch import index
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
-    from wagtail.wagtailimages.models import Image
-    from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+    from wagtail.core.models import Orderable, Page
+    from wagtail.core.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.images.models import Image
+    from wagtail.images.edit_handlers import ImageChooserPanel
 
 from portal.ocean_stories.models import OceanStory
 
