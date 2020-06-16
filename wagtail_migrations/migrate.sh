@@ -45,6 +45,7 @@ mv $PROJ/marco/portal/base/migrations/0005_portalimage_file_hash.py $PROJ/wagtai
 # $MIGRATE 1
 
 $PYTHON $DJ migrate data_manager 0023
+$PYTHON $DJ migrate ocean_stories 0017
 
 for VER in '1_04' '1_05' '1_06' '1_07' '1_08' '1_09' '1_10' '1_11' '1_12' '1_13'
 do
