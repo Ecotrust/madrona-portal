@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='oceanstorysection',
-            name='stream_body',
-            field=wagtail_core_fields.StreamField([('rich_text', wagtail_core_blocks.RichTextBlock()), ('raw_html', wagtail_core_blocks.RawHTMLBlock())], blank=True, null=True),
-        ),
+        # migrations.AlterField(
+        #     model_name='oceanstorysection',
+        #     name='body',
+        #     field=wagtail_core_fields.StreamField([('rich_text', wagtail_core_blocks.RichTextBlock()), ('raw_html', wagtail_core_blocks.RawHTMLBlock())], blank=True, null=True),
+        # ),
     ]

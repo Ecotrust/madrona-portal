@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='oceanstorysection',
-            old_name='stream_body',
-            new_name='body',
-        ),
+        # migrations.RenameField(
+        #     model_name='oceanstorysection',
+        #     old_name='stream_body',
+        #     new_name='body',
+        # ),
     ]
