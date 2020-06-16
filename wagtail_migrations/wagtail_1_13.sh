@@ -31,6 +31,6 @@ $PYTHON $DJ migrate drawing 0005
 $PYTHON $DJ migrate grid_pages 0005
 $PYTHON $DJ migrate mapgroups 0006
 $PYTHON $DJ migrate news 0004
-$PYTHON $DJ migrate ocean_stories 0017
+# $PYTHON $DJ migrate ocean_stories 0017
 $PYTHON $DJ migrate scenarios 0001 --fake-initial
 $PYTHON $DJ migrate visualize 0006
