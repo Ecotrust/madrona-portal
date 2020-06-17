@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from data_manager.models import *
 from portal.base.models import PortalImage
@@ -27,11 +27,9 @@ def theme(request, theme_slug):
     for layer in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('name'):
         layers.append(layer.shortDict(site.pk))
 
-    return render_to_response(
-        template,
-        {
-            'theme': theme,
-            'layers': layers,
-        },
-        context_instance=RequestContext(request)
-    );
+    context = {
+        'theme': theme,
+        'layers': layers,
+    }
+
+    return render(request, template, context);
