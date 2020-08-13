@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 
 if settings.WAGTAIL_VERSION > 1:
@@ -62,11 +62,11 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
         # search layers from data_catalog
         layer_results.extend(Layer.objects.exclude(layer_type='placeholder').filter(themes__visible=True, name__icontains=query_string))
 
-    return render_to_response(template, RequestContext(request, {
+    return render(request, template, {
         'ocean_story_results': ocean_story_results,
         'calendar_news_results': calendar_news_results,
         'data_needs_results': data_needs_results,
         'resources_results': resources_results,
         'theme_results': theme_results,
         'layer_results': layer_results
-    }));
+    });
