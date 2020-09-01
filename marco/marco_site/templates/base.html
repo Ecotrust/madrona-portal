@@ -58,6 +58,7 @@
         </div>
     </div>
     {% endblock %} <!-- page_header_container -->
+    {% block all_content %}
     <div class="content">
         <div class="container">
             {% block content %}{% endblock %}
@@ -65,6 +66,7 @@
         </div>
         {% block containerless_content %}{% endblock %}
     </div>
+    {% endblock %} <!-- all_content -->
 </div>
 
 {% block footer_wrap %}
