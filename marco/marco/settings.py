@@ -357,6 +357,8 @@ GEOJSON_SRID = 3857
 
 GEOJSON_DOWNLOAD = True  # force headers to treat like an attachment
 
+CATALOG_TECHNOLOGY = None
+
 # authentication
 SOCIAL_AUTH_NEW_USER_URL = '/account/?new=true&login=django'
 SOCIAL_AUTH_FACBEOOK_NEW_USER_URL = '/account/?new=true&login=facebook'

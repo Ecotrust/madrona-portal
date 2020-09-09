@@ -45,7 +45,7 @@ urlpatterns += [
     #'',
     re_path(r'^sitemap\.xml$', sitemap),
 
-    path('django-admin/', admin.site.urls),
+    path('django-admin/', admin.site.urls, {'extra_context':{'CATALOG_TECHNOLOGY': settings.CATALOG_TECHNOLOGY}}),
 
     re_path(r'^rpc$', serve_rpc_request),
 
