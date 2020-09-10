@@ -56,6 +56,10 @@ from django.utils.log import DEFAULT_LOGGING
 LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
+
+CATALOG_TECHNOLOGY = None
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -356,8 +360,6 @@ GEOMETRY_CLIENT_SRID = 3857 #for latlon
 GEOJSON_SRID = 3857
 
 GEOJSON_DOWNLOAD = True  # force headers to treat like an attachment
-
-CATALOG_TECHNOLOGY = None
 
 # authentication
 SOCIAL_AUTH_NEW_USER_URL = '/account/?new=true&login=django'
