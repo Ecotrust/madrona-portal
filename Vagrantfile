@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
     # Base box to build off, and download URL for when it doesn't exist on the user's system already
     # config.vm.box = "marco-base-v0.4"
     # config.vm.box_url = "http://portal.midatlanticocean.org/static/vagrant_boxes/p97-base-v0.4.box"
-    config.vm.box = "ubuntu/bionic64"
+    config.vm.box = "ubuntu/focal64"
 
     #Enforce provisioning of 5GB of RAM - required for running MARCO properly
     #If you don't have 5 GB, you can drop the memory value, or comment everything out completely.
@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
     #   "--memory", "5120"
     # ]
     config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--memory", 1024]
+        vb.customize ["modifyvm", :id, "--memory", 2048]
     end
 
     # Forward a port from the guest to the host, which allows for outside
@@ -45,4 +45,5 @@ Vagrant.configure("2") do |config|
     # if File.exist? "Vagrantfile.local"
     #     instance_eval File.read("Vagrantfile.local"), "Vagrantfile.local"
     # end
+
 end

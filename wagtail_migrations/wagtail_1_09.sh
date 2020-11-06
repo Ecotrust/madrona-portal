@@ -2,6 +2,13 @@
 
 PROJ=/usr/local/apps/ocean_portal
 ENV=$PROJ/wag_env;
+while getopts e:v: flag
+do
+  case "${flag}" in
+    e) ENV=${OPTARG};;
+    v) PYVER=${OPTARG};;
+  esac
+done
 PIP=$ENV/bin/pip;
 
 # 1_09
