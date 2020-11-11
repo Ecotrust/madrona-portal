@@ -30,6 +30,8 @@ $PIP install "wagtail==2.0.2"
 $PIP install "rpc4django==0.6.3"
 $PIP uninstall madrona-manipulators -y
 $PIP install -e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@dj2#egg=madrona_manipulators
+$PIP uninstall mp-accounts -y
+$PIP install -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts
 
 PYTHON=$ENV/bin/python3;
 DJ=$PROJ/marco/manage.py;

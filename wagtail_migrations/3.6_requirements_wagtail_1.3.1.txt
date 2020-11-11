@@ -49,7 +49,7 @@ libsass==0.20.0
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=mapgroups
 # Markdown==3.1.1
 MarkupPy==1.14
--e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts
+-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@wagtail_1_3_merge#egg=mp_accounts
 -e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@dj1py3#egg=mp_data_manager
 -e git+https://github.com/MidAtlanticPortal/mp-drawing.git@dj2#egg=mp_drawing
 -e git+https://github.com/MidAtlanticPortal/mp-explore.git@dj2#egg=mp_explore
@@ -75,6 +75,7 @@ psycopg2-binary==2.8.5
 pyasn1==0.4.8
 pycparser==2.20
 pygdal==2.2.3.6
+# pygdal==2.2.4.6
 PyJWT==1.7.1
 pyproj==2.6.1.post1
 pyshp==2.1.0
