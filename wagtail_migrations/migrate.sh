@@ -57,36 +57,17 @@ python3 -m virtualenv -p /usr/bin/python$PYVER $ENV;
 $PIP install -r $PROJ'/wagtail_migrations/'$PYVER'_requirements_wagtail_1.3.1.txt'
 
 cp $PROJ/wagtail_migrations/libgeos_1_9.py $ENV'/lib/python'$PYVER'/site-packages/django/contrib/gis/geos/libgeos.py'
-if [ $? -eq 0 ]; then
-    echo "Custom libgeos_1_9 inserted"
-else
-    # 20.04 Focal Fossa has py 3.8, not Bionic's 3.6
-    # PYVER='3.8'
-    # cp $PROJ/wagtail_migrations/libgeos_1_9.py $ENV'/lib/python'$PYVER'/site-packages/django/contrib/gis/geos/libgeos.py'
-    read -p "Python mismatch when re-writing libgeos - continue? (y or n)" -n 1 -r
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-        exit 1
-    fi
-fi
+echo "Custom libgeos_1_9 inserted"
+
 cp $PROJ/wagtail_migrations/wagtailimportexport/wagtail_hooks_py2.py $ENV'/lib/python'$PYVER'/site-packages/wagtailimportexport/wagtail_hooks.py'
 cp $PROJ/wagtail_migrations/wagtailimportexport/views_py2.py $ENV'/lib/python'$PYVER'/site-packages/wagtailimportexport/views.py'
 # mv $PROJ/marco/portal/base/migrations/0002_portalimage_collection.py $PROJ/wagtail_migrations/
-
-read -p "Initial requirements configured - begin migrating? (y or n)" -n 1 -r
-echo    # (optional) move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    exit 1
-fi
 
 for MIGRATION in '0002_auto_20200526_2354' '0003_auto_20200526_2357' '0004_auto_20200613_0023' '0005_portalimage_file_hash'
 do
   if [[ -f $PROJ'/marco/portal/base/migrations/'$MIGRATION'.py' ]] ; then
     # echo 'File "$infile" DOES NOT EXIST. Please provide a valid input file with the "-i" flag';
     mv $PROJ'/marco/portal/base/migrations/'$MIGRATION'.py' $PROJ/wagtail_migrations/
-    exit;
   fi
 done
 # mv $PROJ/marco/portal/base/migrations/0003_auto_20200526_2357.py $PROJ/wagtail_migrations/
