@@ -1,7 +1,7 @@
 #!/bin/bash
 ENV=/usr/local/apps/wag_env;
-PYVER='3.8'
-PYGDAL='==3.0.4.6'
+PYVER='3.6'
+PYGDAL='<2.2.4'
 DBNAME='ocean_portal'
 DBUSER='postgres'
 infile='/usr/local/apps/ocean_portal/data/marco_portal_prod_12.sql'

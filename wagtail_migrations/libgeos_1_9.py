@@ -186,7 +186,7 @@ def geos_version_info():
     version.
     """
     ver = geos_version().decode()
-    m = version_regex.match(ver)
+    m = version_regex.match(ver.strip())
     if not m:
         raise GEOSException('Could not parse version info string "%s"' % ver)
     return {key: m.group(key) for key in (
