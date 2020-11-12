@@ -16,6 +16,7 @@ STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol6
 COMPRESS_ENABLED = True
+STATIC_CORE = /usr/local/apps/marco_portal_static/
 
 [REGION]
 #NAME = Mid-Atlantic Ocean
