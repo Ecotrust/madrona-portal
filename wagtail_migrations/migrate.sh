@@ -104,7 +104,7 @@ done
 echo "Checking out Wagtail 2.x compatible code-base..."
 git checkout wagtail-migration
 
-for VER in '2_00' '2_01' '2_02' '2_03' '2_04' '2_05' '2_06' '2_07' '2_08' '2_09'
+for VER in '2_00' '2_01' '2_02' '2_03' '2_04' '2_05' '2_06' '2_07' '2_08' '2_09' '2_10' '2_11'
 do
 
   if $PROMPT_VERSION ; then
