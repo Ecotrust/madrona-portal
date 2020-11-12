@@ -64,6 +64,7 @@ try:
     __import__('wagtail.contrib.forms')
     # Wagtail v2
     WAGTAIL_VERSION = 2
+
     INSTALLED_APPS = [
         'wagtail.contrib.forms',
         'wagtail.contrib.redirects',
@@ -207,8 +208,18 @@ MIDDLEWARE = [
 ]
 
 if WAGTAIL_VERSION > 1:
+    try:
+        __import__('wagtail.core.middleware.SiteMiddleware')
+        MIDDLEWARE += [
+            'wagtail.core.middleware.SiteMiddleware',
+        ]
+    except ImportError as e:
+        # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
+        MIDDLEWARE += [
+            'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
+        ]
+        WAGTAIL_VERSION = 2.11
     MIDDLEWARE += [
-        'wagtail.core.middleware.SiteMiddleware',
         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     ]
 else:
@@ -304,11 +315,13 @@ USE_TZ = True
 
 STATIC_ROOT = app_cfg.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 STATIC_URL = app_cfg.get('STATIC_URL', '/static/')
+STATIC_CORE = app_cfg.get('STATIC_CORE', '/usr/local/apps/marco_portal_static/')
 
 STATICFILES_DIRS = (
     STYLES_DIR,
     COMPONENTS_DIR,
     ASSETS_DIR,
+    STATIC_CORE,
 )
 
 STATICFILES_FINDERS = (
