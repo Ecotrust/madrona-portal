@@ -172,6 +172,10 @@ INSTALLED_APPS += [
     'nested_admin',
 ]
 
+ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
+
+INSTALLED_APPS += ADDITIONAL_APPS
+
 PROJECT_APP = app_cfg.get('PROJECT_APP', False)
 if PROJECT_APP and not PROJECT_APP == 'False':
     INSTALLED_APPS.append(PROJECT_APP)
@@ -538,19 +542,32 @@ if 'EMAIL' not in cfg.sections():
 email_cfg = cfg['EMAIL']
 
 EMAIL_HOST = email_cfg.get('HOST', 'localhost')
-EMAIL_PORT = email_cfg.getint('PORT', 8025)
+EMAIL_PORT = email_cfg.getint('PORT', 25)
 if cfg.has_option('EMAIL', 'HOST_USER') and \
         cfg.has_option('EMAIL', 'HOST_PASSWORD'):
     EMAIL_HOST_USER = email_cfg.get('HOST_USER')
     EMAIL_HOST_PASSWORD = email_cfg.get('HOST_PASSWORD')
+else:
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
 
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-CELERY_EMAIL_BACKEND = 'email_log.backends.EmailBackend'
+EMAIL_BACKEND = email_cfg.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 
-DEFAULT_FROM_EMAIL = "MARCO Portal Team <portal@midatlanticocean.org>"
-SERVER_EMAIL = "MARCO Site Errors <developers@pointnineseven.com>"
+DEFAULT_FROM_EMAIL = email_cfg.get('DEFAULT_FROM_EMAIL', "MARCO Portal Team <portal@midatlanticocean.org>")
+SERVER_EMAIL = email_cfg.get('SERVER_EMAIL', "MARCO Site Errors <ksdev@ecotrust.org>")
+EMAIL_USE_TLS = email_cfg.getboolean('EMAIL_USE_TLS', False)
 # for mail to admins/managers only
 EMAIL_SUBJECT_PREFIX = app_cfg.get('EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
+
+if 'AWS' not in cfg.sections():
+    cfg['AWS'] = {}
+
+aws_cfg = cfg['AWS']
+
+AWS_ACCESS_KEY_ID = aws_cfg.get('AWS_ACCESS_KEY_ID','')
+AWS_SECRET_ACCESS_KEY = aws_cfg.get('AWS_SECRET_ACCESS_KEY','')
+AWS_SES_REGION_NAME = aws_cfg.get('AWS_SES_REGION_NAME', 'us-east-1')
+AWS_SES_REGION_ENDPOINT = aws_cfg.get('AWS_SES_REGION_ENDPOINT','email.us-east-1.amazonaws.com')
 
 if 'CELERY' not in cfg.sections():
     cfg['CELERY'] = {}
