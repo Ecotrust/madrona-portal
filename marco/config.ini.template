@@ -12,6 +12,8 @@ MEDIA_ROOT = /path/to/media
 MEDIA_URL = /media/
 TIME_ZONE = UTC
 GA_ACCOUNT = You forgot to set the google analytics account
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
 STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol6
@@ -45,7 +47,7 @@ NAME = marco_portal
 HOST = localhost
 PORT = 5432
 USER = vagrant
-#PASSWORD = 
+#PASSWORD =
 
 [EMAIL]
 HOST = localhost
@@ -58,8 +60,8 @@ SERVER_EMAIL = MidA Site Errors <midasupport@mail.mida.ecotrust.org>
 #EMAIL_BACKEND = django_ses.SESBackend
 
 [AWS]
-AWS_ACCESS_KEY_ID = 
-AWS_SECRET_ACCESS_KEY = 
+AWS_ACCESS_KEY_ID =
+AWS_SECRET_ACCESS_KEY =
 AWS_SES_REGION_NAME = us-east-1
 AWS_SES_REGION_ENDPOINT = email.us-east-1.amazonaws.com
 

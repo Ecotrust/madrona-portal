@@ -569,6 +569,7 @@ AWS_SECRET_ACCESS_KEY = aws_cfg.get('AWS_SECRET_ACCESS_KEY','')
 AWS_SES_REGION_NAME = aws_cfg.get('AWS_SES_REGION_NAME', 'us-east-1')
 AWS_SES_REGION_ENDPOINT = aws_cfg.get('AWS_SES_REGION_ENDPOINT','email.us-east-1.amazonaws.com')
 
+
 if 'CELERY' not in cfg.sections():
     cfg['CELERY'] = {}
 
@@ -585,8 +586,8 @@ GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
 
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = '6LevfQoUAAAAAPIKTQHJt3_Y2NDXkZQ3HYQHDNHk'
-RECAPTCHA_PRIVATE_KEY = '6LevfQoUAAAAACp-4BPAgx4oMgeJrn1d9IMyReoI'
+RECAPTCHA_PUBLIC_KEY = app_cfg.get('RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = app_cfg.get('RECAPTCHA_PRIVATE_KEY','')
 
 # OL2 doesn't support reprojecting rasters, so for WMS servers that don't provide
 # EPSG:3857 we send it to a proxy to be re-projected.
