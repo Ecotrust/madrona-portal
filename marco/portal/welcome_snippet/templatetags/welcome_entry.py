@@ -12,10 +12,9 @@ def welcome_entry(context):
     except WelcomePage.DoesNotExist:
         return "(No welcome pages have been activated)"
 
-    return t.render(template.Context({
+    return t.render({
         'welcome_entry': welcome_entry,
-        'request': context['request'],
-    }))
+    },context['request'])
 
 @register.simple_tag(takes_context=True)
 def welcome_title(context):
