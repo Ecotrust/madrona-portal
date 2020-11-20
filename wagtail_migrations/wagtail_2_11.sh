@@ -14,8 +14,8 @@ PIP=$ENV/bin/pip;
 # 2_11
 $PIP uninstall wagtail -y
 $PIP uninstall django-modelcluster -y
-$PIP install "django-modelcluster==5.1"
 $PIP install "anyascii==0.1.7"
+$PIP install "django-modelcluster==5.1"
 $PIP install "wagtail==2.11"
 
 PYTHON=$ENV/bin/python3;
