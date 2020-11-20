@@ -176,20 +176,6 @@ ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
 
 INSTALLED_APPS += ADDITIONAL_APPS
 
-PROJECT_APP = app_cfg.get('PROJECT_APP', False)
-if PROJECT_APP and not PROJECT_APP == 'False':
-    INSTALLED_APPS.append(PROJECT_APP)
-
-PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
-if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
-    try:
-        from importlib import import_module
-        APP_MODULE = import_module(PROJECT_APP)
-        exec("from %s.settings import *" % APP_MODULE.__package__)
-    except Exception as e:
-        print(e)
-        print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
-
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOpenId',
@@ -628,6 +614,20 @@ PROJECT_REGION = {
     'srid': region_cfg.getint('SRID', PROJECT_REGION['srid'] if PROJECT_REGION and 'srid' in PROJECT_REGION.keys() else 4326),
     'map': region_cfg.get('MAP', PROJECT_REGION['map'] if PROJECT_REGION and 'map' in PROJECT_REGION.keys() else 'ocean'),
 }
+
+PROJECT_APP = app_cfg.get('PROJECT_APP', False)
+if PROJECT_APP and not PROJECT_APP == 'False':
+    INSTALLED_APPS.append(PROJECT_APP)
+
+PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
+if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
+    try:
+        from importlib import import_module
+        APP_MODULE = import_module(PROJECT_APP)
+        exec("from %s.settings import *" % APP_MODULE.__package__)
+    except Exception as e:
+        print(e)
+        print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
