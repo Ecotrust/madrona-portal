@@ -17,7 +17,9 @@
     {% compress css %}
       <link rel="stylesheet" type="text/x-scss" href="{% static 'marco_site.scss' %}" />
     {% endcompress %}
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+      {{ block.super }}
+    {% endblock %}
     <script type="text/javascript">
         if (!console.debug) {
             console.debug = console.log;
