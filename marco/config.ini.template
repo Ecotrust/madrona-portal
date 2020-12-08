@@ -28,6 +28,7 @@ STATIC_CORE = /usr/local/apps/marco_portal_static/
 #INIT_LON = -74
 #SRID = 4326
 #MAP = ocean
+#MAX_ZOOM = 15
 
 [CACHES]
 BACKEND = django_redis.cache.RedisCache

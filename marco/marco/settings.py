@@ -614,6 +614,7 @@ PROJECT_REGION = {
     'init_lon': region_cfg.getint('INIT_LON', PROJECT_REGION['init_lon'] if PROJECT_REGION and 'init_lon' in PROJECT_REGION.keys() else -74),
     'srid': region_cfg.getint('SRID', PROJECT_REGION['srid'] if PROJECT_REGION and 'srid' in PROJECT_REGION.keys() else 4326),
     'map': region_cfg.get('MAP', PROJECT_REGION['map'] if PROJECT_REGION and 'map' in PROJECT_REGION.keys() else 'ocean'),
+    'max_zoom': region_cfg.getint('MAX_ZOOM', PROJECT_REGION['max_zoom'] if PROJECT_REGION and 'max_zoom' in PROJECT_REGION.keys() else 13),
 }
 
 PROJECT_APP = app_cfg.get('PROJECT_APP', False)
