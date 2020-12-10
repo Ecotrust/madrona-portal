@@ -143,7 +143,8 @@ INSTALLED_APPS = [
 
 PROJECT_APP = app_cfg.get('PROJECT_APP', False)
 if PROJECT_APP and not PROJECT_APP == 'False':
-    INSTALLED_APPS.append(PROJECT_APP)
+    # For overrides like templates to work, the custom app must come first
+    INSTALLED_APPS.insert(0,PROJECT_APP)
 
 PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
 if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
