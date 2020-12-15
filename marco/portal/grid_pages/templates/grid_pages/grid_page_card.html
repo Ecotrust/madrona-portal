@@ -4,6 +4,6 @@
 	{% if 'collaborate' in item.url %}
 		<img src='/static/brand/marco_marker.svg' style="width: 34px; height: auto;" />
 	{% else %}
-		<div class="badge">{{ item.metric|default:"NEED" }}</div>
+		<div class="badge"><span class="badge-text">{{ item.metric|default:"NEED" }}</span></div>
 	{% endif %}
 {% endblock %}

@@ -1,0 +1,8 @@
+div.badge {
+  padding: 0;
+}
+
+span.badge-text {
+  display: table;
+  margin: 0 auto;
+}
