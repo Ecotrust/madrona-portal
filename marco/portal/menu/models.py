@@ -71,10 +71,10 @@ class MenuEntryBase(models.Model):
             return ""
 
     def __unicode__(self):
-        return self.text()
+        return self.text
 
     def __str__(self):
-        return self.text()
+        return self.text
 
 # The real model which combines the abstract model, an
 # Orderable helper class, and what amounts to a ForeignKey link
