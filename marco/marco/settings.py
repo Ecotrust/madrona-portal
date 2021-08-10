@@ -34,6 +34,10 @@ if 'APP' not in cfg.sections():
 app_cfg = cfg['APP']
 
 DEBUG = app_cfg.getboolean('DEBUG', True)
+
+APP_NAME = app_cfg.get('APP_NAME', 'Marine Planner')
+APP_URL = app_cfg.get('APP_URL', '')
+
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
 SECRET_KEY = app_cfg.get('SECRET_KEY', 'you forgot to set the secret key')
