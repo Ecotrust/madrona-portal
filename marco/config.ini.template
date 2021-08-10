@@ -2,8 +2,9 @@
 # Server-specific configuration goes here.
 
 [APP]
-APP_NAME='Marine Planner'
-APP_URL=''
+APP_NAME = Marine Planner
+APP_URL = ''
+APP_TEAM_NAME = Marine Planner Team
 PROJECT_APP = False
 PROJECT_SETTINGS_FILE = False
 DEBUG = True

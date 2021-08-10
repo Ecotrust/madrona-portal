@@ -37,6 +37,7 @@ DEBUG = app_cfg.getboolean('DEBUG', True)
 
 APP_NAME = app_cfg.get('APP_NAME', 'Marine Planner')
 APP_URL = app_cfg.get('APP_URL', '')
+APP_TEAM_NAME = app_cfg.get('APP_TEAM_NAME', "{} Team".format(APP_NAME))
 
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
