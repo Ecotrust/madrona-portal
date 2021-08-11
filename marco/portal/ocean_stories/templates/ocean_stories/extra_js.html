@@ -7,9 +7,11 @@
   <script src="{% static 'js/lib/knockout-3.3.0.js' %}"></script>
   <script src="{% static 'js/lib/knockout.mapping-2.4.1.js' %}"></script>
   <script src="{% static 'js/knockout-bindings.js' %}"></script>
-  
+
   {% if MAP_LIBRARY == 'ol6' %}
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script> -->
+    <script src="{% static 'assets/openlayers/ol.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/ol-esri-style/vanilla/vanilla.js' %}" type="text/javascript"></script>
   {% endif %} <!-- OL6 -->
 
   {% if MAP_LIBRARY == 'ol5' %}
