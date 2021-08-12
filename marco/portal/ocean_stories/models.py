@@ -112,6 +112,9 @@ class OceanStorySectionBase(MediaItem):
             if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
                 data_layers[layer_id]['legend_source'] = 'url'
                 data_layers[layer_id]['legend'] = "%s" % layer['url'].split('/export')[0]
+            if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcFeatureServer' and '/FeatureServer' in layer['url']:
+                data_layers[layer_id]['legend_source'] = 'arc_feature_service'
+                data_layers[layer_id]['legend'] = "%s/%s?f=json" % (layer['url'], layer['arcgis_layers'])
 
         s = {
             'view': {

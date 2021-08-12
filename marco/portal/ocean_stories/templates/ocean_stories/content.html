@@ -1,4 +1,5 @@
 {% load wagtailcore_tags static %}
+<link rel="stylesheet" href="{% static 'visualize/css/legends.css' %}" />
 <script src="{% static 'jquery/dist/jquery.js' %}"></script>
 {% if self.sections %}
     {% for section in self.sections.all %}
@@ -55,6 +56,81 @@
                               }
                               html += "</tbody></table>";
                             }
+                            $('.layer_' + id + '_legend').html(html);
+                          });
+                        </script>
+                        {% elif legend.legend_source == 'arc_feature_service' %}
+                        <span class='layer_{{ legend.id }}_legend'>Loading...</span>
+                        <script>
+                          $.ajax({
+                            url: "{{ legend.legend }}",
+                          }).done(function(data) {
+                            if ( typeof(data) == "object") {
+                              legend_json = data;
+                            } else if (typeof(data) == "string") {
+                              legend_json = JSON.parse(data);
+                            } else {
+                              // punt
+                              legend_json = data;
+                            }
+                            name = "{{ legend.name }}";
+                            layers = "{{ legend.arcgis_layers }}".split(',');
+                            id = "{{ legend.id }}";
+                            url = "{{ legend.legend }}";
+                            html = '';
+                            for (var i = 0; i < layers.length; i++){
+                              layer_id = layers[i];
+                              layer = {'legend':{'elements':[]}};
+                              //copied from visualize/models.js layerModel.interpretArcGISFeatureServerLegend
+                              if (legend_json['drawingInfo']['renderer'].hasOwnProperty('uniqueValueInfos')){
+                                // list of unique values (esriSFS case)
+                                legend_items = legend_json['drawingInfo']['renderer']['uniqueValueInfos'];
+                              } else if (legend_json['drawingInfo']['renderer'].hasOwnProperty('symbol')) {
+                                // only 1 item (esriPMS case)
+                                legend_items = [legend_json['drawingInfo']['renderer']];
+                              }
+                              html += "<table><tbody>";
+                              $.each(legend_items, function(j, legendobj) {
+                                  var type = 'swatch';
+                                  var color = 'transparent';
+                                  var outline_color = 'rgba(0,0,0,255)';
+                                  // TODO: Support outline_style
+                                  var outline_style = 'solid';
+                                  var outline_width = '0.4';
+                                  var label = legendobj['label'];
+                                  if (j < 1 && label === "") {
+                                      label = layerobj['layerName'];
+                                  }
+                                  if (legendobj.symbol.type == "esriPMS"){
+                                    img_style = `fill-opacity="0" stroke="none" ` +
+                                    `stroke-opacity="0" stroke-width="1" stroke-linecap="butt" ` +
+                                    `stroke-linejoin="miter" stroke-miterlimit="4" x="-10" y="-10" ` +
+                                    `width="20" height="20" preserveAspectRatio="none" ` +
+                                    `src="data:${legendobj.symbol.contentType};base64,` +
+                                    `${legendobj.symbol.imageData}" ` +
+                                    `transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,10.00000000)"`;
+                                    type = 'point_image';
+                                    viz = `<image ${img_style} class="legend-${type}"></image>`;
+
+                                  } else if (legendobj.symbol.type == "esriSFS"){
+                                    color = 'rgba(' + legendobj.symbol.color.join(',') + ')';
+                                    outline_color = 'rgba(' + legendobj.symbol.outline.color.join(',') + ')';
+                                    outline_width = legendobj.symbol.outline.width;
+                                    style = `border: ${outline_width}px ${outline_style} ${outline_color}; background-color: ${color}`;
+                                    viz = `<div class="legend-${type}" style="${style}"></div>`;
+                                  } else if (legendobj.symbol.type == "esriSLS"){
+                                    color = 'rgba(' + legendobj.symbol.color.join(',') + ')';
+                                    type = 'line';
+                                    style = `border-top: ${legendobj.symbol.width}px ${outline_style} ${color};`;
+                                    viz = `<div class="legend-${type}" style="${style}"></div>`;
+                                  }
+                                  html += "<tr valign='middle'>";
+                                  html += "<td>" + viz + "</td>";
+                                  html += "<td>" + label + "<td>";
+                                  html += "</tr>";
+                              });
+                            }
+
                             $('.layer_' + id + '_legend').html(html);
                           });
                         </script>
