@@ -1,19 +1,33 @@
 import os
-
-# from django.conf.urls import patterns, include, url
-from django.urls import re_path, include, path
+try:
+    from django.urls import re_path, include
+except (ModuleNotFoundError, ImportError):
+    from django.conf.urls import include, url as re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 
 from django.views.generic.base import RedirectView, TemplateView
 
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.search import urls as wagtailsearch_urls
-from wagtail.documents import urls as wagtaildocs_urls
-from wagtail.core import urls as wagtail_urls
-from wagtail.contrib.sitemaps.views import sitemap
-from wagtail.images import urls as wagtailimages_urls
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.admin import urls as wagtailadmin_urls
+    from wagtail.search import urls as wagtailsearch_urls
+    from wagtail.documents import urls as wagtaildocs_urls
+    from wagtail.core import urls as wagtail_urls
+    from wagtail.contrib.sitemaps.views import sitemap
+    from wagtail.images import urls as wagtailimages_urls
+    # Register search signal handlers
+    from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
+else:
+    from wagtail.admin import urls as wagtailadmin_urls
+    from wagtail.search import urls as wagtailsearch_urls
+    from wagtail.docs import urls as wagtaildocs_urls
+    from wagtail.core import urls as wagtail_urls
+    from wagtail.contrib.wagtailsitemaps.views import sitemap
+    from wagtail.images import urls as wagtailimages_urls
+    # Register search signal handlers
+    from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
+
 from wagtailimportexport import urls as wagtailimportexport_urls
 
 import mapgroups.urls
@@ -29,8 +43,6 @@ from marco_site import views as marco_site_views
 admin.autodiscover()
 
 
-# Register search signal handlers
-from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 wagtailsearch_register_signal_handlers()
 
 try:
@@ -45,14 +57,16 @@ urlpatterns += [
     #'',
     re_path(r'^sitemap\.xml$', sitemap),
 
-    path('django-admin/', admin.site.urls),
+    re_path(r'django-admin/', admin.site.urls),
 
     re_path(r'^rpc$', serve_rpc_request),
 
     # https://github.com/omab/python-social-auth/issues/399
     # I want the psa urls to be inside the account urls, but PSA doesn't allow
     # nested namespaces. It will likely be fixed in 0.22
+
     re_path(r'^account/auth/', include('social.apps.django_app.urls'), name='social'),
+    # url('^account/auth/', include('social_django.urls', namespace='social')),
     re_path(r'^account/', include('accounts.urls'), name='account'),
     re_path(r'^collaborate/groups/', include('mapgroups.urls'), name='groups'),
     re_path(r'^groups/', include('mapgroups.urls'), name='groups'),

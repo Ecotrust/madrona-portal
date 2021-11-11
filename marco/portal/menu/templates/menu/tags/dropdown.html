@@ -24,7 +24,7 @@
                   {# AND has a higher precedence than OR, so this expression is parsed like: #}
                   {# A or (anon and O) or (not_anon and I) #}
                   {% if entry.display_options == 'A' or request.user.is_anonymous and entry.display_options == 'O' or request.user.is_authenticated and entry.display_options == 'I' or request.user.is_staff and entry.display_options == 'S' or request.user.is_superuser and entry.display_options == 'S' %}
-                  <li><a href="{{ entry.destination }}"{% if entry.external %} target="_blank"{% endif %}>{{ entry.text }}</a></li>
+                  <li><a href="{{ entry.destination }}"{% if not entry.external == None %} target="_blank"{% endif %}>{{ entry.text }}</a></li>
                       {% if entry.show_divider_underneath %}
                           <li class="divider"></li>
                       {% endif %}

@@ -1,5 +1,5 @@
 # Minimal requirements
-Django
+Django<3.0
 wagtail
 
 # Tentative additions:
@@ -22,8 +22,8 @@ django-redis
 -e git+https://github.com/Ecotrust/rpc4django.git@master#egg=rpc4django-ecotrust
 
 -e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@dj2#egg=madrona_analysistools-dj2
--e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@dj2#egg=mp_data_manager-dj2
--e git+https://github.com/MidAtlanticPortal/mp-visualize.git@dj2#egg=mp_visualize-dj2
+-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@mida#egg=mp_data_manager-dj2
+-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@merge_ol6#egg=mp_visualize-dj2
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features-dj2
 -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts-dj2
 -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios-dj2
@@ -33,6 +33,7 @@ django-redis
 -e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=marco-map_groups
 -e git+https://github.com/Ecotrust/p97-nursery.git@dj2#egg=p97-nursery-dj2
 -e git+https://github.com/MidAtlanticPortal/mp-proxy.git@dj2#egg=mp_proxy-dj2
+-e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
 
 celery>=4.0
 # Django-Celery is incompatible with py3/Django2

@@ -2,6 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags static %}
 
 {% block extra_css %}
+  {{ block.super }}
   <link rel="stylesheet" type="text/css" href="{% static 'css/slick.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'css/slick-theme.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}"/>

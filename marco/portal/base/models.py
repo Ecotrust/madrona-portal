@@ -3,13 +3,23 @@ from django.dispatch.dispatcher import receiver
 from django.db.models.signals import pre_delete
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
-from wagtail.core.models import Page
-from wagtail.core.fields import RichTextField
-from wagtail.search import index
-from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.images.models import AbstractImage, AbstractRendition, Image
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Page
+    from wagtail.core.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.images.edit_handlers import ImageChooserPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition, Image
+else:
+    from wagtail.core.models import Page
+    from wagtail.core.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.images.edit_handlers import ImageChooserPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition, Image
+
 
 
 # Portal defines its own custom image class to replace wagtailimages.Image,
@@ -19,7 +29,7 @@ class PortalImage(AbstractImage):
     creator = models.CharField(max_length=255, blank=True)
     creator_URL = models.URLField(blank=True)
 
-    search_fields = AbstractImage.search_fields + [
+    search_fields = [x for x in AbstractImage.search_fields] + [
         index.SearchField('creator'),
     ]
 
@@ -29,6 +39,10 @@ class PortalImage(AbstractImage):
         'creator_URL'
     )
 
+    @classmethod
+    def creatable_subpage_models(cls):
+        print(cls)
+
 # Receive the pre_delete signal and delete the file associated with the model instance.
 @receiver(pre_delete, sender=PortalImage)
 def image_delete(sender, instance, **kwargs):
@@ -37,11 +51,19 @@ def image_delete(sender, instance, **kwargs):
 
 class PortalRendition(AbstractRendition):
     image = models.ForeignKey('PortalImage', related_name='renditions', on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = (
-            ('image', 'filter_spec', 'focal_point_key'),
-        )
+    # Wagtail 1.8 deviates drastically from Wagtail 1.7. We need to support both for
+    #   the automated migration from wagtail 1.3 to 2.9
+    import wagtail
+    if hasattr(wagtail, 'VERSION') and wagtail.VERSION[0] > 0 and (wagtail.VERSION[0] > 1 or wagtail.VERSION[1] > 7):
+        class Meta:
+            unique_together = (
+                ('image', 'filter_spec', 'focal_point_key'),
+            )
+    else:
+        class Meta:
+            unique_together = (
+                ('image', 'filter', 'focal_point_key'),
+            )
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
 @receiver(pre_delete, sender=PortalRendition)
@@ -101,7 +123,7 @@ class PageBase(Page):
         abstract = True
 
     description = RichTextField(blank=True, null=True)
-    search_fields = Page.search_fields + [ # Inherit search_fields from Page
+    search_fields = [x for x in Page.search_fields] + [ # Inherit search_fields from Page
         index.SearchField('description'),
     ]
 

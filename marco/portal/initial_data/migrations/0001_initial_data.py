@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from wagtail.core.models import Page
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Page
+else:
+    from wagtail.core.models import Page
 
 def create_initial_data(apps, schema_editor):
     home_page = Page.objects.get(url_path="/home/")
@@ -34,7 +38,6 @@ class Migration(migrations.Migration):
         ('data_gaps', '0001_initial'),
         ('data_catalog', '0001_initial'),
         ('home', '0001_initial'),
-    
     ]
 
     operations = [

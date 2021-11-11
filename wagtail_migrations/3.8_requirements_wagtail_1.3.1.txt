@@ -1,0 +1,114 @@
+amqp==1.4.9
+anyjson==0.3.3
+beautifulsoup4==4.6.0
+billiard==3.3.0.23
+celery==3.1.18
+certifi==2020.4.5.1
+cffi==1.14.0
+chardet==3.0.4
+cryptography==2.9.2
+defusedxml==0.6.0
+diff-match-patch==20181111
+Django==1.9.13
+django-appconf==1.0.4
+django-celery-email==1.1.1
+django-compressor==2.4
+django-email-log==0.2.0
+django-flatblocks==0.9.4
+django-import-export==0.7.0
+django-libsass==0.8
+django-modelcluster==1.1
+django-nested-admin==3.0.21
+django-picklefield==0.3.2
+django-proxy==1.2.1
+django-recaptcha<2.0
+django-redis<2.0.1
+django-redis-cache==2.0.0
+django-social-share==1.4.0
+django-taggit==0.18.3
+django-tinymce==3.0.2
+django-treebeard==3.0
+django-wysiwyg==0.8.0
+djangorestframework==3.6.4
+draftjs-exporter==2.0.0
+ecdsa==0.15
+elasticsearch==7.7.0
+et-xmlfile==1.0.1
+html5lib==0.999999
+httplib2==0.17.3
+idna==2.9
+importlib-metadata==1.6.0
+jdcal==1.4.1
+kombu==3.0.33
+l18n==2018.5
+libsass==0.20.0
+-e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@master#egg=madrona_analysistools
+-e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features
+-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@py3#egg=madrona_manipulators
+-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@wagtail_1_3_merge#egg=madrona_scenarios
+-e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=mapgroups
+# Markdown==3.1.1
+MarkupPy==1.14
+-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts
+-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@dj1py3#egg=mp_data_manager
+-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@dj2#egg=mp_drawing
+-e git+https://github.com/MidAtlanticPortal/mp-explore.git@dj2#egg=mp_explore
+-e git+https://github.com/MidAtlanticPortal/mp-proxy.git@merge-2020#egg=mp_proxy
+-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@dj2#egg=mp_visualize
+
+-e git+https://github.com/MidAtlanticPortal/madrona-forms.git@master#egg=madrona_forms
+-e git+https://github.com/MidAtlanticPortal/mp-clipping.git@master#egg=mp_clipping
+
+-e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
+
+numpy==1.18.4
+oauthlib==3.1.0
+odfpy==1.4.1
+openpyxl==3.0.3
+OWSLib==0.19.2
+
+-e git+https://github.com/MidAtlanticPortal/p97-nursery.git@master#egg=p97_nursery
+-e git+https://github.com/MidAtlanticPortal/p97settings.git@master#egg=p97settings
+
+Pillow==5.4.1
+psycopg2-binary==2.8.5
+pyasn1==0.4.8
+pycparser==2.20
+pygdal==3.0.4.6
+PyJWT==1.7.1
+pyproj==2.6.1.post1
+pyshp==2.1.0
+python-dateutil==2.8.1
+python-jose==3.1.0
+python-monkey-business==1.0.0
+python-social-auth==0.3.6
+python3-openid==3.1.0
+pytz==2020.1
+PyYAML==5.3.1
+querystring-parser==1.2.4
+rcssmin==1.0.6
+redis==3.5.2
+requests==2.23.0
+requests-oauthlib==1.3.0
+rjsmin==1.1.0
+
+rpc4django==0.5.0
+
+rsa==4.0
+six==1.14.0
+social-auth-app-django==3.1.0
+social-auth-core==3.3.3
+soupsieve==2.0
+sqlparse==0.3.1
+tablib==1.1.0
+Unidecode==0.4.21
+urllib3==1.25.9
+vine==1.3.0
+wagtail==1.3.1
+wagtail-import-export==0.2
+webencodings==0.5.1
+Willow==0.2.2
+xlrd==1.2.0
+XlsxWriter==1.2.8
+xlwt==1.3.0
+zipp==3.1.0

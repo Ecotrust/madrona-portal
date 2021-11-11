@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.core.fields
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.fields as wagtail_core_fields
+else:
+    import wagtail.core.fields as wagtail_core_fields
 
 
 class Migration(migrations.Migration):
@@ -15,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='page',
             name='description',
-            field=wagtail.core.fields.RichTextField(default='', blank=True),
+            field=wagtail_core_fields.RichTextField(default='', blank=True),
             preserve_default=False,
         ),
     ]

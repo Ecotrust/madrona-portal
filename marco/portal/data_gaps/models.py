@@ -1,7 +1,12 @@
 from django.db import models
+from django.conf import settings
 
-from wagtail.admin.edit_handlers import FieldPanel
-from wagtail.search import index
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.search import index
+else:
+    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.search import index
 
 from portal.base.models import PageBase,DetailPageBase
 

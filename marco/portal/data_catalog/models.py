@@ -1,4 +1,10 @@
-from wagtail.core.models import Page
+from django.conf import settings
+
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Page
+else:
+    from wagtail.core.models import Page
+
 
 from portal.base.models import PageBase
 from .views import theme_query

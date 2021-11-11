@@ -2,13 +2,20 @@ from django.utils.safestring import mark_safe
 import re
 
 from django.db import models
+from django.conf import settings
 
-from wagtail.core.models import Orderable
-from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-from wagtail.snippets.models import register_snippet
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.snippets.models import register_snippet
+else:
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.snippets.models import register_snippet
+
 
 # The abstract model, complete with panels
 class MenuEntryBase(models.Model):
@@ -64,10 +71,10 @@ class MenuEntryBase(models.Model):
             return ""
 
     def __unicode__(self):
-        return self.text()
+        return self.text
 
     def __str__(self):
-        return self.text()
+        return self.text
 
 # The real model which combines the abstract model, an
 # Orderable helper class, and what amounts to a ForeignKey link

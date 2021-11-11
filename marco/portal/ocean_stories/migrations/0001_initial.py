@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.core.fields
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.fields as wagtail_core_fields
+else:
+    import wagtail.core.fields as wagtail_core_fields
 import modelcluster.fields
 import django.db.models.deletion
 
@@ -40,7 +44,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sort_order', models.IntegerField(null=True, editable=False, blank=True)),
                 ('title', models.CharField(max_length=255)),
-                ('body', wagtail.core.fields.RichTextField()),
+                ('body', wagtail_core_fields.RichTextField()),
                 ('map_state', models.TextField()),
                 ('page', modelcluster.fields.ParentalKey(related_name='sections', to='ocean_stories.OceanStory')),
             ],

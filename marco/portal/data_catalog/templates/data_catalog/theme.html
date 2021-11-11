@@ -22,7 +22,6 @@
   {% if layers %}
     <div class="layer-list">
       {% for layer in layers %}
-          <!-- { layer.catalog_html}} -->
         {% include "data_catalog/includes/cacheless_init_layer_info.html" %}
         {% if layer.sublayers|length > 0 %}
         <div id="collapse-parent-{{ layer.id }}" class="collapse in">

@@ -34,6 +34,11 @@ if 'APP' not in cfg.sections():
 app_cfg = cfg['APP']
 
 DEBUG = app_cfg.getboolean('DEBUG', True)
+
+APP_NAME = app_cfg.get('APP_NAME', 'Marine Planner')
+APP_URL = app_cfg.get('APP_URL', '')
+APP_TEAM_NAME = app_cfg.get('APP_TEAM_NAME', "{} Team".format(APP_NAME))
+
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
 SECRET_KEY = app_cfg.get('SECRET_KEY', 'you forgot to set the secret key')
@@ -61,8 +66,57 @@ CATALOG_TECHNOLOGY = None
 
 
 # Application definition
+try:
+    # Thanks to tgandor for this inspiration to handle two different wagtail
+    #      versions conditionally while performing this terrible merge:
+    #   https://djangosnippets.org/snippets/3048/
+    __import__('wagtail.contrib.forms')
+    # Wagtail v2
+    WAGTAIL_VERSION = 2
 
-INSTALLED_APPS = [
+    INSTALLED_APPS = [
+        'wagtail.contrib.forms',
+        'wagtail.contrib.redirects',
+        'wagtail.embeds',
+        'wagtail.sites',
+        'wagtail.users',
+        'wagtail.snippets',
+        'wagtail.documents',
+        'wagtail.images',
+        'wagtail.search',
+        'wagtail.admin',
+        'wagtail.core',
+        'wagtail.contrib.styleguide',
+        'wagtail.contrib.sitemaps',
+    ]
+except ImportError as e:
+    # print(e)
+    # Wagtail v1 for merging in old MidA Portal
+    WAGTAIL_VERSION = 1
+    INSTALLED_APPS = [
+        'wagtail.core',
+        'wagtail.admin',
+        'wagtail.docs',
+        'wagtail.snippets',
+        'wagtail.users',
+        'wagtail.sites',
+        'wagtail.images',
+        'wagtail.embeds',
+        'wagtail.search',
+        'wagtail.redirects',
+        'wagtail.forms',
+        'wagtail.contrib.wagtailsitemaps',
+    ]
+
+try:
+    __import__('django_redis')
+    REDIS_PACKAGE_NAME = 'django_redis'
+    INSTALLED_APPS += ['django_redis',]
+except ImportError as e:
+    REDIS_PACKAGE_NAME = 'redis_cache'
+
+
+INSTALLED_APPS += [
     'marco_site',
     # 'kombu.transport.django',
 
@@ -90,21 +144,7 @@ INSTALLED_APPS = [
 
     'captcha',
     'social_django',
-    'django_redis',
-
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-    'wagtail.contrib.styleguide',
-    'wagtail.contrib.sitemaps',
+    # 'django_redis',
 
     'portal.base',
     'portal.menu',
@@ -142,21 +182,6 @@ INSTALLED_APPS = [
     'nested_admin',
 ]
 
-PROJECT_APP = app_cfg.get('PROJECT_APP', False)
-if PROJECT_APP and not PROJECT_APP == 'False':
-    # For overrides like templates to work, the custom app must come first
-    INSTALLED_APPS.insert(0,PROJECT_APP)
-
-PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
-if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
-    try:
-        from importlib import import_module
-        APP_MODULE = import_module(PROJECT_APP)
-        exec("from %s.settings import *" % APP_MODULE.__package__)
-    except Exception as e:
-        print(e)
-        print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
-
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOpenId',
@@ -173,10 +198,31 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
+
+if WAGTAIL_VERSION > 1:
+    try:
+        __import__('wagtail.core.middleware.SiteMiddleware')
+        MIDDLEWARE += [
+            'wagtail.core.middleware.SiteMiddleware',
+        ]
+    except ImportError as e:
+        # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
+        MIDDLEWARE += [
+            'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
+        ]
+        WAGTAIL_VERSION = 2.11
+    MIDDLEWARE += [
+        'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    ]
+else:
+    MIDDLEWARE += [
+        'wagtail.core.middleware.SiteMiddleware',
+        'wagtail.redirects.middleware.RedirectMiddleware',
+    ]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
@@ -228,16 +274,28 @@ SESSION_REDIS_HOST = 'localhost'
 SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 0
 
-CACHES = {
-    'default': {
-        'BACKEND': cache_cfg.get('BACKEND', 'django_redis.cache.RedisCache'),
-        'LOCATION': cache_cfg.get('LOCATION', 'redis://127.0.0.1:6379/1'),
-        'KEY_PREFIX': 'marco_portal',
-        'OPTIONS': {
-            'CLIENT_CLASS': cache_cfg.get('CLIENT_CLASS', 'django_redis.client.DefaultClient'),
+if REDIS_PACKAGE_NAME == 'redis_cache':
+    {
+        'default': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': '/home/midatlantic/run/redis.sock',
+            'KEY_PREFIX': 'marco_portal',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'redis_cache.client.DefaultClient'
+            },
         }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': cache_cfg.get('BACKEND', 'django_redis.cache.RedisCache'),
+            'LOCATION': cache_cfg.get('LOCATION', 'redis://127.0.0.1:6379/1'),
+            'KEY_PREFIX': 'marco_portal',
+            'OPTIONS': {
+                'CLIENT_CLASS': cache_cfg.get('CLIENT_CLASS', 'django_redis.client.DefaultClient'),
+            }
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -253,11 +311,13 @@ USE_TZ = True
 
 STATIC_ROOT = app_cfg.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 STATIC_URL = app_cfg.get('STATIC_URL', '/static/')
+STATIC_CORE = app_cfg.get('STATIC_CORE', '/usr/local/apps/marco_portal_static/')
 
 STATICFILES_DIRS = (
     STYLES_DIR,
     COMPONENTS_DIR,
     ASSETS_DIR,
+    STATIC_CORE,
 )
 
 STATICFILES_FINDERS = (
@@ -285,17 +345,17 @@ COMPRESS_OFFLINE = True
 
 from django.conf import global_settings
 
-# Removed due to this: https://stackoverflow.com/a/39315587 - RDH 7/8/2019
-# TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+# Removed due to this: https://stackoverflow.com/a/39315587 - RDH (WCOA) 7/8/2019
+# # RDH (MARCO) 20191114 - if tuple, make into a list
+# TEMPLATE_CONTEXT_PROCESSORS = [x for x in global_settings.TEMPLATE_CONTEXT_PROCESSORS] + [
 #     'django.core.context_processors.request',
-#     'social.apps.django_app.context_processors.backends',
+#     'social_django.context_processors.backends',
 #     'portal.base.context_processors.search_disabled',
-# )
-
-
-# TEMPLATE_LOADERS = global_settings.TEMPLATE_LOADERS + (
+# ]
+#
+# TEMPLATE_LOADERS = [x for x in global_settings.TEMPLATE_LOADERS] + [
 #     'apptemplates.Loader',
-# )
+# ]
 
 TEMPLATES = [
     {
@@ -406,6 +466,8 @@ SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/account/validate'
 
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
 # Our authentication pipeline
 SOCIAL_AUTH_PIPELINE = (
     'accounts.pipeline.clean_session',
@@ -434,10 +496,14 @@ SOCIAL_AUTH_PIPELINE = (
 
     # Confirm with the user that they really want to make an account, also
     # make them enter an email address if they somehow didn't
-    'accounts.pipeline.confirm_account',
+    # 'accounts.pipeline.confirm_account',
 
     # Send a validation email to the user to verify its email address.
     'social.pipeline.mail.mail_validation',
+
+    # Associates the current social details with another user account with
+    # a similar email address. Disabled by default.
+    # 'social.pipeline.social_auth.associate_by_email',
 
     # Create a user account if we haven't found one yet.
     'social.pipeline.user.create_user',
@@ -468,19 +534,33 @@ if 'EMAIL' not in cfg.sections():
 email_cfg = cfg['EMAIL']
 
 EMAIL_HOST = email_cfg.get('HOST', 'localhost')
-EMAIL_PORT = email_cfg.getint('PORT', 8025)
+EMAIL_PORT = email_cfg.getint('PORT', 25)
 if cfg.has_option('EMAIL', 'HOST_USER') and \
         cfg.has_option('EMAIL', 'HOST_PASSWORD'):
     EMAIL_HOST_USER = email_cfg.get('HOST_USER')
     EMAIL_HOST_PASSWORD = email_cfg.get('HOST_PASSWORD')
+else:
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
 
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-CELERY_EMAIL_BACKEND = 'email_log.backends.EmailBackend'
+EMAIL_BACKEND = email_cfg.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 
-DEFAULT_FROM_EMAIL = "MARCO Portal Team <portal@midatlanticocean.org>"
-SERVER_EMAIL = "MARCO Site Errors <developers@pointnineseven.com>"
+DEFAULT_FROM_EMAIL = email_cfg.get('DEFAULT_FROM_EMAIL', "MARCO Portal Team <portal@midatlanticocean.org>")
+SERVER_EMAIL = email_cfg.get('SERVER_EMAIL', "MARCO Site Errors <ksdev@ecotrust.org>")
+EMAIL_USE_TLS = email_cfg.getboolean('EMAIL_USE_TLS', False)
 # for mail to admins/managers only
 EMAIL_SUBJECT_PREFIX = app_cfg.get('EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
+
+if 'AWS' not in cfg.sections():
+    cfg['AWS'] = {}
+
+aws_cfg = cfg['AWS']
+
+AWS_ACCESS_KEY_ID = aws_cfg.get('AWS_ACCESS_KEY_ID','')
+AWS_SECRET_ACCESS_KEY = aws_cfg.get('AWS_SECRET_ACCESS_KEY','')
+AWS_SES_REGION_NAME = aws_cfg.get('AWS_SES_REGION_NAME', 'us-east-1')
+AWS_SES_REGION_ENDPOINT = aws_cfg.get('AWS_SES_REGION_ENDPOINT','email.us-east-1.amazonaws.com')
+
 
 if 'CELERY' not in cfg.sections():
     cfg['CELERY'] = {}
@@ -498,8 +578,8 @@ GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
 
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = '6LevfQoUAAAAAPIKTQHJt3_Y2NDXkZQ3HYQHDNHk'
-RECAPTCHA_PRIVATE_KEY = '6LevfQoUAAAAACp-4BPAgx4oMgeJrn1d9IMyReoI'
+RECAPTCHA_PUBLIC_KEY = app_cfg.get('RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = app_cfg.get('RECAPTCHA_PRIVATE_KEY','')
 
 # OL2 doesn't support reprojecting rasters, so for WMS servers that don't provide
 # EPSG:3857 we send it to a proxy to be re-projected.
@@ -539,7 +619,26 @@ PROJECT_REGION = {
     'init_lon': region_cfg.getint('INIT_LON', PROJECT_REGION['init_lon'] if PROJECT_REGION and 'init_lon' in PROJECT_REGION.keys() else -74),
     'srid': region_cfg.getint('SRID', PROJECT_REGION['srid'] if PROJECT_REGION and 'srid' in PROJECT_REGION.keys() else 4326),
     'map': region_cfg.get('MAP', PROJECT_REGION['map'] if PROJECT_REGION and 'map' in PROJECT_REGION.keys() else 'ocean'),
+    'max_zoom': region_cfg.getint('MAX_ZOOM', PROJECT_REGION['max_zoom'] if PROJECT_REGION and 'max_zoom' in PROJECT_REGION.keys() else 13),
 }
+
+PROJECT_APP = app_cfg.get('PROJECT_APP', False)
+if PROJECT_APP and not PROJECT_APP == 'False':
+    INSTALLED_APPS.append(PROJECT_APP)
+
+PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
+if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
+    try:
+        from importlib import import_module
+        APP_MODULE = import_module(PROJECT_APP)
+        exec("from %s.settings import *" % APP_MODULE.__package__)
+    except Exception as e:
+        print(e)
+        print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
+
+ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
+
+INSTALLED_APPS += ADDITIONAL_APPS
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]

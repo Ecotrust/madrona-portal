@@ -2,6 +2,9 @@
 # Server-specific configuration goes here.
 
 [APP]
+APP_NAME = Marine Planner
+APP_URL = ''
+APP_TEAM_NAME = Marine Planner Team
 PROJECT_APP = False
 PROJECT_SETTINGS_FILE = False
 DEBUG = True
@@ -12,10 +15,14 @@ MEDIA_ROOT = /path/to/media
 MEDIA_URL = /media/
 TIME_ZONE = UTC
 GA_ACCOUNT = You forgot to set the google analytics account
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
 STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol6
 COMPRESS_ENABLED = True
+STATIC_CORE = /usr/local/apps/marco_portal_static/
+#ADDITIONAL_APPS = []
 
 [REGION]
 #NAME = Mid-Atlantic Ocean
@@ -24,6 +31,7 @@ COMPRESS_ENABLED = True
 #INIT_LON = -74
 #SRID = 4326
 #MAP = ocean
+#MAX_ZOOM = 15
 
 [CACHES]
 BACKEND = django_redis.cache.RedisCache
@@ -43,16 +51,25 @@ NAME = marco_portal
 HOST = localhost
 PORT = 5432
 USER = vagrant
+#PASSWORD =
 
 [EMAIL]
 HOST = localhost
-PORT = 8025
+PORT = 25
 HOST_USER = mail user
 HOST_PASSWORD = mail password
+DEFAULT_FROM_EMAIL = Mid-Atlantic Portal <support@mail.mida.ecotrust.org>
+SERVER_EMAIL = MidA Site Errors <midasupport@mail.mida.ecotrust.org>
+#EMAIL_USE_TLS = True
+#EMAIL_BACKEND = django_ses.SESBackend
+
+[AWS]
+AWS_ACCESS_KEY_ID =
+AWS_SECRET_ACCESS_KEY =
+AWS_SES_REGION_NAME = us-east-1
+AWS_SES_REGION_ENDPOINT = email.us-east-1.amazonaws.com
 
 [SOCIAL_AUTH]
-GOOGLE_PLUS_KEY = You forgot to set the google plus key
-GOOGLE_PLUS_SECRET = You forgot to set the google plus secret
 FACEBOOK_KEY = You forgot to set the facebook key
 FACEBOOK_SECRET = You forgot to set the facebook secret
 TWITTER_KEY = You forgot to set the twitter key

@@ -2,7 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import wagtail.core.fields
+from django.conf import settings
+if settings.WAGTAIL_VERSION > 1:
+    import wagtail.core.fields as wagtail_core_fields
+else:
+    import wagtail.core.fields as wagtail_core_fields
 import django.db.models.deletion
 import modelcluster.fields
 
@@ -23,7 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255, blank=True)),
-                ('body', wagtail.core.fields.RichTextField(null=True, blank=True)),
+                ('body', wagtail_core_fields.RichTextField(null=True, blank=True)),
                 ('link_external', models.URLField(verbose_name='External link', blank=True)),
                 ('card_center', modelcluster.fields.ParentalKey(related_name='card_center', to='home.HomePage')),
                 ('card_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='base.PortalImage', null=True)),

@@ -1,3 +1,4 @@
+from django.conf import settings
 try:
     from itertools import zip_longest
 except Exception as e:
@@ -13,15 +14,21 @@ except ImportError:
 
 from django.db import models
 from django.core.exceptions import ValidationError
-
-from wagtail.core.models import Orderable
-from wagtail.core.fields import StreamField
-from wagtail.search import index
-from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
 from modelcluster.fields import ParentalKey
-
 from portal.base.models import PageBase, DetailPageBase, MediaItem
-from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+
+if settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+else:
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -86,7 +93,7 @@ class OceanStorySectionBase(MediaItem):
                 continue
 
             layer = Layer.objects.filter(id=layer_id)
-            layer = layer.values('legend', 'name', 'layer_type', 'url', 'arcgis_layers')
+            layer = layer.values('legend', 'show_legend', 'name', 'layer_type', 'url', 'arcgis_layers')
 
             # layer ID must be a string here
             data_layers[layer_id] = {}
@@ -96,12 +103,18 @@ class OceanStorySectionBase(MediaItem):
 
             data_layers[layer_id]['id'] = layer_id
             data_layers[layer_id]['name'] = layer['name']
-            data_layers[layer_id]['legend'] = layer['legend']
+            if layer['show_legend']:
+                data_layers[layer_id]['legend'] = layer['legend']
+            else:
+                data_layers[layer_id]['legend'] = False
             data_layers[layer_id]['legend_source'] = 'img'
             data_layers[layer_id]['arcgis_layers'] = layer['arcgis_layers']
-            if (layer['legend'] == u'' or layer['legend'] == None) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
+            if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
                 data_layers[layer_id]['legend_source'] = 'url'
                 data_layers[layer_id]['legend'] = "%s" % layer['url'].split('/export')[0]
+            if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcFeatureServer' and '/FeatureServer' in layer['url']:
+                data_layers[layer_id]['legend_source'] = 'arc_feature_service'
+                data_layers[layer_id]['legend'] = "%s/%s?f=json" % (layer['url'], layer['arcgis_layers'])
 
         s = {
             'view': {
@@ -153,7 +166,6 @@ class OceanStory(DetailPageBase):
     )
 
     def get_context(self, request):
-        from django.conf import settings
         import importlib
         context = super(OceanStory, self).get_context(request)
         if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:
