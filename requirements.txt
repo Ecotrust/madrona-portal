@@ -1,13 +1,13 @@
 # Minimal requirements
-Django<3.0
+Django
 wagtail
 
 # Tentative additions:
 wagtail-import-export
 python-social-auth
 social-auth-app-django
-python-jose>=3.0.0
-pyjwt>=1.7.1
+python-jose
+pyjwt
 django-social-share
 django-email-log
 django-compressor
@@ -17,25 +17,23 @@ django-recaptcha
 django-flatblocks
 django-nested-admin
 django-redis
-### Until pull request is accepted, use Ecotrust fork of rpc4django
-# rpc4django
--e git+https://github.com/Ecotrust/rpc4django.git@master#egg=rpc4django-ecotrust
+rpc4django
 
--e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@dj2#egg=madrona_analysistools-dj2
--e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@mida#egg=mp_data_manager-dj2
--e git+https://github.com/MidAtlanticPortal/mp-visualize.git@merge_ol6#egg=mp_visualize-dj2
--e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features-dj2
--e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts-dj2
--e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios-dj2
--e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@dj2#egg=madrona_manipulators-dj2
--e git+https://github.com/MidAtlanticPortal/mp-drawing.git@dj2#egg=mp_drawing-dj2
--e git+https://github.com/MidAtlanticPortal/mp-explore.git@dj2#egg=mp_explore-dj2
--e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=marco-map_groups
--e git+https://github.com/Ecotrust/p97-nursery.git@dj2#egg=p97-nursery-dj2
--e git+https://github.com/MidAtlanticPortal/mp-proxy.git@dj2#egg=mp_proxy-dj2
--e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
+#-e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@dj2#egg=madrona_analysistools-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@mida#egg=mp_data_manager-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@merge_ol6#egg=mp_visualize-dj2
+#-e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts-dj2
+#-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios-dj2
+#-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@dj2#egg=madrona_manipulators-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@dj2#egg=mp_drawing-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-explore.git@dj2#egg=mp_explore-dj2
+#-e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=marco-map_groups
+#-e git+https://github.com/Ecotrust/p97-nursery.git@dj2#egg=p97-nursery-dj2
+#-e git+https://github.com/MidAtlanticPortal/mp-proxy.git@dj2#egg=mp_proxy-dj2
+#-e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
 
-celery>=4.0
+celery
 # Django-Celery is incompatible with py3/Django2
 #django-celery
 django-celery-email
@@ -47,7 +45,7 @@ django-libsass
 
 # Note: django-libsass needs libsass>0.4
 # 0.5.1 is the latest version that we can install on WF
-#libsass==0.5.1
+libsass
 
 #django-modelcluster==0.6.2
 
