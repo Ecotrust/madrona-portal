@@ -51,13 +51,13 @@ class Migration(migrations.Migration):
             name='PortalRendition',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                # ('filter_spec', models.CharField(db_index=True, max_length=255)),
+                ('filter_spec', models.CharField(db_index=True, max_length=255)),
                 # ('file', models.ImageField(height_field='height', upload_to=wagtail_image_models.get_rendition_upload_to, width_field='width')),
                 ('file', models.ImageField(height_field=b'height', width_field=b'width', upload_to=b'images')),
                 ('width', models.IntegerField(editable=False)),
                 ('height', models.IntegerField(editable=False)),
                 ('focal_point_key', models.CharField(blank=True, default='', editable=False, max_length=16)),
-                ('filter', models.ForeignKey(related_name='+', to='wagtailimages.Filter', on_delete=django.db.models.deletion.CASCADE)),
+                # ('filter', models.ForeignKey(related_name='+', to='wagtailimages.Filter', on_delete=django.db.models.deletion.CASCADE)),
                 ('image', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='renditions', to='base.PortalImage')),
             ],
             options={
