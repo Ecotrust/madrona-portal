@@ -3,7 +3,7 @@ version: '3.7'
 services:
   app:
     build:
-      context: ../marco
+      context: ../
     # command: dockerize -wait tcp://db:5432 sh -c "python manage.py migrate --noinput"
     # command: dockerize -wait tcp://db:5432 sh -c "python manage.py loaddata /usr/local/apps/TEKDB/TEKDB/TEKDB/fixtures/all_dummy_data.json"
     volumes:
@@ -17,6 +17,7 @@ services:
       - SQL_PASSWORD=${SQL_PASSWORD}
       - SQL_HOST=${SQL_HOST}
       - SQL_PORT=${SQL_PORT}
+      - PROJ_DIR=${PROJ_DIR}
     depends_on:
       - ${SQL_HOST}
     links:
@@ -51,15 +52,24 @@ services:
       - djangonetwork
 
   tasks:
-    image: redis/redis:6.2-alpine
+    image: redis:alpine3.14
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
       - ${TASK_PORT}:6379
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+     - REDIS_REPLICATION_MODE=master
     networks:
       - djangonetwork
 
 volumes:
   postgis-data:
   static_data:
+  redis-data:
+  redis.conf:
   # media_data:
 
 networks:
