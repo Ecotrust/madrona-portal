@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='portalimage',
-            name='file_hash',
-            field=models.CharField(blank=True, editable=False, max_length=40),
-        ),
+        # migrations.AddField(
+        #     model_name='portalimage',
+        #     name='file_hash',
+        #     field=models.CharField(blank=True, editable=False, max_length=40),
+        # ),
     ]

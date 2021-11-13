@@ -19,19 +19,32 @@ django-nested-admin
 django-redis
 rpc4django
 
-#-e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@dj2#egg=madrona_analysistools-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@mida#egg=mp_data_manager-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@merge_ol6#egg=mp_visualize-dj2
-#-e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@dj2#egg=mp_accounts-dj2
-#-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@dj2#egg=madrona_scenarios-dj2
-#-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@dj2#egg=madrona_manipulators-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@dj2#egg=mp_drawing-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-explore.git@dj2#egg=mp_explore-dj2
-#-e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=marco-map_groups
-#-e git+https://github.com/Ecotrust/p97-nursery.git@dj2#egg=p97-nursery-dj2
-#-e git+https://github.com/MidAtlanticPortal/mp-proxy.git@dj2#egg=mp_proxy-dj2
-#-e git+https://github.com/Ecotrust/mida-portal.git@master#egg=mida
+##################################
+#-e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
+### OR ####
+#-e git+https://github.com/Ecotrust/mp-data-manager.git@gp2#egg=mp_data_manager-gp2
+##################################
+
+#-e git+https://github.com/Ecotrust/madrona-analysistools.git@main#egg=madrona_analysistools
+#-e git+https://github.com/Ecotrust/mp-visualize.git@main#egg=mp_visualize
+#-e git+https://github.com/Ecotrust/madrona-features.git@main#egg=madrona_features
+#-e git+https://github.com/Ecotrust/mp-accounts.git@main#egg=mp_accounts
+#-e git+https://github.com/Ecotrust/madrona-scenarios.git@main#egg=madrona_scenarios
+#-e git+https://github.com/Ecotrust/madrona-manipulators.git@main#egg=madrona_manipulators
+#-e git+https://github.com/Ecotrust/mp-drawing.git@main#egg=mp_drawing
+#-e git+https://github.com/Ecotrust/mp-explore.git@main#egg=mp_explore
+#-e git+https://github.com/Ecotrust/marco-map_groups.git@main#egg=marco-map_groups
+#-e git+https://github.com/Ecotrust/p97-nursery.git@main#egg=p97-nursery
+#-e git+https://github.com/Ecotrust/mp-proxy.git@main#egg=mp_proxy
+
+##################################
+#-e git+https://github.com/Ecotrust/mida-portal.git@main#egg=mida
+### OR ###
+#-e git+https://github.com/Ecotrust/wcoa.git@migration_2021#egg=wcoa-2021
+### OR ###
+#-e git+https://github.com/Ecotrust/wc-offshore-portal.git@master#egg=offshore
+##################################
+
 
 celery
 # Django-Celery is incompatible with py3/Django2
@@ -40,55 +53,15 @@ django-celery-email
 
 django-libsass
 
-# django-compressor scss hack
-# -e git+https://github.com/MidAtlanticPortal/django-libsass.git@master#egg=django_libsass
-
 # Note: django-libsass needs libsass>0.4
 # 0.5.1 is the latest version that we can install on WF
 libsass
 
-#django-modelcluster==0.6.2
-
 # Recommended components (require additional setup):
-psycopg2-binary
+# pg2 2.9 breaks migrations: https://stackoverflow.com/a/68025007/706797
+psycopg2-binary<2.9
 elasticsearch
-# embedly
 
-# Recommended components to improve performance in production:
-# django-redis-cache==0.13.0
-# django-celery==3.1.10
-
-#celery>=3.1,<3.2
-#django-celery
-#django-celery-email
-#kombu
-
-#requests==2.5.1
-
-#django-apptemplates
-
-#django-social-share
-
-#rpc4django
-
-#-e git+https://github.com/MidAtlanticPortal/madrona-analysistools.git@master#egg=madrona_analysistools-master
-#-e git+https://github.com/MidAtlanticPortal/madrona-features.git@master#egg=madrona_features-master
-#-e git+https://github.com/MidAtlanticPortal/madrona-forms.git@master#egg=madrona_forms-master
-#-e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@master#egg=madrona_scenarios-master
-#-e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@master#egg=madrona_manipulators-master
-#-e git+https://github.com/MidAtlanticPortal/mp-clipping.git@master#egg=mp_clipping-master
-#-e git+https://github.com/MidAtlanticPortal/mp-drawing.git@master#egg=mp_drawing-master
-#-e git+https://github.com/MidAtlanticPortal/mp-explore.git@master#egg=mp_explore-master
-#-e git+https://github.com/MidAtlanticPortal/mp-accounts.git@master#egg=mp_accounts-master
-#-e git+https://github.com/MidAtlanticPortal/mp-visualize.git@master#egg=mp_visualize-master
-#-e git+https://github.com/MidAtlanticPortal/mp-data-manager.git@master#egg=mp_data_manager-master
-#-e git+https://github.com/MidAtlanticPortal/mp-proxy.git@master#egg=mp_proxy-master
-#-e git+https://github.com/MidAtlanticPortal/django-recaptcha-develop.git@master#egg=captcha
-#-e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@master#egg=marco-map_groups
-#-e git+https://github.com/MidAtlanticPortal/p97-nursery.git@master#egg=nursery-master
-#-e git+https://github.com/MidAtlanticPortal/p97settings.git@master#egg=p97settings
-
-# django-compressor
 django-import-export
 
 pyshp

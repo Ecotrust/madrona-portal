@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-from wagtail.images.utils import get_fill_filter_spec_migrations
+# from wagtail.images.utils import get_fill_filter_spec_migrations
 
 class Migration(migrations.Migration):
 
@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         ('base', '0002_auto_20200526_2354'),
     ]
 
-    forward, reverse = get_fill_filter_spec_migrations('base', 'PortalRendition')
+    # forward, reverse = get_fill_filter_spec_migrations('base', 'PortalRendition')
     operations = [
-        migrations.RunPython(forward, reverse),
+        # migrations.RunPython(forward, reverse),
     ]

@@ -12,10 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='portalrendition',
-            name='filter',
-        ),
+        # migrations.RemoveField(
+        #     model_name='portalrendition',
+        #     name='filter',
+        # ),
         migrations.AlterField(
             model_name='portalrendition',
             name='filter_spec',

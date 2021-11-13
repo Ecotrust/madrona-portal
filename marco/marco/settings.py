@@ -88,6 +88,7 @@ try:
         'wagtail.core',
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
+        'wagtail.locales',
     ]
 except ImportError as e:
     # print(e)
@@ -305,6 +306,10 @@ TIME_ZONE = app_cfg.get('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+WAGTAIL_I18N_ENABLED = False
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ('en', "English"),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -639,6 +644,8 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
 ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
 
 INSTALLED_APPS += ADDITIONAL_APPS
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
