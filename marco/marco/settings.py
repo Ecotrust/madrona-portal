@@ -250,6 +250,7 @@ if default['ENGINE'].endswith('spatialite'):
     default['NAME'] = db_cfg.get('NAME', os.path.join(BASE_DIR, 'marco.db'))
 else:
     default['NAME'] = db_cfg.get('NAME')
+    # default['NAME'] = os.environ.get("SQL_DATABASE", "ocean_portal"),
     if cfg.has_option('DATABASE', 'USER'):
         default['USER'] = db_cfg.get('USER')
     if cfg.has_option('DATABASE', 'HOST'):
@@ -471,7 +472,7 @@ SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/account/validate'
 
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 # Our authentication pipeline
 SOCIAL_AUTH_PIPELINE = (

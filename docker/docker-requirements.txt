@@ -19,6 +19,9 @@ django-nested-admin
 django-redis
 rpc4django
 
+# 11/13/2021 alpine default
+pygdal<3.2.4
+
 ##################################
 #-e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
 ### OR ####

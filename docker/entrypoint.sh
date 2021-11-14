@@ -4,5 +4,6 @@
 python marco/manage.py collectstatic --noinput
 python marco/manage.py migrate --noinput
 
-uwsgi --socket :8000 --master --enable-threads --module marco.wsgi
+python marco/manage.py runserver 0:8000
+#uwsgi --socket :8000 --master --enable-threads --module marco.marco.wsgi
 #exec "$@"
