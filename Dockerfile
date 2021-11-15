@@ -18,6 +18,8 @@ COPY ./bower_components /usr/local/apps/madrona-portal/bower_components
 COPY ./docker/entrypoint.sh /entrypoint.sh
 COPY ./docker/docker-requirements.txt /requirements.txt
 
+COPY ./backups/ /usr/local/apps/madrona-portal/backups
+
 # install dependencies
 RUN \
     apk update &&\
@@ -29,6 +31,7 @@ RUN \
       &&\
     apk add --no-cache --update \
       python3-dev \
+      postgresql postgresql-contrib \
       postgresql-dev postgresql-libs \
       jpeg-dev libjpeg zlib-dev libtool \
       libpq gdal gdal-tools geos-dev gdal-dev \
