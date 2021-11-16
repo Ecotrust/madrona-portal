@@ -5,7 +5,7 @@ wagtail
 # Tentative additions:
 wagtail-import-export
 python-social-auth
-social-auth-app-django
+social-auth-app-django<5.0
 python-jose
 pyjwt
 django-social-share
