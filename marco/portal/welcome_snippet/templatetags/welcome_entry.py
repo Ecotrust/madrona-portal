@@ -10,7 +10,7 @@ def welcome_entry(context):
     try:
         welcome_entry = WelcomePage.objects.get(active=True)
     except WelcomePage.DoesNotExist:
-        return "(No welcome pages have been activated)"
+        return ""
 
     return t.render({
         'welcome_entry': welcome_entry,
@@ -21,6 +21,6 @@ def welcome_title(context):
     try:
         welcome_entry = WelcomePage.objects.get(active=True)
     except WelcomePage.DoesNotExist:
-        return "(No welcome pages have been activated)"
+        return ""
 
     return welcome_entry.title
