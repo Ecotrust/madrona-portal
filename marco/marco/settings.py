@@ -433,6 +433,7 @@ GEOMETRY_CLIENT_SRID = 3857 #for latlon
 GEOJSON_SRID = 3857
 
 GEOJSON_DOWNLOAD = True  # force headers to treat like an attachment
+SUPPORT_INVERTED_COORDINATES = True
 
 # authentication
 SOCIAL_AUTH_NEW_USER_URL = '/account/?new=true&login=django'
