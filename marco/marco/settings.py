@@ -22,7 +22,8 @@ ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
 COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
 STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
-CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'config.ini'))
+MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
+CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
 
 
 cfg = configparser.ConfigParser()
@@ -156,6 +157,7 @@ INSTALLED_APPS += [
     'portal.data_gaps',
     'portal.grid_pages',
     'portal.data_catalog',
+    'portal.gp2_catalog',
     'portal.initial_data',
     'portal.welcome_snippet',
     'portal.news',
@@ -350,7 +352,11 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_ENABLED = app_cfg.getboolean('COMPRESS_ENABLED', True)
 COMPRESS_OFFLINE = True
 
-
+try:
+    # Test is DATA_MANAGER_ADMIN was already defined by PROJECT settings.
+    DATA_MANAGER_ADMIN
+except NameError:
+    DATA_MANAGER_ADMIN = False
 
 # Template configuration
 
