@@ -6,8 +6,8 @@ Vagrant.configure("2") do |config|
     # Base box to build off, and download URL for when it doesn't exist on the user's system already
     # config.vm.box = "marco-base-v0.4"
     # config.vm.box_url = "http://portal.midatlanticocean.org/static/vagrant_boxes/p97-base-v0.4.box"
-    config.vm.box = "ubuntu/bionic64"
-    # config.vm.box = "ubuntu/focal64"
+    #config.vm.box = "ubuntu/bionic64"
+    config.vm.box = "ubuntu/focal64"
 
     #Enforce provisioning of 5GB of RAM - required for running MARCO properly
     #If you don't have 5 GB, you can drop the memory value, or comment everything out completely.
@@ -33,8 +33,8 @@ Vagrant.configure("2") do |config|
     # an identifier, the second is the path on the guest to mount the
     # folder, and the third is the path on the host to the actual folder.
     # config.vm.share_folder "project", "/home/vagrant/marco_portal2", "."
-    config.vm.synced_folder "./", "/usr/local/apps/ocean_portal"
-    # config.vm.synced_folder "../mida-portal/", "/usr/local/apps/mida-portal"
+    config.vm.synced_folder "./", "/usr/local/apps/madrona_portal"
+    # config.vm.synced_folder "../madrona-apps/", "/usr/local/apps/madrona-apps"
 
     # Enable provisioning with a shell script.
     # config.vm.provision :shell, :path => "scripts/vagrant_provision.sh", :args => "'marco_portal2' 'marco' 'marco_portal'", :privileged => false

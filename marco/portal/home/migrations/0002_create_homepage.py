@@ -40,6 +40,10 @@ class Migration(migrations.Migration):
         ('home', '0001_initial'),
     ]
 
+    run_before = [
+        ('wagtailcore', '0041_group_collection_permissions_verbose_name_plural'), # Required for Wagtail 2.11+ migration without locale.
+    ]
+
     operations = [
         migrations.RunPython(create_homepage),
     ]

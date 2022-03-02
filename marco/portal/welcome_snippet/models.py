@@ -59,14 +59,19 @@ class WelcomePageEntry(Orderable):
     @property
     def destination(self):
         pattern = re.compile(r"https?://")
-        external_url = pattern.match(self.url)
+        try:
+            external_url = pattern.match(self.url)
+        except TypeError as e:
+            external_url = False
 
         if self.page:
             return self.page.url
         elif external_url:
             return self.url
-        else:
+        elif self.url:
             return "/%s/" % self.url
+        else:
+            return "/"
 
     def external(self):
         pattern = re.compile(r"https?://")
