@@ -62,8 +62,13 @@ from django.utils.log import DEFAULT_LOGGING
 LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
-
-CATALOG_TECHNOLOGY = None
+catalog_cfg = cfg['CATALOG']
+DATA_CATALOG_ENABLED = catalog_cfg.getboolean('DATA_CATALOG_ENABLED', True)
+#CATALOG_TECHNOLOGY: Current support for 'default' (built in catalog) and 'GeoPortal2'
+CATALOG_TECHNOLOGY = catalog_cfg.get('CATALOG_TECHNOLOGY', 'default')
+CATALOG_PROXY = catalog_cfg.get('CATALOG_PROXY', '')
+CATALOG_SOURCE = catalog_cfg.get('CATALOG_SOURCE', 'http://127.0.0.1:9200')
+CATALOG_QUERY_ENDPOINT = catalog_cfg.get('CATALOG_QUERY_ENDPOINT', '/geoportal/elastic/metadata/item/_search/')
 
 
 # Application definition
