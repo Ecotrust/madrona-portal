@@ -16,6 +16,9 @@ vagrant
 .sass-cache
 node_modules
 
+docker/entrypoint.sh
+docker/docker-requirements.txt
+
 marco_site/static/bundles/
 marco_site/static/css/
 marco_site/static/fonts/
@@ -31,3 +34,5 @@ marco.db
 dev_fixture.json
 env/
 marco/static/
+
+Vagrantfile
