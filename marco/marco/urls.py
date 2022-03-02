@@ -65,7 +65,7 @@ urlpatterns += [
     # I want the psa urls to be inside the account urls, but PSA doesn't allow
     # nested namespaces. It will likely be fixed in 0.22
 
-    re_path(r'^account/auth/', include('social.apps.django_app.urls'), name='social'),
+    # re_path(r'^account/auth/', include('social.apps.django_app.urls'), name='social'),
     # url('^account/auth/', include('social_django.urls', namespace='social')),
     re_path(r'^account/', include('accounts.urls'), name='account'),
     re_path(r'^collaborate/groups/', include('mapgroups.urls'), name='groups'),

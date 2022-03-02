@@ -43,3 +43,12 @@ TWITTER_KEY = You forgot to set the twitter key
 TWITTER_SECRET = You forgot to set the twitter secret
 GOOGLE_KEY = You forgot to set the google key
 GOOGLE_SECRET = You forgot to set the google secret
+
+[CATALOG]
+DATA_CATALOG_ENABLED = False
+CATALOG_TECHNOLOGY = default
+#CATALOG_TECHNOLOGY = GeoPortal2
+CATALOG_PROXY = 
+#CATALOG_SOURCE = http://127.0.0.1:9200
+CATALOG_QUERY_ENDPOINT = /geoportal/elastic/metadata/item/_search/
+

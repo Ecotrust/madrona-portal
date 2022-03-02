@@ -94,7 +94,9 @@
 
 {% block extra_js %}{% endblock %}
 
-<script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
+{% block core_js %}
+  <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
+{% endblock %}
 
 {% block sticky_footer_wrap %}
   <div class="container transparent-sticky-footer">

@@ -22,7 +22,8 @@ ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
 COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
 STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
-CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'config.ini'))
+MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
+CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
 
 
 cfg = configparser.ConfigParser()
@@ -61,8 +62,13 @@ from django.utils.log import DEFAULT_LOGGING
 LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
-
-CATALOG_TECHNOLOGY = None
+catalog_cfg = cfg['CATALOG']
+DATA_CATALOG_ENABLED = catalog_cfg.getboolean('DATA_CATALOG_ENABLED', True)
+#CATALOG_TECHNOLOGY: Current support for 'default' (built in catalog) and 'GeoPortal2'
+CATALOG_TECHNOLOGY = catalog_cfg.get('CATALOG_TECHNOLOGY', 'default')
+CATALOG_PROXY = catalog_cfg.get('CATALOG_PROXY', '')
+CATALOG_SOURCE = catalog_cfg.get('CATALOG_SOURCE', 'http://127.0.0.1:9200')
+CATALOG_QUERY_ENDPOINT = catalog_cfg.get('CATALOG_QUERY_ENDPOINT', '/geoportal/elastic/metadata/item/_search/')
 
 
 # Application definition
@@ -88,6 +94,7 @@ try:
         'wagtail.core',
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
+        'wagtail.locales',
     ]
 except ImportError as e:
     # print(e)
@@ -155,6 +162,7 @@ INSTALLED_APPS += [
     'portal.data_gaps',
     'portal.grid_pages',
     'portal.data_catalog',
+    'portal.gp2_catalog',
     'portal.initial_data',
     'portal.welcome_snippet',
     'portal.news',
@@ -183,10 +191,10 @@ INSTALLED_APPS += [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOpenId',
-    'social.backends.facebook.FacebookOAuth2',
-    'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.facebook.FacebookOAuth2',
+    # 'social.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -202,6 +210,11 @@ MIDDLEWARE = [
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
+
+# FILE_UPLOAD_HANDLERS = [
+#     'django.core.files.uploadhandler.MemoryFileUploadHandler',
+#     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
+# ]
 
 if WAGTAIL_VERSION > 1:
     try:
@@ -249,6 +262,7 @@ if default['ENGINE'].endswith('spatialite'):
     default['NAME'] = db_cfg.get('NAME', os.path.join(BASE_DIR, 'marco.db'))
 else:
     default['NAME'] = db_cfg.get('NAME')
+    # default['NAME'] = os.environ.get("SQL_DATABASE", "ocean_portal"),
     if cfg.has_option('DATABASE', 'USER'):
         default['USER'] = db_cfg.get('USER')
     if cfg.has_option('DATABASE', 'HOST'):
@@ -305,6 +319,10 @@ TIME_ZONE = app_cfg.get('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+WAGTAIL_I18N_ENABLED = False
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ('en', "English"),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -339,7 +357,11 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_ENABLED = app_cfg.getboolean('COMPRESS_ENABLED', True)
 COMPRESS_OFFLINE = True
 
-
+try:
+    # Test is DATA_MANAGER_ADMIN was already defined by PROJECT settings.
+    DATA_MANAGER_ADMIN
+except NameError:
+    DATA_MANAGER_ADMIN = False
 
 # Template configuration
 
@@ -422,6 +444,7 @@ GEOMETRY_CLIENT_SRID = 3857 #for latlon
 GEOJSON_SRID = 3857
 
 GEOJSON_DOWNLOAD = True  # force headers to treat like an attachment
+SUPPORT_INVERTED_COORDINATES = True
 
 # authentication
 SOCIAL_AUTH_NEW_USER_URL = '/account/?new=true&login=django'
@@ -466,7 +489,7 @@ SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/account/validate'
 
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 # Our authentication pipeline
 SOCIAL_AUTH_PIPELINE = (
@@ -639,6 +662,8 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
 ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
 
 INSTALLED_APPS += ADDITIONAL_APPS
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]

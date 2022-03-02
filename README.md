@@ -9,53 +9,32 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
 
 ```
   -- marco-portal2
-    -- apps (all remaining repositories within MidAtlanticPortal)
+    -- apps (all remaining repositories within Madrona Portal)
       -- mardona-analysistools
       -- madrona-features
       -- etc.
 ```
 
-
-1. Clone all required modules. Currently this list includes:
-  * marco-portal2 (this repo)
-  * madrona-analysistools
-  * madrona-features
-  * madrona-forms
-  * madrona-manipulators
-  * madrona-scenarios
-  * marco-map_groups
-  * marco-portal2
-  * mp-accounts
-  * mp-clipping
-  * mp-data-manager
-  * mp-drawing
-  * mp-explore
-  * mp-proxy
-  * mp-visualize
-  * p97-nursery
-  * p97settings
-  * django-libsass # Can Seth's changes be made locally and have libsass installed via pip again?
-  * django-recaptcha-develop # This CAN be moved to requirements.txt
-
-To quickly clone all the repositiories from [MidAtlanticPortal](https://github.com/MidAtlanticPortal), run one of the following curl commands with Ruby/Perl. In doing so, this will clone all of the respositories at the same level
-    * RUBY:
-    ```
-    curl -s https://api.github.com/orgs/MidAtlanticPortal/repos?per_page=200 | ruby -rubygems -e 'require "json"; JSON.load(STDIN.read).each { |repo| %x[git clone #{repo["clone_url"]} ]}'
-    ```
-    * PERL:
-    ```
-    curl -s https://api.github.com/orgs/MidAtlanticPortal/repos\?per_page\=200 | perl -ne 'print "$1\n" if (/"clone_url": "([^"]+)/)' | xargs -n 1 git clone
-    ```
-    
-  Putting this all together, your process will look something like this (using Perl on Linux for this example):
-  ``` 
- cd [working directory]
- curl -s https://api.github.com/orgs/MidAtlanticPortal/repos\?per_page\=200 | perl -ne 'print "$1\n" if (/"clone_url": "([^"]+)/)' | xargs -n 1 git clone
- mkdir ./marco-portal2/apps
- shopt -s extglob
- mv !(*marco-portal2*) ./marco-portal2/apps/
- shopt -u extglob
- ```
+1. Download the required code and dependencies:
+```
+  git clone https://github.com/Ecotrust/marco-portal2.git
+  mv marco-portal2 madrona-portal
+  cd madrona-portal
+  mkdir apps
+  cd apps
+  git clone https://github.com/Ecotrust/madrona-analysistools.git
+  git clone https://github.com/Ecotrust/madrona-features.git
+  git clone https://github.com/Ecotrust/madrona-manipulators.git
+  git clone https://github.com/Ecotrust/madrona-scenarios.git
+  git clone https://github.com/Ecotrust/marco-map_groups.git
+  git clone https://github.com/Ecotrust/mp-accounts.git
+  git clone https://github.com/Ecotrust/mp-data-manager.git
+  git clone https://github.com/Ecotrust/mp-drawing.git
+  git clone https://github.com/Ecotrust/mp-explore.git
+  git clone https://github.com/Ecotrust/mp-proxy.git
+  git clone https://github.com/Ecotrust/mp-visualize.git
+  git clone https://github.com/Ecotrust/p97-nursery.git
+```
 
 2.  Once your folder structure is set up, create a `config.ini` file by making a copy of the `config.ini.template` located at `marco-portal2/marco` and modify the following
       * **SECRET_KEY** = [Punch in some random gibberish]
@@ -64,7 +43,7 @@ To quickly clone all the repositiories from [MidAtlanticPortal](https://github.c
       * **LOCATION** = /var/run/redis/redis.sock
       * **RESULT_BACKEND** = redis+socket:///var/run/redis/redis.sock
       * **BROKER_URL** = redis+socket:///var/run/redis/redis.sock
-      
+
 3. Create a `/static/` directory at the root level and move the `/bower_components/` directory (also found at the root level) within it
 
 4. Create a `/media/` directory at the root level and retrieve the live server's media folder via ssh/sftp located at `/webapps/marco_portal_media/` and add it to the `/media/` path. Refer to your team's technical documentation for server login (username and password) credentials
@@ -149,12 +128,12 @@ Since this project is modularized, changes to a submodule only requires server u
 3.  Navigate to the submodule that you're updating. Submodules are located at:
     *  **Sandbox** - `cd /home/midatlantic/env/marco_portal2/src/[THE-NAME-OF-YOUR-SUBMODULE]`
     *  **Production** - `cd ~/webapps/marco_portal/marco/src/`  
-4.  Once you're at that path - `git fetch && git reset -q --hard origin/master` 
+4.  Once you're at that path - `git fetch && git reset -q --hard origin/master`
     *  `origin/master` pertains to the main master branch - you can change that to whatever your branch you'd like
     *  Of note, the master *marco-portal2* branch runs as `origin/prototype`
 5.  Navigate to `cd ~/webapps/marco_portal/marco`
-6.  Run `python manage.py collectstatic` to collect all the neccessary static (js/css) files 
-    * you can use the -i flag to ignore utfgrids in the rare chance that those files seems to be "collecting" 
+6.  Run `python manage.py collectstatic` to collect all the neccessary static (js/css) files
+    * you can use the -i flag to ignore utfgrids in the rare chance that those files seems to be "collecting"
     * `python manage.py collectstatic -i utfgrid`
 7.  Run `python manage.py compress` to compress
 8.  Restart the server - `~/webapps/marco_portal/apache2/bin/restart`
