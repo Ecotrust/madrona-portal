@@ -1,11 +1,33 @@
+/* DEFAULT Branding */
+:root {
+  --cta_black: #332e1f;
+  --cta_purple: #ba1e47;
+  --cta_grey: #999;
+  --cta_green: #baba27;
+  --cta_red: #ff3817;
+  --cta_blue: #0070cf;
+  --cta_white: #fff;
+
+  --strong_color: #333;
+  --bg_default: var(--cta_white);
+  --base_font_fam: OpenSans, sans-serif;
+  --primary_color: var(--cta_white);
+  --link_color: #132451;
+  --link_hover: #9ec73d;
+  --border_primary: var(--primary_color);
+  --border_alt: var(--primary_color);
+  --border_accent: #eee;
+  --badge_border: #22408f; /* carryover from MidA styles, looks nice! */
+}
+
 body {
-  background-color: #fff;
+  background-color: var(--bg_default);
   overflow-x: hidden;
 }
 
 hr {
-  border-bottom: 1px solid #fff;
-  border-top: 1px solid #eee;
+  border-bottom: 1px solid var(--border_primary);
+  border-top: 1px solid var(--border_accent);
 }
 
 /**
@@ -63,7 +85,6 @@ div.page-body a,
 dev.cta-content a {
   font-weight: bold;
   color: var(--link_color);
-  /* background-color: var(--link_highlight); */
 
 }
 
@@ -99,14 +120,14 @@ dev.cta-content a:hover {
 }
 
 .cta-item .rich-text li a {
-  color: #132451;
+  color: var(--link_color);
   font-family: var(--base_font_fam);
 }
 
 .cta-item .rich-text li a:hover,
 .cta-item .rich-text li a:active,
 .cta-item .rich-text li a:focus {
-  color: #9ec73d;
+  color: var(--link_hover);
 }
 
 /**
@@ -116,8 +137,8 @@ dev.cta-content a:hover {
 
 .home .cta-item-wrap:nth-of-type(3) .title,
 .home .cta-item-wrap:nth-of-type(1n+5) .title {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: var(--primary_color);
+  border-bottom-color: var(--primary_color);
 }
 
 .home .cta-item .richtext-image.right {
@@ -136,7 +157,7 @@ dev.cta-content a:hover {
 }
 
 .home .rich-text p a[href*="/"] {
-  background: white;
+  background: var(--bg_default);
   background: rgba(252, 252, 252, 0.75);
   display: block;
   font-size: .6875em;
@@ -144,17 +165,17 @@ dev.cta-content a:hover {
   padding: 10px;
   margin: 10px;
   font-family: OpenSans, sans-serif;
-  color: black;
-  text-shadow: 0px 0px 2px #ffffff;
+  color: var(--cta_black);
+  text-shadow: 0px 0px 2px var(--cta_white);
   font-weight: bold;
   /* padding-left: 27px; */
   line-height: 1.5em;
 }
 .home .rich-text p a[href*="/"]:hover {
-  background: #eee;
+  background: var(--bg_default);
   background: rgba(230, 230, 230, 0.9);
   cursor: pointer;
-  color: black;
+  color: var(--cta_black);
 }
 .home .rich-text p a[href*="/"] i {
   margin-left: -15px;
@@ -170,12 +191,12 @@ dev.cta-content a:hover {
 .home #record-search .giantText {
   font-size: 3.125em;
   line-height: 1.125em;
-  color: #332e1f;
+  color: var(--primary_color);
   font-weight: bold;
 }
 
 .cta-content h3 {
-  color: #fff;
+  color: var(--primary_color);
   font-family: OpenSans, sans-serif;
   font-size: 1.8125em;
   font-style: normal;
@@ -184,6 +205,7 @@ dev.cta-content a:hover {
   margin: 0;
   word-wrap: break-word;
 }
+
 
 .home-item,
 .cta-item-wrap {
@@ -264,12 +286,12 @@ dev.cta-content a:hover {
   .home .packery-container > .home-item:nth-of-type(5) h3,
   .home .packery-container > .home-item:nth-of-type(6) h3,
   .home .packery-container > .home-item:nth-of-type(7) h3 {
-    color: #fff;
+    color: var(--primary_color);
   }
 
   .home .cta-item .title {
-    border-bottom-color: #332e1f;
-    color: #332e1f;
+    border-bottom-color: var(--primary_color);
+    color: var(--primary_color);
     text-transform: uppercase;
   }
 
@@ -333,7 +355,7 @@ dev.cta-content a:hover {
 
 .connect-page .body-image h3,
 .connect .body-image h3  {
-  color: #333;
+  color: var(--strong_color);
   font-family: OpenSans, sans-serif;
   font-weight: 400;
   line-height: 1.5;
@@ -342,7 +364,7 @@ dev.cta-content a:hover {
 
 .connect-page .body-image p,
 .connect .body-image p  {
-  color: #333;
+  color: var(--strong_color);
   font-family: OpenSans, sans-serif;
   font-size: 1em;
   font-weight: 200;
@@ -351,7 +373,7 @@ dev.cta-content a:hover {
 
 .connect-page .body-image a,
 .connect .body-image a  {
-  color: #0070cf;
+  color: var(--cta_blue);
 }
 
 .connect-page .body-image .rich-text,
@@ -368,7 +390,7 @@ dev.cta-content a:hover {
 }
 
 .block-details .cta-content a {
-  color: #0070cf;
+  color: var(--cta_blue);
 }
 
 .block-details p {
@@ -386,31 +408,45 @@ dev.cta-content a:hover {
 
 .cta-item-wrap.text-white,
 .cta-item-wrap.text-white * {
-  color: #fff;
+  color: var(--cta_white);
 }
 
+.cta-item-wrap.text-blue *,
 .cta-item-wrap.text-blue {
-  color: #0070cf;
+  color: var(--cta_blue);
 }
 
+.cta-item-wrap.text-red *,
 .cta-item-wrap.text-red {
-  color: #ff3817;
+  color: var(--cta_red);
 }
 
+.cta-item-wrap.text-green *,
 .cta-item-wrap.text-green {
-  color: #baba27;
+  color: var(--cta_green);
 }
 
+.cta-item-wrap.text-grey *,
 .cta-item-wrap.text-grey {
-  color: #999;
+  color: var(--cta_grey);
 }
 
+.cta-item-wrap.text-purple *,
 .cta-item-wrap.text-purple {
-  color: #ba1e47;
+  color: var(--cta_purple);
 }
 
+.text-black.cta-item-wrap *,
 .cta-item-wrap.text-black {
-  color: #332e1f;
+  color: var(--cta_black);
+}
+
+.cta-item-wrap a {
+  color: var(--link_color) !important;
+}
+
+.cta-item-wrap a:hover {
+  color: var(--link_hover) !important;
 }
 
 /**
@@ -419,31 +455,31 @@ dev.cta-content a:hover {
  */
 
  .cta-item-wrap.bg-white {
-   background-color: #fff;
+   background-color: var(--cta_white);
  }
 
  .cta-item-wrap.bg-blue {
-   background-color: #0070cf;
+   background-color: var(--cta_blue);
  }
 
  .cta-item-wrap.bg-red {
-   background-color: #ff3817;
+   background-color: var(--cta_red);
  }
 
  .cta-item-wrap.bg-green {
-   background-color: #baba27;
+   background-color: var(--cta_green);
  }
 
  .cta-item-wrap.bg-grey {
-   background-color: #999;
+   background-color: var(--cta_grey);
  }
 
  .cta-item-wrap.bg-purple {
-   background-color: #ba1e47;
+   background-color: var(--cta_purple);
  }
 
  .cta-item-wrap.bg-black {
-   background-color: #332e1f;
+   background-color: var(--cta_black);
  }
 
 /*
@@ -456,9 +492,9 @@ dev.cta-content a:hover {
  }
 
  div.grid-view div.badge {
-   background-color: #0070cf;
-   border: 2px solid #22408f; /* carryover from MidA styles, looks nice! */
-   color: white;
+   background-color: var(--cta_blue);
+   border: 2px solid var(--badge_border); 
+   color: var(--cta_white);
  }
 
   /* Feedback */
