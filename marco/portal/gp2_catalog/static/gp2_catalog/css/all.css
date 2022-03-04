@@ -201,6 +201,9 @@ a .icon-mp-left:hover {
   background-color: #0070cf;
 }
 
+div.home-item.cta-item-wrap > a {
+  transition: 0.3s;
+}
 div.home-item.cta-item-wrap > a:hover {
   background: rgba(4, 4, 4, 0.5);
 }

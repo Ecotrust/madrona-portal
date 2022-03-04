@@ -505,6 +505,35 @@ h6, .h6 {
   color: var(--cta_white);
 }
 
+.text-blue.cta-item-wrap a .cta-item,
+.text-blue.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_blue);
+}
+
+.text-red.cta-item-wrap a .cta-item,
+.text-red.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_red);
+}
+
+.text-green.cta-item-wrap a .cta-item,
+.text-green.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_green);
+}
+
+.text-grey.cta-item-wrap a .cta-item,
+.text-grey.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_grey);
+}
+
+.text-purple.cta-item-wrap a .cta-item,
+.text-purple.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_purple);
+}
+
+.text-black.cta-item-wrap a .cta-item,
+.text-black.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_black);
+}
 
 
 /**
