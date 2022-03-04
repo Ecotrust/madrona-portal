@@ -90,7 +90,7 @@ dev.cta-content a {
 
 .content a:hover,
 div.page-body a:hover,
-dev.cta-content a:hover {
+div.cta-content a:hover {
   color: var(--link_hover);
   text-decoration: underline;
 }
@@ -213,6 +213,12 @@ dev.cta-content a:hover {
   background-repeat: no-repeat;
 }
 
+.cta-item-wrap>a {
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+}
+
 /* .cta-item p:first-child {
   margin-top: 30px;
 } */
@@ -246,12 +252,52 @@ dev.cta-content a:hover {
   font-weight: bold;
 }
 
+.home-item-cntr,
+.home .cta-item-wrap .home-item-cntr {
+  margin: 10px 15px 10px 15px;
+}
+
+h2, .h2 {
+  font-size: 28px; }
+
+h3, .h3 {
+  font-size: 19px; }
+
+h4, .h4 {
+  font-size: 14px; }
+
+h5, .h5 {
+  font-size: 11px; }
+
+h6, .h6 {
+  font-size: 9px; }
+
 @media (min-width: 992px) {
 
+  h2, .h2 {
+    font-size: 36px; }
+  
+  h3, .h3 {
+    font-size: 24px; }
+  
+  h4, .h4 {
+    font-size: 18px; }
+  
+  h5, .h5 {
+    font-size: 14px; }
+  
+  h6, .h6 {
+    font-size: 12px; }
+  
   .home .cta-item-wrap {
     margin-left: 0px;
     margin-bottom: 0px;
-    padding: 15px 30px 15px 30px;
+    padding: 0;
+  }
+
+  .home-item-cntr,
+  .home .cta-item-wrap .home-item-cntr {
+    margin: 15px 30px 15px 30px;
   }
 
   .home .cta-item {
@@ -296,7 +342,7 @@ dev.cta-content a:hover {
   }
 
   .cta-item {
-    padding: 38px 50px 40px 50px;
+    padding: 24px 36px 26px 0;
   }
 }
 
@@ -315,6 +361,10 @@ dev.cta-content a:hover {
 
   .cta-content h3 {
     font-size: 2.25em;
+  }
+
+  .cta-item {
+    padding: 38px 50px 40px 20px;
   }
 }
 
@@ -445,9 +495,17 @@ dev.cta-content a:hover {
   color: var(--link_color) !important;
 }
 
+.cta-item-wrap a .cta-item a:hover,
 .cta-item-wrap a:hover {
   color: var(--link_hover) !important;
 }
+
+.text-white.cta-item-wrap a .cta-item,
+.text-white.cta-item-wrap a:hover .cta-item {
+  color: var(--cta_white);
+}
+
+
 
 /**
  * Variable Background Color - set in CMS

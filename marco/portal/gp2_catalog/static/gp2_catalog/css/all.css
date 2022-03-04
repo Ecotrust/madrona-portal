@@ -164,6 +164,7 @@ a .icon-mp-left:hover {
 .home-item {
   /* margin-left: 0; */
   position: relative;
+  margin-bottom: 20px;
 }
 .home-item.w1 {
   width: 31%;
@@ -199,12 +200,9 @@ a .icon-mp-left:hover {
 .blue {
   background-color: #0070cf;
 }
-.home-item-cntr {
-  padding: 0px 15px 0px 15px;
-  height: 100%;
-}
-a > div.home-item-cntr:hover {
-  background: rgba(4, 4, 4, 0.1);
+
+div.home-item.cta-item-wrap > a:hover {
+  background: rgba(4, 4, 4, 0.5);
 }
 .home-item-cntr.welcome {
   padding: 20px 30px 30px 30px;
