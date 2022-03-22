@@ -363,6 +363,18 @@ try:
 except NameError:
     DATA_MANAGER_ADMIN = False
 
+LAYER_TYPE_CHOICES = (
+    ('XYZ', 'XYZ'),
+    ('WMS', 'WMS'),
+    ('ArcRest', 'ArcRest'),
+    ('ArcFeatureServer', 'ArcFeatureServer'),
+    ('radio', 'radio'),
+    ('checkbox', 'checkbox'),
+    ('Vector', 'Vector'),
+    ('VectorTile', 'VectorTile'),
+    ('placeholder', 'placeholder'),
+)
+
 # Template configuration
 
 from django.conf import global_settings
