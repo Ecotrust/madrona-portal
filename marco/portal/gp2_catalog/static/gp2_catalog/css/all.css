@@ -1,3 +1,24 @@
+:root {
+  --cta_black: #332e1f;
+  --cta_purple: #ba1e47;
+  --cta_grey: #999;
+  --cta_green: #baba27;
+  --cta_red: #ff3817;
+  --cta_blue: #0070cf;
+  --cta_white: #fff;
+
+  --strong_color: #333;
+  --bg_default: var(--cta_white);
+  --base_font_fam: OpenSans, sans-serif;
+  --primary_color: var(--cta_white);
+  --link_color: #132451;
+  --link_hover: #9ec73d;
+  --border_primary: var(--primary_color);
+  --border_alt: var(--primary_color);
+  --border_accent: #eee;
+  --badge_border: #22408f; /* carryover from MidA styles, looks nice! */
+}
+
 /*
  * Fonts, text, and icons
  */
