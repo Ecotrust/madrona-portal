@@ -440,6 +440,11 @@ try:
 except NameError as e:
     FEEDBACK_IFRAME_URL = "//docs.google.com/forms/d/e/1FAIpQLSdi0nBoQK-3ia8rKtzh7cif0slzDCjA_ACH9Y_ryam-co6p8A/viewform?usp=sf_link"
 
+try:
+    DISCLAIMER_BUTTON_DEFAULT
+except NameError as e:
+    DISCLAIMER_BUTTON_DEFAULT = False
+
 # madrona-features
 SHARING_TO_PUBLIC_GROUPS = ['Share with Public']
 SHARING_TO_STAFF_GROUPS = ['Share with Staff']
