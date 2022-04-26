@@ -666,6 +666,11 @@ PROJECT_APP = app_cfg.get('PROJECT_APP', False)
 if PROJECT_APP and not PROJECT_APP == 'False':
     INSTALLED_APPS.append(PROJECT_APP)
 
+if 'visualize' in INSTALLED_APPS:
+    from visualize.settings import *
+if 'data_manager' in INSTALLED_APPS:
+    from data_manager.settings import *
+
 PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
 if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
     try:
