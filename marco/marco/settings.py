@@ -185,10 +185,18 @@ INSTALLED_APPS += [
     'django_social_share',
     'mapgroups',
     'import_export',
-
-    # Multilayer Dimensions in Data Manager
-    'nested_admin',
 ]
+try:
+    __import__('nested_admin')
+    INSTALLED_APPS += ['nested_admin',]
+except ImportError as e:
+    pass
+
+try:
+    __import__('colorfield')
+    INSTALLED_APPS += ['colorfield',]
+except ImportError as e:
+    pass
 
 AUTHENTICATION_BACKENDS = (
     # 'social.backends.google.GoogleOAuth2',
