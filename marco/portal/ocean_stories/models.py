@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.conf import settings
 try:
     from itertools import zip_longest
@@ -79,9 +80,13 @@ class OceanStorySectionBase(MediaItem):
 
         dls = params.pop('dls[]', [])
 
+        # Track layer order so we can enforce it in legends and maps later.
+        layer_ids = []
+
         # dls[]=[true,1,54,true,0.5,42,...] ->
         # dls[] = [(true, 1, 54), (true, 0.5, 42), ...]
         for visible, opacity, layer_id in grouper(dls, 3):
+            layer_ids.append(layer_id)
             visible = visible.lower() in ('true', '1')
             opacity = float(opacity)
             try:
@@ -116,6 +121,13 @@ class OceanStorySectionBase(MediaItem):
                 data_layers[layer_id]['legend_source'] = 'arc_feature_service'
                 data_layers[layer_id]['legend'] = "%s/%s?f=json" % (layer['url'], layer['arcgis_layers'])
 
+        # Layers are presented in the URL in stack order (FILO). 
+        # Collect the order, then enforce the layers to be stored in reverse order.
+        ordered_data_layers = OrderedDict()
+        layer_ids.reverse()
+        for l_id in layer_ids:
+            ordered_data_layers[l_id] = data_layers[l_id]
+
         s = {
             'view': {
                 'center': (params.get('x', [-73.24])[0],
@@ -124,7 +136,7 @@ class OceanStorySectionBase(MediaItem):
             },
             'url': self.map_state,
             'baseLayer': params.get('basemap', ['Ocean'])[0],
-            'dataLayers': data_layers,
+            'dataLayers': ordered_data_layers,
         }
 
         return s
