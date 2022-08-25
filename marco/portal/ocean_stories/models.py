@@ -137,7 +137,11 @@ class OceanStorySectionBase(MediaItem):
             'url': self.map_state,
             'baseLayer': params.get('basemap', ['Ocean'])[0],
             'dataLayers': ordered_data_layers,
+            'layerOrder': layer_ids
         }
+
+        for lyr in s['dataLayers'].keys(): print(lyr)
+
 
         return s
 

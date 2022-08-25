@@ -83,9 +83,24 @@ mapEngine.updateMap = function(story, layerCatalog) {
     return dataLayers[id];
   }
 
+  app.wrapper.map.sortLayers = function() {
+    // re-ordering map layers by z value
+    app.map.layers = app.wrapper.map.getLayers();
+    app.map.layers.sort(function(a, b) {
+        // ascending sort
+        if (a.getZIndex()!=undefined && b.getZIndex()!=undefined) {
+          return a.getZIndex() - b.getZIndex();
+        } else if (a.hasOwnProperty('state_') && a.state_){
+          if (b.hasOwnProperty('state_') && b.state_) {
+            return a.state_.zIndex - b.state_.zIndex;
+          }
+          return true;
+        }
+    });
+  }
 
-  function setDataLayers(layers, hashLayerOverrides) {
-    var layerKeys = Object.keys(layers);
+
+  function setDataLayers(layers, layerKeys, hashLayerOverrides) {
     var overrideKeys = Object.keys(hashLayerOverrides);
 
     // Hide layers from old state
@@ -98,59 +113,77 @@ mapEngine.updateMap = function(story, layerCatalog) {
       }
     }
 
+    function loadStoryLayers() {
+      for (var i = 0; i < layerKeys.length; i++) {
+        var loadingLayer = app.viewModel.getLayerById(layerKeys[i]);
+        loadingLayer.setVisible();
+        dataLayers[layerKeys[i]] = loadingLayer;
+        var l = fetchDataLayer(layerKeys[i]);
+        if (!l.hasOwnProperty('state_') || !l.state_) {
+          l.state_ = {};
+        }
+        if (overrideKeys.indexOf(layerKeys[i]) >= 0) {
+          var override = hashLayerOverrides[layerKeys[i]];
+          l.opacity(override.opacity);
+          l.state_.zIndex = override.order;
+          l.state_.opacity = override.opacity;
+          l.state_.visible = override.display;
+        }
+        if (!l.state_.hasOwnProperty('layer')) {
+          l.state_.layer = l;
+        }
+        l.layer.setZIndex(layerKeys.length - layerKeys.indexOf(l.id.toString()));
+      }
+
+      app.wrapper.map.sortLayers();
+
+      // trim unused layers
+      _.each(_.difference(visibleDataLayers, layerKeys), function(id) {
+        l = fetchDataLayer(id);
+        if (l){
+          mapEngine.hideLayer(l);
+        }
+      });
+
+      // add new layers
+      _.each(_.difference(layerKeys, visibleDataLayers), function(id) {
+        l = fetchDataLayer(id);
+        if (l){
+          mapEngine.showLayer(l);
+        }
+      });
+      visibleDataLayers = layerKeys;
+    }
+
+    function confirmAllLayersLoaded() {
+      for (var i = 0; i < layerKeys.length; i++) {
+        var pendingLayer = app.viewModel.getLayerById(layerKeys[i]);
+        if (!pendingLayer.fullyLoaded) {
+          return false;
+        }
+      }
+      loadStoryLayers();
+    }
+
     // Add layers from new state
     for (var i = 0; i < layerKeys.length; i++) {
-      if (overrideKeys.indexOf(layerKeys[i]) >= 0) {
         var layer = layers[layerKeys[i]];
-        var override = hashLayerOverrides[layerKeys[i]];
         // RDH 20191119 - this is not a layermodel, but on object: enforce this and use timeout to watch for fullyloaded
         var loopTime = 0;
         function layerTestLoop () {
           setTimeout(function() {
             var mapLayer = app.viewModel.getLayerById(layer.id);
-            if (!(mapLayer instanceof layerModel && mapLayer.fullyLoaded) && loopTime < 10) {
+            if (!(mapLayer instanceof layerModel && mapLayer.fullyLoaded) && loopTime < 100) {
               loopTime ++;
               layerTestLoop();
             } else {
-              mapLayer.setVisible();
-              dataLayers[layer.id] = mapLayer;
-              var l = fetchDataLayer(layer.id);
-              l.opacity(override.opacity);
-              if (!l.hasOwnProperty('state_') || !l.state_) {
-                l.state_ = {};
-              }
-              l.state_.zIndex = override.order;
-              l.state_.opacity = override.opacity;
-              l.state_.visible = override.display;
-              if (!l.state_.hasOwnProperty('layer')) {
-                l.state_.layer = l;
-              }
+              confirmAllLayersLoaded();
             }
           }, 100);
         };
+        fetchDataLayer(layerKeys[i]);
         layerTestLoop();
-
-      }
     }
-    app.wrapper.map.sortLayers();
-
-    // trim unused layers
-    _.each(_.difference(visibleDataLayers, layerKeys), function(id) {
-      l = fetchDataLayer(id);
-      if (l){
-        mapEngine.hideLayer(l);
-      }
-    });
-
-    // add new layers
-    _.each(_.difference(layerKeys, visibleDataLayers), function(id) {
-      l = fetchDataLayer(id);
-      if (l){
-        mapEngine.showLayer(l);
-      }
-    });
-    visibleDataLayers = layerKeys;
-
 
   }
 
@@ -190,7 +223,7 @@ mapEngine.updateMap = function(story, layerCatalog) {
 
       mapEngine.setView(s.view.center, s.view.zoom, function(){
         setBaseLayer(s.baseLayer);
-        setDataLayers(s.dataLayers, parseHash(s.url));
+        setDataLayers(s.dataLayers, s.layerOrder, parseHash(s.url));
       });
 
     },
