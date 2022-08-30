@@ -74,10 +74,12 @@ function mount(mapElement, story, animate) {
         }
 
       } catch (e) {
-        console.log(e);
-        console.log('layers_list length: ' + layers_list.length);
-        console.log('index: ' + i);
-        console.log('layers_list[i]: ' + layers_list[i]);
+        if (layers_list[i] != null) {
+          console.log(e);
+          console.log('layers_list length: ' + layers_list.length);
+          console.log('index: ' + i);
+          console.log('layers_list[i]: ' + layers_list[i]);
+        }
       }
 
     }
@@ -92,22 +94,14 @@ function mount(mapElement, story, animate) {
     }
 
     var dataLayers = _.indexBy(data, 'id');
-  //   _.each(dataLayers, function(d) {
-  //     if (d.layer_type == 'ArcRest' && d.url.indexOf('http://coast.noaa.gov/arcgis/rest/services/MarineCadastre') > -1) {
-  //       hackyMarineCadastreLayerConversion(d);
-  //     }
-  //   })
-    // os_map = oceanStoryMap(mapEngine, story, dataLayers);
     os_map = mapEngine.updateMap(story, dataLayers);
     scrollSpy('.content', 'a.anchor[id^=\'section-\']', function(sectionIndex){
       // return os_map.goToSection(story, sectionIndex);
+      app.storySection = sectionIndex;
       return os_map.goToSection(sectionIndex);
     })
   });
 }
-//
-// module.exports = mount;
-//
-// window.oceanStory = module.exports;
+
 window.oceanStory = mount;
 app.init();
