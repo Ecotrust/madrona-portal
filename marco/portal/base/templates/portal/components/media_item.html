@@ -1,4 +1,4 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailcustom_tags %}
 <div class="media-item media">
     {% if item.media_position == 'left' %}
         {% if item.media_image or item.media_embed_url %}
@@ -11,7 +11,7 @@
     <div class="media-body">
         <div class="item-text">
             {% block body %}
-                {{ item.body|richtext }}
+                {{ item.body|anchored_richtext }}
             {% endblock %}
         </div>
     </div>

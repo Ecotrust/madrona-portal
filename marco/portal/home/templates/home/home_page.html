@@ -1,5 +1,5 @@
 {% extends "cms/section.html" %}
-{% load wagtailcore_tags wagtailimages_tags static %}
+{% load wagtailcore_tags wagtailcustom_tags wagtailimages_tags static %}
 
 {% block extra_css %}
   {{ block.super }}
@@ -16,7 +16,7 @@
 
 {% block content %}
     {% if page.intro != '<p><br/></p>' %} <!-- this is as empty as a richtext field gets -->
-    <div class="intro">{{ page.intro|richtext }}</div>
+    <div class="intro">{{ page.intro|anchored_richtext }}</div>
     {% endif %}
 
     {% if page.slides.all %}
@@ -30,7 +30,7 @@
                       </div>
                       <div class="slide-content">
                         <h2 class="slide-title">{{ slide.title }}</h2>
-                        <div class="slide-body">{{ slide.body|richtext }}</div>
+                        <div class="slide-body">{{ slide.body|anchored_richtext }}</div>
                       </div>
                     </div>
                   </a>

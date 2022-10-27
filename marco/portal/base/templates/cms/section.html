@@ -1,5 +1,5 @@
 {% extends "cms/base.html" %}
-{% load wagtailcore_tags%}
+{% load wagtailcore_tags wagtailcustom_tags %}
 
 {% block layout %}section{% endblock %}
 {% block page_header %}
@@ -9,7 +9,7 @@
 {% block content %}
   {% if self.body %}
   <div class="page-body">
-    {{ self.body|richtext }}
+    {{ self.body|anchored_richtext }}
   </div>
   {% endif %}
 {% endblock %}

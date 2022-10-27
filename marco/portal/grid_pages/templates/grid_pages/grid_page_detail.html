@@ -1,5 +1,5 @@
 {% extends "layouts/detail.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailcustom_tags %}
 
 {% block back_text %}{{ self.get_parent }}{% endblock %}
 
@@ -14,7 +14,7 @@
 
     {% if self.description %}
     <div class="description">
-        {{ self.description|richtext }}
+        {{ self.description|anchored_richtext }}
     </div>
     {% endif %}
 

@@ -1,5 +1,5 @@
 {% extends "cms/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags social_share %}
+{% load wagtailcore_tags wagtailcustom_tags wagtailimages_tags social_share %}
 
 {% block layout %}detail{% endblock %}
 
@@ -30,7 +30,7 @@
 
             {% if self.description %}
             <div class="description">
-                {{ self.description|richtext }}
+                {{ self.description|anchored_richtext }}
             </div>
             {% endif %}
 

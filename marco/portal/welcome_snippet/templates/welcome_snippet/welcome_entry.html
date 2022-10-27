@@ -1,4 +1,4 @@
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailcustom_tags wagtailimages_tags %}
 <div class="welcome-snippet">
 	<div class="title-line">
 		{% block title %}<h1> {{ welcome_entry.title }}</h1>{% endblock %}
@@ -7,7 +7,7 @@
 	{% block content %}
 	  {% if welcome_entry.body %}
 	  <div class="description">
-	    {{ welcome_entry.body|richtext }}
+	    {{ welcome_entry.body|anchored_richtext }}
 	  </div>
 	  {% endif %}
 	{% endblock %}

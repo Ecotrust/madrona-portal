@@ -1,4 +1,4 @@
-{% load wagtailcore_tags%}
+{% load wagtailcore_tags wagtailcustom_tags %}
 
 <div class="title-line">
 	{% block title %}<h1>{% include 'portal/includes/edit_link.html' %} {{ self.title }}</h1>{% endblock %}
@@ -6,6 +6,6 @@
 
 {% if self.description %}
 	<div class="description">
-		{{ self.description|richtext }}
+		{{ self.description|anchored_richtext }}
 	</div>
 {% endif %}
