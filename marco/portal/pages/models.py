@@ -17,7 +17,9 @@ from portal.base.models import PageBase
 
 class PageTableBlock(blocks.StreamBlock):
     # https://docs.wagtail.org/en/stable/reference/contrib/table_block.html
-    table = TableBlock()
+    table = TableBlock(table_options={
+        'renderer': 'html',
+    })
 
 class Page(PageBase):
 

@@ -2,3 +2,20 @@
     top: -50px;
     position: relative;
 }
+
+.block-table  {
+    width: 70vw;
+    padding: 1rem 8rem;
+    margin-bottom: 4rem;
+}
+
+.block-table table caption {
+    color: unset;
+}
+
+.block-table table tr td,
+.block-table table tr th {
+    padding: .5rem 2rem;
+    border: 1px solid black;
+
+}
