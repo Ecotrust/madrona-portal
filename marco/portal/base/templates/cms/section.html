@@ -7,9 +7,18 @@
 {% endblock %}
 
 {% block content %}
-  {% if self.body %}
-  <div class="page-body">
-    {{ self.body|anchored_richtext }}
-  </div>
-  {% endif %}
+
+  {% for block in page.body %}
+    {% if block.block_type == 'table' %}
+        {% include_block block %}
+    {% elif block.block_type == 'text' %}
+        <div class="page-body">
+          {% include_block block %}
+        </div>
+    {% else %}
+      {# rendering for other block types #}
+      {% include_block block %}
+    {% endif %}
+  {% endfor %}
+
 {% endblock %}

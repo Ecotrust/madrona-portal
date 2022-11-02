@@ -95,6 +95,7 @@ try:
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
         'wagtail.locales',
+        'wagtail.contrib.table_block',
     ]
 except ImportError as e:
     # print(e)
