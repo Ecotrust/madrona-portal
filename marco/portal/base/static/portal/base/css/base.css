@@ -5,8 +5,12 @@
 
 .block-table  {
     width: 70vw;
-    padding: 1rem 8rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
+}
+
+.block-table table {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .block-table table caption {
