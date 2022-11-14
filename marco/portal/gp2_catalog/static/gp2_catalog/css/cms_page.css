@@ -34,6 +34,12 @@ hr {
     padding-right: 0;
   }
 
+  .container.transparent-sticky-footer {
+    padding: 0 15px;
+  }
+
+
+
   .packery-container {
     font-size: 1em;
     padding-left: 5px;
