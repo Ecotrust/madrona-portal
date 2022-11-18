@@ -39,6 +39,8 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    {% ga %}
+
     {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}classless-page{% endblock %} {% block layout %}base{% endblock %}-layout">
@@ -88,7 +90,6 @@
 {% endblock footer_wrap %}
 {% endblock outer_content %}
 
-{% ga %}
 {% compress js %}
 <script src="{% static 'jquery/dist/jquery.js' %}"></script>
 <script src="{% static 'bundles/marco_site.js' %}"></script>
