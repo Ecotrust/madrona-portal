@@ -179,6 +179,7 @@ INSTALLED_APPS += [
     'drawing',
     'manipulators',
     'explore',
+    'nursery',
 
     # Account management
     'social.apps.django_app.default',
