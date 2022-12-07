@@ -16,7 +16,7 @@ requirements:
   cd Madrona
   mkdir apps
   git clone https://github.com/Ecotrust/marco-portal2.git
-  mv marco-portal2 madrtona_portal
+  mv marco-portal2 madrona_portal
   cd apps
   ```
   if you are installing a version of the Mid-Atlantic Ocean Data Portal:
@@ -29,7 +29,7 @@ requirements:
   ```
   if you are installing a version of the Oregon Offshore Wind Energy Data Portal
   ```
-  git clone https://github.com/Ecotrust/wc-offshore.git
+  git clone https://github.com/Ecotrust/wc-offshore-portal.git
   ```
   Finally, for all installations:
   ```
@@ -54,7 +54,7 @@ requirements:
   ```
   sudo apt update
   sudo apt upgrade -y
-  sudo apt install git python3 python3-dev python3-virtualenv python3-pip postgresql postgresql-contrib postgis postgresql-server-dev-14 libjpeg-dev gdal-bin  python3-gdal libgdal-dev -y
+  sudo apt install git python3 python3-dev python3-virtualenv python3-pip postgresql postgresql-contrib postgis postgresql-server-dev-14 libjpeg-dev gdal-bin python3-gdal libgdal-dev redis -y
   ```
 
 3. Set up virtualenv
@@ -62,23 +62,43 @@ requirements:
   python3 -m pip install --user virtualenv
   cd /usr/local/apps/
   python3 -m virtualenv env
-  source /usr/local/apps/madrona_portal/env/bin/activate
-  pip install -r /usr/local/apps/madrona_portal/requirements.txt
+  source /usr/local/apps/env/bin/activate
+  pip3 install -r /usr/local/apps/madrona_portal/requirements.txt
   pip uninstall numpy
   gdal-config --version
-  pip install "pygdal<3.4.2"
-  pip install -e /usr/local/apps/madrona_portal/apps/*
-  pip install -r ./madrona_portal/apps/madrona-scenarios/requirements.txt
-  pip install -r ./madrona_portal/apps/marco-map_groups/requirements.txt
-  pip install -r ./madrona_portal/apps/mp-accounts/requirements.txt
-  pip install -r ./madrona_portal/apps/mp-data-manager/data_manager/requirements.txt
-  pip install -r ./madrona_portal/apps/mp-visualize/requirements.txt
+  pip3 install "pygdal<3.4.2"
+  pip3 install -e /usr/local/apps/madrona_portal/apps/madrona-analysistools
+  pip3 install -e /usr/local/apps/madrona_portal/apps/madrona-features
+  pip3 install -e /usr/local/apps/madrona_portal/apps/madrona-manipulators
+  pip3 install -e /usr/local/apps/madrona_portal/apps/madrona-scenarios
+  pip3 install -e /usr/local/apps/madrona_portal/apps/marco-map_groups
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-accounts
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-data-manager
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-drawing
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-explore
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-proxy
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mp-visualize
+  pip3 install -e /usr/local/apps/madrona_portal/apps/p97-nursery
+  pip3 install -r /usr/local/apps/madrona_portal/apps/madrona-scenarios/requirements.txt
+  pip3 install -r /usr/local/apps/madrona_portal/apps/marco-map_groups/requirements.txt
+  pip3 install -r /usr/local/apps/madrona_portal/apps/mp-accounts/requirements.txt
+  pip3 install -r /usr/local/apps/madrona_portal/apps/mp-data-manager/data_manager/requirements.txt
+  pip3 install -r /usr/local/apps/madrona_portal/apps/mp-visualize/requirements.txt
   ```
-  if you are installing either the West Coast or Oregon Offshore Wind Energy Portals, include the appropriate following requirements:
+  Also be sure to install the correct module for which tool you're building:
+  * Mid-Atlantic:
   ```
-  pip install -r ./madrona_portal/apps/wcoa-portal/wcoa/requirements.txt
-  pip install -r ./madrona_portal/apps/offshore-portal/offshore/requirements.txt
-
+  pip3 install -e /usr/local/apps/madrona_portal/apps/mida-portal
+  ```
+  * West Coast:
+  ```
+  pip3 install -e /usr/local/apps/madrona_portal/apps/wcoa-portal
+  pip3 install -r /usr/local/apps/madrona_portal/apps/wcoa-portal/wcoa/requirements.txt
+  ```
+  * OROWindMap:
+  ```
+  pip3 install -e /usr/local/apps/madrona_portal/apps/offshore-portal
+  pip3 install -r /usr/local/apps/madrona_portal/apps/offshore-portal/offshore/requirements.txt
   ```
 
 4. Install database
