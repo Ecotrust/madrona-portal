@@ -61,6 +61,7 @@ requirements:
   ```
   python3 -m pip install --user virtualenv
   cd /usr/local/apps/
+  sudo chown vagrant ./
   python3 -m virtualenv env
   source /usr/local/apps/env/bin/activate
   pip3 install -r /usr/local/apps/madrona_portal/requirements.txt
@@ -92,13 +93,13 @@ requirements:
   ```
   * West Coast:
   ```
-  pip3 install -e /usr/local/apps/madrona_portal/apps/wcoa-portal
-  pip3 install -r /usr/local/apps/madrona_portal/apps/wcoa-portal/wcoa/requirements.txt
+  pip3 install -e /usr/local/apps/madrona_portal/apps/wcoa
+  pip3 install -r /usr/local/apps/madrona_portal/apps/wcoa/wcoa/requirements.txt
   ```
   * OROWindMap:
   ```
-  pip3 install -e /usr/local/apps/madrona_portal/apps/offshore-portal
-  pip3 install -r /usr/local/apps/madrona_portal/apps/offshore-portal/offshore/requirements.txt
+  pip3 install -e /usr/local/apps/madrona_portal/apps/wc-offshore-portal
+  pip3 install -r /usr/local/apps/madrona_portal/apps/wc-offshore-portal/offshore/requirements.txt
   ```
 
 4. Install database
