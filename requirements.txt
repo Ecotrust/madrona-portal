@@ -1,6 +1,6 @@
 # Minimal requirements
 Django>=3.2,<3.3
-wagtail
+wagtail>5.0
 
 # Tentative additions:
 wagtail-import-export
