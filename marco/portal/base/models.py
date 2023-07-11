@@ -5,18 +5,24 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Page
-    from wagtail.core.fields import RichTextField
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition, Image
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
 else:
-    from wagtail.core.models import Page
-    from wagtail.core.fields import RichTextField
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
 
@@ -104,7 +110,7 @@ class MediaItem(PageSection):
     )
 
     panels = [
-        ImageChooserPanel('media_image'),
+        FieldPanel('media_image'),
         FieldPanel('media_embed_url'),
         FieldPanel('media_caption'),
         FieldPanel('media_position'),
@@ -161,6 +167,6 @@ class DetailPageBase(PageBase):
     subpage_types = []
     content_panels = PageBase.content_panels + [
         MultiFieldPanel([
-            ImageChooserPanel('feature_image'),
+            FieldPanel('feature_image'),
         ], 'Detail')
     ]

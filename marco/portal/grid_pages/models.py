@@ -3,16 +3,16 @@ from modelcluster.fields import ParentalKey
 from django.conf import settings
 
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, \
+    from wagtail.admin.panels import FieldPanel, InlinePanel, \
         MultiFieldPanel
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Orderable
     from wagtail.search import index
 else:
-    from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, \
+    from wagtail.admin.panels import FieldPanel, InlinePanel, \
         MultiFieldPanel
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Orderable
     from wagtail.search import index
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem

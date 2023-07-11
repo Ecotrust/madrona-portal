@@ -2,14 +2,14 @@
 
 from django.db import migrations
 import wagtail.contrib.table_block.blocks
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
+import wagtail.fields
 
 # Thanks to cssidy for the solution to migrate from RichTextField to Stream:
 #   https://stackoverflow.com/a/56024999/706797
 
 import json
-from wagtail.core.rich_text import RichText
+from wagtail.rich_text import RichText
 
 def migrate_rich_text_body_to_stream(apps, schema_editor):
     pagesPage = apps.get_model('pages', 'Page')
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='page',
             name='body',
-            field=wagtail.core.fields.StreamField([('text', wagtail.core.blocks.RichTextBlock()), ('table', wagtail.core.blocks.StreamBlock([('table', wagtail.contrib.table_block.blocks.TableBlock())]))], blank=True, default=None, null=True),
+            field=wagtail.fields.StreamField([('text', wagtail.blocks.RichTextBlock()), ('table', wagtail.blocks.StreamBlock([('table', wagtail.contrib.table_block.blocks.TableBlock())]))], blank=True, default=None, null=True),
         ),
 
         migrations.RunPython(migrate_rich_text_body_to_stream),

@@ -5,21 +5,27 @@ from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Orderable
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.snippets.models import register_snippet
+    from wagtail.fields import RichTextField
+    from wagtail.images.models import AbstractImage, AbstractRendition
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.models import Orderable
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.core.fields import RichTextField
+    from wagtail.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
 else:
-    from wagtail.core.models import Orderable
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.models import Orderable
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.core.fields import RichTextField
+    from wagtail.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
@@ -50,7 +56,7 @@ class WelcomePageEntry(Orderable):
     panels = [
         FieldPanel('title'),
         FieldPanel('description'),
-        ImageChooserPanel('media_image'),
+        FieldPanel('media_image'),
         FieldPanel('url'),
         PageChooserPanel('page'),
         FieldPanel('show_divider_underneath'),

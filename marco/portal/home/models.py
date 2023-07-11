@@ -5,18 +5,25 @@ from django.http import HttpResponseRedirect
 from modelcluster.fields import ParentalKey
 
 from django.conf import settings
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable, Page
-    from wagtail.core.fields import RichTextField
+
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Orderable, Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.images.models import Image
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.models import Orderable, Page
+    from wagtail.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
     from wagtail.images.models import Image
     from wagtail.images.edit_handlers import ImageChooserPanel
 else:
-    from wagtail.core.models import Orderable, Page
-    from wagtail.core.fields import RichTextField
+    from wagtail.models import Orderable, Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
     from wagtail.images.models import Image
     from wagtail.images.edit_handlers import ImageChooserPanel
 
@@ -57,7 +64,7 @@ class HomePageCarouselSlide(models.Model):
         FieldPanel('body'),
         FieldPanel('link_external'),
         PageChooserPanel('link_page'),
-        ImageChooserPanel('slide_image'),
+        FieldPanel('slide_image'),
     ]
 
     class Meta:
@@ -101,7 +108,7 @@ class HomePageCard(models.Model):
         FieldPanel('description'),
         FieldPanel('link_external'),
         PageChooserPanel('link_page'),
-        ImageChooserPanel('feature_image'),
+        FieldPanel('feature_image'),
     ]
 
     @property

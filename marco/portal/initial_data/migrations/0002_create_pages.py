@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
-from wagtail.core.models import Locale
+from wagtail.models import Locale
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 else:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 
 def create_initial_data(apps, schema_editor):
     home_page = Page.objects.get(url_path="/home/")

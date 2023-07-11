@@ -1,16 +1,15 @@
 from django.db import models
 from django.conf import settings
-from wagtail.core import blocks
-from wagtail.admin.edit_handlers import StreamFieldPanel
+from wagtail import blocks
 from wagtail.contrib.table_block.blocks import TableBlock
 
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.fields import RichTextField, StreamField
-    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.fields import RichTextField, StreamField
+    from wagtail.admin.panels import FieldPanel
     from wagtail.search import index
 else:
-    from wagtail.core.fields import RichTextField
-    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.fields import RichTextField
+    from wagtail.admin.panels import FieldPanel
     from wagtail.search import index
 
 from portal.base.models import PageBase
@@ -32,5 +31,5 @@ class Page(PageBase):
     #     index.SearchField('body'),
     # ]
     content_panels = PageBase.content_panels + [
-        StreamFieldPanel('body', classname="full"),
+        FieldPanel('body', classname="full"),
     ]
