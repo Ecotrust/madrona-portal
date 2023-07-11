@@ -78,7 +78,7 @@ try:
     #   https://djangosnippets.org/snippets/3048/
     __import__('wagtail.contrib.forms')
     # Wagtail v2
-    WAGTAIL_VERSION = 2
+    WAGTAIL_VERSION = 5
 
     INSTALLED_APPS = [
         'wagtail.contrib.forms',
@@ -91,18 +91,19 @@ try:
         'wagtail.images',
         'wagtail.search',
         'wagtail.admin',
-        'wagtail.core',
+        'wagtail',
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
         'wagtail.locales',
         'wagtail.contrib.table_block',
     ]
+
 except ImportError as e:
     # print(e)
     # Wagtail v1 for merging in old MidA Portal
     WAGTAIL_VERSION = 1
     INSTALLED_APPS = [
-        'wagtail.core',
+        'wagtail',
         'wagtail.admin',
         'wagtail.docs',
         'wagtail.snippets',
@@ -113,7 +114,7 @@ except ImportError as e:
         'wagtail.search',
         'wagtail.redirects',
         'wagtail.forms',
-        'wagtail.contrib.wagtailsitemaps',
+        'wagtail.contrib.sitemaps',
     ]
 
 try:
@@ -215,7 +216,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.middleware.SiteMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
@@ -225,26 +226,26 @@ MIDDLEWARE = [
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
 
-if WAGTAIL_VERSION > 1:
-    try:
-        __import__('wagtail.core.middleware.SiteMiddleware')
-        MIDDLEWARE += [
-            'wagtail.core.middleware.SiteMiddleware',
-        ]
-    except ImportError as e:
-        # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
-        MIDDLEWARE += [
-            'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
-        ]
-        WAGTAIL_VERSION = 2.11
-    MIDDLEWARE += [
-        'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-    ]
-else:
-    MIDDLEWARE += [
-        'wagtail.core.middleware.SiteMiddleware',
-        'wagtail.redirects.middleware.RedirectMiddleware',
-    ]
+# if WAGTAIL_VERSION > 1:
+#     try:
+#         __import__('wagtail.middleware.SiteMiddleware')
+#         MIDDLEWARE += [
+#             'wagtail.middleware.SiteMiddleware',
+#         ]
+#     except ImportError as e:
+#         # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
+#         MIDDLEWARE += [
+#             'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
+#         ]
+#         WAGTAIL_VERSION = 2.11
+#     MIDDLEWARE += [
+#         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+#     ]
+# else:
+MIDDLEWARE += [
+    'wagtail.middleware.SiteMiddleware',
+    'wagtail.redirects.middleware.RedirectMiddleware',
+]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
