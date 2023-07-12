@@ -73,11 +73,14 @@ class CTAStreamBlock(blocks.StructBlock):
         value_class = LinkStructValue
 
 class CTAPage(Page):
-    body = StreamField([
-        ('item', CTAStreamBlock()),
-        ('details', blocks.RichTextBlock()),
-        ('row', CTARowDivider()),
-    ])
+    body = StreamField(
+        [
+            ('item', CTAStreamBlock()),
+            ('details', blocks.RichTextBlock()),
+            ('row', CTARowDivider()),
+        ],
+        use_json_field=True,
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel('body'),
@@ -98,7 +101,7 @@ class CTAPage(Page):
     page_ptr = models.OneToOneField(Page, parent_link=True, on_delete=models.CASCADE, related_name='gp2_CTAPage')
 
     def get_context(self, request):
-        context = super().get_context(request)
+        context = super().get_context(request, parent_context=parent_context)
         context['CATALOG_QUERY_ENDPOINT'] = settings.CATALOG_QUERY_ENDPOINT
 
         return context
@@ -124,10 +127,13 @@ class ConnectPage(Page):
         related_name='+'
     )
 
-    cta_list = StreamField([
-        ('connection', CTAStreamBlock()),
-        ('details', blocks.RichTextBlock()),
-    ])
+    cta_list = StreamField(
+        [
+            ('connection', CTAStreamBlock()),
+            ('details', blocks.RichTextBlock()),
+        ],
+        use_json_field=True,
+    )
 
     # Editor panels configuration
 

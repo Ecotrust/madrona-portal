@@ -54,7 +54,8 @@ class OceanStorySectionBase(MediaItem):
             ('raw_html', RawHTMLBlock()),
         ],
         null=True,
-        blank=True
+        blank=True,
+        use_json_field=True,
     )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "
@@ -189,7 +190,7 @@ class OceanStory(DetailPageBase):
 
     def get_context(self, request):
         import importlib
-        context = super(OceanStory, self).get_context(request)
+        context = super(OceanStory, self).get_context(request, parent_context=parent_context)
         if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:
             # Use mp-visualize code and set map library
             context['MAP_LIBRARY'] = settings.MAP_LIBRARY

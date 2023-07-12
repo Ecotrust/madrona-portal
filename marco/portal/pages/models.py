@@ -22,10 +22,16 @@ class PageTableBlock(blocks.StreamBlock):
 
 class Page(PageBase):
 
-    body = StreamField([
-        ('text', blocks.RichTextBlock()),
-        ('table', PageTableBlock()),
-    ], blank=True, null=True, default=None)
+    body = StreamField(
+        [
+            ('text', blocks.RichTextBlock()),
+            ('table', PageTableBlock()),
+        ], 
+        blank=True, 
+        null=True, 
+        default=None,
+        use_json_field=True,
+    )
 
     # search_fields = PageBase.search_fields + [
     #     index.SearchField('body'),
