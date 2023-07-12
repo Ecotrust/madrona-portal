@@ -28,6 +28,8 @@ htmlcov
 .idea
 .coverage
 config.ini
+config.mida.ini
+config.wcoa.ini
 marco.db
 
 .bashrc
