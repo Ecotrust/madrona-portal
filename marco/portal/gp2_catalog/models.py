@@ -101,7 +101,7 @@ class CTAPage(Page):
     page_ptr = models.OneToOneField(Page, parent_link=True, on_delete=models.CASCADE, related_name='gp2_CTAPage')
 
     def get_context(self, request):
-        context = super().get_context(request, parent_context=parent_context)
+        context = super().get_context(request)
         context['CATALOG_QUERY_ENDPOINT'] = settings.CATALOG_QUERY_ENDPOINT
 
         return context
