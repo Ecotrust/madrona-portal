@@ -9,7 +9,7 @@ from modelcluster.fields import ParentalKey
 
 if settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel,TitleFieldPanel
     from wagtail.snippets.models import register_snippet
 else:
     from wagtail.models import Orderable
@@ -43,7 +43,7 @@ class MenuEntryBase(models.Model):
     )
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         PageChooserPanel('page'),
         FieldPanel('url'),
         FieldPanel('display_options'),
@@ -100,7 +100,7 @@ class Menu(ClusterableModel):
 
     panels = [
         MultiFieldPanel([
-            FieldPanel('title'),
+            TitleFieldPanel('title'),
             FieldPanel('active'),
             FieldPanel('is_user_menu'),
             FieldPanel('footer'),

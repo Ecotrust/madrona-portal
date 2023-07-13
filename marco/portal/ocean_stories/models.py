@@ -22,7 +22,7 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Orderable
     from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,TitleFieldPanel
     from wagtail.blocks import RichTextBlock, RawHTMLBlock    
 elif settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Orderable
@@ -62,7 +62,7 @@ class OceanStorySectionBase(MediaItem):
        "display the map's legend to the right of the the section text."))
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
         FieldPanel('body'),
         FieldPanel('map_state'),

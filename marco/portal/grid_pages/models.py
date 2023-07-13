@@ -4,7 +4,7 @@ from django.conf import settings
 
 if settings.WAGTAIL_VERSION > 1:
     from wagtail.admin.panels import FieldPanel, InlinePanel, \
-        MultiFieldPanel
+        MultiFieldPanel,TitleFieldPanel
     from wagtail.fields import RichTextField
     from wagtail.models import Orderable
     from wagtail.search import index
@@ -26,7 +26,7 @@ class GridPageSectionBase(MediaItem):
     body = RichTextField(blank=True)
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
         FieldPanel('body', classname="full"),
     ]

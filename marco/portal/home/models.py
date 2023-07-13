@@ -10,7 +10,7 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Orderable, Page
     from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel,TitleFieldPanel
     from wagtail.images.models import Image
 elif settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Orderable, Page
@@ -60,7 +60,7 @@ class HomePageCarouselSlide(models.Model):
     )
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         FieldPanel('body'),
         FieldPanel('link_external'),
         PageChooserPanel('link_page'),
@@ -104,7 +104,7 @@ class HomePageCard(models.Model):
 
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         FieldPanel('description'),
         FieldPanel('link_external'),
         PageChooserPanel('link_page'),

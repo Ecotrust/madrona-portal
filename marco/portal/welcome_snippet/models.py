@@ -7,7 +7,7 @@ from django.conf import settings
 
 if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel,TitleFieldPanel
     from wagtail.snippets.models import register_snippet
     from wagtail.fields import RichTextField
     from wagtail.images.models import AbstractImage, AbstractRendition
@@ -54,7 +54,7 @@ class WelcomePageEntry(Orderable):
     )
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         FieldPanel('description'),
         FieldPanel('media_image'),
         FieldPanel('url'),
@@ -111,7 +111,7 @@ class WelcomePage(ClusterableModel):
 
 WelcomePage.panels = [
     MultiFieldPanel([
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         FieldPanel('body'),
         FieldPanel('active'),
     ]),

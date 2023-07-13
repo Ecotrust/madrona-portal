@@ -10,7 +10,7 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Page, Orderable
     from wagtail.search import index
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
-        InlinePanel
+        InlinePanel,TitleFieldPanel
 elif settings.WAGTAIL_VERSION > 1:
     from wagtail.fields import RichTextField
     from wagtail.models import Page, Orderable
@@ -78,7 +78,7 @@ class Story(Page):
             FieldPanel('posted'),
             FieldPanel('map_link'),
             FieldPanel('feature_image'),
-            FieldPanel('title'),
+            TitleFieldPanel('title'),
             FieldPanel('description'),
         ], "News Story"),
     ]

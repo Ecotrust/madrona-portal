@@ -9,7 +9,7 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Page
     from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel,TitleFieldPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
 elif settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Page
@@ -139,7 +139,7 @@ class PageBase(Page):
 
     content_panels = [
         MultiFieldPanel([
-            FieldPanel('title', classname="title"),
+            TitleFieldPanel('title', classname="title"),
             FieldPanel('description'),
         ], 'Page')
     ]
