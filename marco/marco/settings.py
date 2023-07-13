@@ -70,16 +70,8 @@ CATALOG_PROXY = catalog_cfg.get('CATALOG_PROXY', '')
 CATALOG_SOURCE = catalog_cfg.get('CATALOG_SOURCE', 'http://127.0.0.1:9200')
 CATALOG_QUERY_ENDPOINT = catalog_cfg.get('CATALOG_QUERY_ENDPOINT', '/geoportal/elastic/metadata/item/_search/')
 
-
-# Application definition
 try:
-    # Thanks to tgandor for this inspiration to handle two different wagtail
-    #      versions conditionally while performing this terrible merge:
-    #   https://djangosnippets.org/snippets/3048/
-    __import__('wagtail.contrib.forms')
-    # Wagtail v2
-    WAGTAIL_VERSION = 5
-
+    # Wagtail v5
     INSTALLED_APPS = [
         'wagtail.contrib.forms',
         'wagtail.contrib.redirects',
@@ -92,30 +84,58 @@ try:
         'wagtail.search',
         'wagtail.admin',
         'wagtail',
-        'wagtail.contrib.styleguide',
-        'wagtail.contrib.sitemaps',
-        'wagtail.locales',
-        'wagtail.contrib.table_block',
     ]
 
+    import wagtail
+    WAGTAIL_VERSION = wagtail.VERSION[0]
+
 except ImportError as e:
-    # print(e)
-    # Wagtail v1 for merging in old MidA Portal
-    WAGTAIL_VERSION = 1
-    INSTALLED_APPS = [
-        'wagtail',
-        'wagtail.admin',
-        'wagtail.docs',
-        'wagtail.snippets',
-        'wagtail.users',
-        'wagtail.sites',
-        'wagtail.images',
-        'wagtail.embeds',
-        'wagtail.search',
-        'wagtail.redirects',
-        'wagtail.forms',
-        'wagtail.contrib.sitemaps',
-    ]
+    # Application definition
+    try:
+        # Thanks to tgandor for this inspiration to handle two different wagtail
+        #      versions conditionally while performing this terrible merge:
+        #   https://djangosnippets.org/snippets/3048/
+        __import__('wagtail.contrib.forms')
+        # Wagtail v2
+        WAGTAIL_VERSION = 2
+
+        INSTALLED_APPS = [
+            'wagtail.contrib.forms',
+            'wagtail.contrib.redirects',
+            'wagtail.embeds',
+            'wagtail.sites',
+            'wagtail.users',
+            'wagtail.snippets',
+            'wagtail.documents',
+            'wagtail.images',
+            'wagtail.search',
+            'wagtail.admin',
+            'wagtail',
+            'wagtail.contrib.styleguide',
+            'wagtail.contrib.sitemaps',
+            'wagtail.locales',
+            'wagtail.contrib.table_block',
+            'wagtail.redirects',
+        ]
+
+    except ImportError as e:
+        # print(e)
+        # Wagtail v1 for merging in old MidA Portal
+        WAGTAIL_VERSION = 1
+        INSTALLED_APPS = [
+            'wagtail',
+            'wagtail.admin',
+            'wagtail.docs',
+            'wagtail.snippets',
+            'wagtail.users',
+            'wagtail.sites',
+            'wagtail.images',
+            'wagtail.embeds',
+            'wagtail.search',
+            'wagtail.redirects',
+            'wagtail.forms',
+            'wagtail.contrib.sitemaps',
+        ]
 
 try:
     __import__('django_redis')
@@ -243,8 +263,9 @@ MIDDLEWARE = [
 #     ]
 # else:
 MIDDLEWARE += [
-    'wagtail.middleware.SiteMiddleware',
-    'wagtail.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.redirects.middleware.RedirectMiddleware',
 ]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
