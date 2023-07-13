@@ -59,6 +59,7 @@ class PortalRendition(AbstractRendition):
     image = models.ForeignKey('PortalImage', related_name='renditions', on_delete=models.CASCADE)
     # Wagtail 1.8 deviates drastically from Wagtail 1.7. We need to support both for
     #   the automated migration from wagtail 1.3 to 2.9
+    # TODO: Check if support needed for Wagtail 4.2 https://docs.wagtail.org/en/stable/releases/4.2.html#upgrade-considerations
     import wagtail
     if hasattr(wagtail, 'VERSION') and wagtail.VERSION[0] > 0 and (wagtail.VERSION[0] > 1 or wagtail.VERSION[1] > 7):
         class Meta:
