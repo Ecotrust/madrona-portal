@@ -173,6 +173,7 @@ INSTALLED_APPS += [
     'wagtailimportexport',
 
     'data_manager',
+    'layers',
     'visualize',
     'features',
     'scenarios',
