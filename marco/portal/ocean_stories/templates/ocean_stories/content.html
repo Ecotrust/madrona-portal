@@ -47,6 +47,12 @@
                                 }
                               }
                               html += "<table><tbody>";
+                              if (layer.legend == undefined) {
+                                if (!legend_json.hasOwnProperty('layers')){
+                                  legend_json.layers = [];
+                                } 
+                                layer.legend = legend_json.layers;  
+                              }
                               for (var k = 0; k < layer.legend.length; k++) {
                                 entry = layer.legend[k];
                                 html += "<tr valign='middle'>";

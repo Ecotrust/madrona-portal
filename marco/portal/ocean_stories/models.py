@@ -194,6 +194,7 @@ class OceanStory(DetailPageBase):
         if importlib.util.find_spec("visualize") and hasattr(settings, 'MAP_LIBRARY') and settings.MAP_LIBRARY:
             # Use mp-visualize code and set map library
             context['MAP_LIBRARY'] = settings.MAP_LIBRARY
+            context['ARCGIS_API_KEY'] = settings.ARCGIS_API_KEY
             if hasattr(settings, 'PROJECT_REGION'):
                 context['REGION'] = settings.PROJECT_REGION
             else:
@@ -208,6 +209,7 @@ class OceanStory(DetailPageBase):
         else:
             # use old hard-coded pre-OL3 code.
             context['MAP_LIBRARY'] = False
+            context['ARCGIS_API_KEY'] = settings.ARCGIS_API_KEY
         return context
 
     def as_json(self):

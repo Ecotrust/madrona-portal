@@ -712,9 +712,11 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
         print(e)
         print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
 
-ADDITIONAL_APPS = app_cfg.get('ADDITIONAL_APPS', [])
+ADDITIONAL_APPS = eval(app_cfg.get('ADDITIONAL_APPS', []))
+ADDITIONAL_MIDDLEWARE = eval(app_cfg.get('ADDITIONAL_MIDDLEWARE', []))
 
 INSTALLED_APPS += ADDITIONAL_APPS
+MIDDLEWARE += ADDITIONAL_MIDDLEWARE
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

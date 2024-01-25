@@ -19,10 +19,11 @@ RECAPTCHA_PUBLIC_KEY = ''
 RECAPTCHA_PRIVATE_KEY = ''
 STATIC_ROOT = /path/to/static/root
 EMAIL_SUBJECT_PREFIX = [Marco]
-MAP_LIBRARY = ol6
+MAP_LIBRARY = ol8
 COMPRESS_ENABLED = True
 STATIC_CORE = /usr/local/apps/marco_portal_static/
 #ADDITIONAL_APPS = []
+#ADDITIONAL_MIDDLEWARE = []
 
 [REGION]
 #NAME = Mid-Atlantic Ocean
@@ -76,3 +77,10 @@ TWITTER_KEY = You forgot to set the twitter key
 TWITTER_SECRET = You forgot to set the twitter secret
 GOOGLE_KEY = You forgot to set the google key
 GOOGLE_SECRET = You forgot to set the google secret
+
+[CATALOG]
+DATA_CATALOG_ENABLED = True
+CATALOG_TECHNOLOGY = default
+CATALOG_PROXY = 
+CATALOG_SOURCE = http://127.0.0.1:9200
+CATALOG_QUERY_ENDPOINT = /geoportal/elastic/metadata/item/_search/
