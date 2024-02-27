@@ -1,7 +1,7 @@
-from django.utils import unittest
+from django.test import TestCase
 from .models import *
 
-class OceanStorySectionTestCase(unittest.TestCase):
+class OceanStorySectionTestCase(TestCase):
     def setUp(self):
         self.section = OceanStorySection()
 

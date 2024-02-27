@@ -171,7 +171,7 @@ INSTALLED_APPS += [
     'rpc4django',
     'tinymce',
 
-    'captcha',
+    'django_recaptcha',
     'social_django',
     # 'django_redis',
 
@@ -191,7 +191,7 @@ INSTALLED_APPS += [
     'rest_framework',
 
     'flatblocks',
-    'wagtailimportexport',
+    # 'wagtailimportexport',
 
     'data_manager',
     'visualize',
