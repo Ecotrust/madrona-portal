@@ -2,6 +2,24 @@
 Django>=3.2,<3.3
 wagtail<6
 
+# Local Files
+/usr/local/apps/madrona_portal/apps/madrona-analysistools
+/usr/local/apps/madrona_portal/apps/madrona-features
+/usr/local/apps/madrona_portal/apps/madrona-manipulators
+/usr/local/apps/madrona_portal/apps/madrona-scenarios
+/usr/local/apps/madrona_portal/apps/marco-map_groups
+/usr/local/apps/madrona_portal/apps/mida-portal
+/usr/local/apps/madrona_portal/apps/mp-accounts
+/usr/local/apps/madrona_portal/apps/mp-data-manager
+/usr/local/apps/madrona_portal/apps/mp-drawing
+/usr/local/apps/madrona_portal/apps/mp-explore
+/usr/local/apps/madrona_portal/apps/mp-layers
+/usr/local/apps/madrona_portal/apps/mp-proxy
+/usr/local/apps/madrona_portal/apps/mp-visualize
+/usr/local/apps/madrona_portal/apps/p97-nursery
+/usr/local/apps/madrona_portal/apps/wcoa
+/usr/local/apps/madrona_portal/apps/wc-offshore-portal
+
 # Tentative additions:
 wagtail-import-export
 python-social-auth
