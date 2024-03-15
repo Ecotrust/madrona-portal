@@ -57,7 +57,7 @@ urlpatterns += [
     #'',
     re_path(r'^sitemap\.xml$', sitemap),
 
-    re_path(r'django-admin/', admin.site.urls),
+    re_path(r'django-admin/?', admin.site.urls),
 
     re_path(r'^rpc$', serve_rpc_request),
 
@@ -67,29 +67,29 @@ urlpatterns += [
 
     # re_path(r'^account/auth/', include('social.apps.django_app.urls'), name='social'),
     # url('^account/auth/', include('social_django.urls', namespace='social')),
-    re_path(r'^account/', include('accounts.urls'), name='account'),
-    re_path(r'^collaborate/groups/', include('mapgroups.urls'), name='groups'),
-    re_path(r'^groups/', include('mapgroups.urls'), name='groups'),
-    re_path(r'^g/', RedirectView.as_view(url='/groups/')), # 301
+    re_path(r'^account/?', include('accounts.urls'), name='account'),
+    re_path(r'^collaborate/groups/?', include('mapgroups.urls'), name='groups'),
+    re_path(r'^groups/?', include('mapgroups.urls'), name='groups'),
+    re_path(r'^g/?', RedirectView.as_view(url='/groups/')), # 301
 
-    re_path(r'^admin/', include(wagtailadmin_urls)),
-    re_path(r'^search/', base_views.search),
-    re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^admin/?', include(wagtailadmin_urls)),
+    re_path(r'^search/?', base_views.search),
+    re_path(r'^documents/?', include(wagtaildocs_urls)),
 
     # url(r'^data-catalog/', include('portal.data_catalog.urls')),
-    re_path(r'^data-catalog/([A-Za-z0-9_-]+)/$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
-    re_path(r'^data-catalog/[A-Za-z0-9_-]*/', include('explore.urls')),
-    re_path(r'^data_manager/', include('data_manager.urls')),
-    re_path(r'^styleguide/$', marco_site_views.styleguide, name='styleguide'),
-    re_path(r'^planner/', include('visualize.urls')),
-    re_path(r'^embed/', include('visualize.urls')),
-    re_path(r'^visualize/', include('visualize.urls')),
-    re_path(r'^features/', include('features.urls')),
-    re_path(r'^scenario/', include('scenarios.urls')),
-    re_path(r'^drawing/', include('drawing.urls')),
-    re_path(r'^proxy/', include('mp_proxy.urls')),
+    re_path(r'^data-catalog/([A-Za-z0-9_-]+)/?$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
+    re_path(r'^data-catalog/[A-Za-z0-9_-]*/?', include('explore.urls')),
+    re_path(r'^data_manager/?', include('data_manager.urls')),
+    re_path(r'^styleguide/?$', marco_site_views.styleguide, name='styleguide'),
+    re_path(r'^planner/?', include('visualize.urls')),
+    re_path(r'^embed/?', include('visualize.urls')),
+    re_path(r'^visualize/?', include('visualize.urls')),
+    re_path(r'^features/?', include('features.urls')),
+    re_path(r'^scenario/?', include('scenarios.urls')),
+    re_path(r'^drawing/?', include('drawing.urls')),
+    re_path(r'^proxy/?', include('mp_proxy.urls')),
 
-    re_path(r'^join/', RedirectView.as_view(url='/account/register/')),
+    re_path(r'^join/?', RedirectView.as_view(url='/account/register/')),
 
     re_path(r'^images/', include(wagtailimages_urls)),
     re_path(r'', include(wagtail_urls)),
