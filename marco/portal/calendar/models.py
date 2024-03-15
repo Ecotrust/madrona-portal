@@ -5,12 +5,15 @@ from django.db.models import Q
 
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
+if settings.WAGTAIL_VERSION > 3:
     from wagtail.search import index
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.search import index
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
 else:
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
+    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
 
 from portal.base.models import PageBase,DetailPageBase
 

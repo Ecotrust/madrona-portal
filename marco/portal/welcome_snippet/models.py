@@ -12,23 +12,26 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.fields import RichTextField
     from wagtail.images.models import AbstractImage, AbstractRendition
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.fields import RichTextField
+    from wagtail.core.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.fields import RichTextField
+    from wagtail.core.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
+    TitleFieldPanel = FieldPanel
+
 
 class WelcomePageEntry(Orderable):
     welcome_page = ParentalKey('WelcomePage', related_name='entries')

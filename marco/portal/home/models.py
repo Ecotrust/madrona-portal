@@ -13,12 +13,13 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel,TitleFieldPanel
     from wagtail.images.models import Image
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.models import Orderable, Page
-    from wagtail.fields import RichTextField
+    from wagtail.core.models import Orderable, Page
+    from wagtail.core.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
     from wagtail.images.models import Image
     from wagtail.images.edit_handlers import ImageChooserPanel
+    TitleFieldPanel = FieldPanel
 else:
     from wagtail.models import Orderable, Page
     from wagtail.fields import RichTextField
@@ -26,6 +27,7 @@ else:
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,FieldRowPanel,PageChooserPanel
     from wagtail.images.models import Image
     from wagtail.images.edit_handlers import ImageChooserPanel
+    TitleFieldPanel = FieldPanel
 
 from portal.ocean_stories.models import OceanStory
 

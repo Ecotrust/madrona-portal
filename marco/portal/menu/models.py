@@ -7,14 +7,20 @@ from django.conf import settings
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 
-if settings.WAGTAIL_VERSION > 1:
+if settings.WAGTAIL_VERSION > 4:
     from wagtail.models import Orderable
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel,TitleFieldPanel
     from wagtail.snippets.models import register_snippet
-else:
-    from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
     from wagtail.snippets.models import register_snippet
+    TitleFieldPanel = FieldPanel
+else:
+    from wagtail.core.models import Orderable
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.snippets.models import register_snippet
+    TitleFieldPanel = FieldPanel
 
 
 # The abstract model, complete with panels

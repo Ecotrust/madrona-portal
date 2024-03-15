@@ -170,8 +170,20 @@ INSTALLED_APPS += [
     'modelcluster',
     'rpc4django',
     'tinymce',
+]
 
-    'django_recaptcha',
+# RDH 20240315: this is getting really messy, but django-recaptcha changed from calling itself 'captcha' when it hit v4
+#       Newer Wagtail versions use v4, earlier are stuck on v2 or 3, so swapping based on WAGTAIL_VERSION works for now...
+if WAGTAIL_VERSION > 4:
+    INSTALLED_APPS += [
+        'django-recaptcha',
+    ]
+else:
+    INSTALLED_APPS += [
+        'captcha',
+    ]
+
+INSTALLED_APPS += [
     'social_django',
     # 'django_redis',
 

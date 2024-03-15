@@ -1,12 +1,26 @@
+from django.conf import settings
 from django.db import models
 from modelcluster.fields import ParentalKey
-from wagtail.models import Page, Orderable
-from wagtail.fields import RichTextField, StreamField
-from wagtail import blocks
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel
-from wagtail.images.models import Image
-from wagtail.images.blocks import ImageChooserBlock
-from wagtail.search import index
+
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Page, Orderable
+    from wagtail.fields import RichTextField, StreamField
+    from wagtail import blocks
+    from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel
+    from wagtail.images.models import Image
+    from wagtail.images.blocks import ImageChooserBlock
+    from wagtail.search import index
+else:
+    from wagtail.core.models import Page, Orderable
+    from wagtail.core.fields import RichTextField, StreamField
+    from wagtail.core import blocks
+    from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, StreamFieldPanel, PageChooserPanel
+    from wagtail.images.models import Image
+    from wagtail.images.edit_handlers import ImageChooserPanel
+    from wagtail.images.blocks import ImageChooserBlock
+    from wagtail.search import index
+
+
 from portal.home.models import HomePage
 from portal.base.models import PortalImage, DetailPageBase, PageBase, DetailPageBase, MediaItem
 from portal.calendar.models import Calendar
@@ -73,14 +87,23 @@ class CTAStreamBlock(blocks.StructBlock):
         value_class = LinkStructValue
 
 class CTAPage(Page):
-    body = StreamField(
-        [
-            ('item', CTAStreamBlock()),
-            ('details', blocks.RichTextBlock()),
-            ('row', CTARowDivider()),
-        ],
-        use_json_field=True,
-    )
+    if settings.WAGTAIL_VERSION > 3:
+        body = StreamField(
+            [
+                ('item', CTAStreamBlock()),
+                ('details', blocks.RichTextBlock()),
+                ('row', CTARowDivider()),
+            ],
+            use_json_field=True,
+        )
+    else:
+        body = StreamField(
+            [
+                ('item', CTAStreamBlock()),
+                ('details', blocks.RichTextBlock()),
+                ('row', CTARowDivider()),
+            ],
+        )
 
     content_panels = Page.content_panels + [
         FieldPanel('body'),
@@ -127,13 +150,21 @@ class ConnectPage(Page):
         related_name='+'
     )
 
-    cta_list = StreamField(
-        [
-            ('connection', CTAStreamBlock()),
-            ('details', blocks.RichTextBlock()),
-        ],
-        use_json_field=True,
-    )
+    if settings.WAGTAIL_VERSION > 3:
+        cta_list = StreamField(
+            [
+                ('connection', CTAStreamBlock()),
+                ('details', blocks.RichTextBlock()),
+            ],
+            use_json_field=True,
+        )
+    else:
+        cta_list = StreamField(
+            [
+                ('connection', CTAStreamBlock()),
+                ('details', blocks.RichTextBlock()),
+            ],
+        )
 
     # Editor panels configuration
 

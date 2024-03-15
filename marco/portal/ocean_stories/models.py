@@ -25,17 +25,19 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,TitleFieldPanel
     from wagtail.blocks import RichTextBlock, RawHTMLBlock    
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.models import Orderable
-    from wagtail.fields import StreamField
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.models import Orderable
-    from wagtail.fields import StreamField
+    from wagtail.core.models import Orderable
+    from wagtail.core.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    TitleFieldPanel = FieldPanel
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -48,15 +50,25 @@ def grouper(iterable, n, fillvalue=None):
 # The abstract model for ocean story sections, complete with panels
 class OceanStorySectionBase(MediaItem):
     title = models.CharField(max_length=255, blank=True)
-    body = StreamField(
-        [
-            ('rich_text', RichTextBlock()),
-            ('raw_html', RawHTMLBlock()),
-        ],
-        null=True,
-        blank=True,
-        use_json_field=True,
-    )
+    if settings.WAGTAIL_VERSION > 3:
+        body = StreamField(
+            [
+                ('rich_text', RichTextBlock()),
+                ('raw_html', RawHTMLBlock()),
+            ],
+            null=True,
+            blank=True,
+            use_json_field=True,
+        )
+    else:
+        body = StreamField(
+            [
+                ('rich_text', RichTextBlock()),
+                ('raw_html', RawHTMLBlock()),
+            ],
+            null=True,
+            blank=True,
+        )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "
        "display the map's legend to the right of the the section text."))
