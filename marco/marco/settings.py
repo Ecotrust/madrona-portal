@@ -176,7 +176,7 @@ INSTALLED_APPS += [
 #       Newer Wagtail versions use v4, earlier are stuck on v2 or 3, so swapping based on WAGTAIL_VERSION works for now...
 if WAGTAIL_VERSION > 4:
     INSTALLED_APPS += [
-        'django-recaptcha',
+        'django_recaptcha',
     ]
 else:
     INSTALLED_APPS += [
