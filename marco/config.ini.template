@@ -22,8 +22,8 @@ EMAIL_SUBJECT_PREFIX = [Marco]
 MAP_LIBRARY = ol8
 COMPRESS_ENABLED = True
 STATIC_CORE = /usr/local/apps/marco_portal_static/
-#ADDITIONAL_APPS = []
-#ADDITIONAL_MIDDLEWARE = []
+ADDITIONAL_APPS = []
+ADDITIONAL_MIDDLEWARE = []
 
 [REGION]
 #NAME = Mid-Atlantic Ocean

@@ -50,7 +50,8 @@ class MenuEntryBase(models.Model):
 
     panels = [
         TitleFieldPanel('title'),
-        PageChooserPanel('page'),
+        # PageChooserPanel('page'),
+        FieldPanel('page'),
         FieldPanel('url'),
         FieldPanel('display_options'),
         FieldPanel('show_divider_underneath'),
@@ -148,4 +149,6 @@ class Menu(ClusterableModel):
 
         return mark_safe(s)
 
-Menu.panels.append(InlinePanel('entries', label="Entries" ))
+# TODO suppport lower versions of wagtail
+# Menu.panels.append(InlinePanel('entries', label="Entries" ))
+# Menu.panels.append(FieldPanel('entries'))
