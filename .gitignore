@@ -28,6 +28,7 @@ htmlcov
 .idea
 .coverage
 config.ini
+pytest.ini
 marco.db
 
 .bashrc
