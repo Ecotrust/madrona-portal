@@ -39,6 +39,7 @@ class WelcomePageEntry(Orderable):
     description = RichTextField(blank=True)
     url = models.CharField(null=True, blank=True, max_length=4096)
     show_divider_underneath = models.BooleanField(default=False)
+    slug = models.SlugField(null=True, blank=True)
 
     page = models.ForeignKey(
         'wagtailcore.Page',
@@ -63,6 +64,7 @@ class WelcomePageEntry(Orderable):
         FieldPanel('url'),
         PageChooserPanel('page'),
         FieldPanel('show_divider_underneath'),
+        FieldPanel('slug'),
     ]
 
     @property
@@ -103,6 +105,7 @@ class WelcomePage(ClusterableModel):
     title = models.CharField(max_length=255)
     body = RichTextField(null=True, blank=True)
     active = models.BooleanField(default=False)
+    slug = models.SlugField(null=True, blank=True)
 
     def __str__(self):
         return "%s%s" % (self.title, ' (active)' if self.active else '')
@@ -117,6 +120,7 @@ WelcomePage.panels = [
         TitleFieldPanel('title'),
         FieldPanel('body'),
         FieldPanel('active'),
+        FieldPanel('slug'),
     ]),
     InlinePanel('entries', label='Entries')
 ]
