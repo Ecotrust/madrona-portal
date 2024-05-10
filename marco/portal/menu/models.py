@@ -22,6 +22,8 @@ else:
     from wagtail.snippets.models import register_snippet
     TitleFieldPanel = FieldPanel
 
+from wagtail.admin.widgets.slug import SlugInput
+
 
 # The abstract model, complete with panels
 class MenuEntryBase(models.Model):
@@ -40,8 +42,6 @@ class MenuEntryBase(models.Model):
         ('S', 'Display only to staff and administrators')
     ))
 
-    slug = models.SlugField(null=True, blank=True)
-
     page = models.ForeignKey(
         'wagtailcore.Page',
         null=True,
@@ -52,12 +52,12 @@ class MenuEntryBase(models.Model):
 
     panels = [
         TitleFieldPanel('title'),
-        # PageChooserPanel('page'),
+        PageChooserPanel('page'),
         FieldPanel('page'),
         FieldPanel('url'),
         FieldPanel('display_options'),
         FieldPanel('show_divider_underneath'),
-        FieldPanel('slug'),
+        FieldPanel("slug", widget=SlugInput),
     ]
 
     @property
@@ -98,7 +98,6 @@ class Menu(ClusterableModel):
         ordering = ('footer', 'order',)
 
     title = models.CharField(max_length=255)
-    slug = models.SlugField(null=True, blank=True)
     active = models.BooleanField(default=False, help_text=("To display this "
        "menu, check this box. "))
     is_user_menu = models.BooleanField(default=False, help_text=("If this menu "
@@ -116,7 +115,6 @@ class Menu(ClusterableModel):
             FieldPanel('is_user_menu'),
             FieldPanel('footer'),
             FieldPanel('order'),
-            FieldPanel('slug'),
         ]),
     ]
 
@@ -155,5 +153,5 @@ class Menu(ClusterableModel):
         return mark_safe(s)
 
 # TODO suppport lower versions of wagtail
-# Menu.panels.append(InlinePanel('entries', label="Entries" ))
-# Menu.panels.append(FieldPanel('entries'))
+# Menu.panels.append('entries', label="Entries" )
+Menu.panels.append(FieldPanel('entries'))

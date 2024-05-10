@@ -12,21 +12,21 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
         InlinePanel, TitleFieldPanel
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Page, Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page, Orderable
     from wagtail.images.edit_handlers import ImageChooserPanel
 
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
         InlinePanel
     TitleFieldPanel = FieldPanel
 else:
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Page, Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page, Orderable
     from wagtail.images.edit_handlers import ImageChooserPanel
 
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
         InlinePanel
     TitleFieldPanel = FieldPanel
 

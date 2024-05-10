@@ -5,10 +5,10 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.admin.panels import FieldPanel
     from wagtail.search import index
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.admin.panels import FieldPanel
     from wagtail.search import index
 else:
-    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.admin.panels import FieldPanel
     from wagtail.search import index
 
 from portal.base.models import PageBase,DetailPageBase

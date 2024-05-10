@@ -3,9 +3,9 @@ from django.conf import settings
 if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Page
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 else:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 
 
 from portal.base.models import PageBase

@@ -25,18 +25,18 @@ if settings.WAGTAIL_VERSION > 3:
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,TitleFieldPanel
     from wagtail.blocks import RichTextBlock, RawHTMLBlock    
 elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable
-    from wagtail.core.fields import StreamField
+    from wagtail.models import Orderable
+    from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.blocks import RichTextBlock, RawHTMLBlock
     TitleFieldPanel = FieldPanel
 else:
-    from wagtail.core.models import Orderable
-    from wagtail.core.fields import StreamField
+    from wagtail.models import Orderable
+    from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.blocks import RichTextBlock, RawHTMLBlock
     TitleFieldPanel = FieldPanel
 
 def grouper(iterable, n, fillvalue=None):
