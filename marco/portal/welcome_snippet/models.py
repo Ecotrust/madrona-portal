@@ -1,36 +1,21 @@
-import re
-
-from django.db import models
-from modelcluster.models import ClusterableModel
-from modelcluster.fields import ParentalKey
 from django.conf import settings
-
-if settings.WAGTAIL_VERSION > 3:
-    from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel,TitleFieldPanel
-    from wagtail.snippets.models import register_snippet
-    from wagtail.fields import RichTextField
-    from wagtail.images.models import AbstractImage, AbstractRendition
-elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.models import Orderable
+from django.db import models
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+import re
+if settings.WAGTAIL_VERSION > 4:
     from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
-
-    from wagtail.snippets.models import register_snippet
     from wagtail.fields import RichTextField
-
-    from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
-    TitleFieldPanel = FieldPanel
+    from wagtail.models import Orderable
+    from wagtail.snippets.models import register_snippet
 else:
-    from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
-
-    from wagtail.snippets.models import register_snippet
+    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.core.models import Orderable
     from wagtail.fields import RichTextField
-
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
-    TitleFieldPanel = FieldPanel
+    from wagtail.snippets.models import register_snippet
 
 
 class WelcomePageEntry(Orderable):
@@ -39,7 +24,6 @@ class WelcomePageEntry(Orderable):
     description = RichTextField(blank=True)
     url = models.CharField(null=True, blank=True, max_length=4096)
     show_divider_underneath = models.BooleanField(default=False)
-    slug = models.SlugField(null=True, blank=True)
 
     page = models.ForeignKey(
         'wagtailcore.Page',
@@ -58,13 +42,12 @@ class WelcomePageEntry(Orderable):
     )
 
     panels = [
-        TitleFieldPanel('title'),
+        FieldPanel('title'),
         FieldPanel('description'),
         FieldPanel('media_image'),
         FieldPanel('url'),
         PageChooserPanel('page'),
         FieldPanel('show_divider_underneath'),
-        FieldPanel('slug'),
     ]
 
     @property
@@ -105,7 +88,6 @@ class WelcomePage(ClusterableModel):
     title = models.CharField(max_length=255)
     body = RichTextField(null=True, blank=True)
     active = models.BooleanField(default=False)
-    slug = models.SlugField(null=True, blank=True)
 
     def __str__(self):
         return "%s%s" % (self.title, ' (active)' if self.active else '')
@@ -117,10 +99,9 @@ class WelcomePage(ClusterableModel):
 
 WelcomePage.panels = [
     MultiFieldPanel([
-        TitleFieldPanel('title'),
+        FieldPanel('title'),
         FieldPanel('body'),
         FieldPanel('active'),
-        FieldPanel('slug'),
     ]),
     InlinePanel('entries', label='Entries')
 ]
