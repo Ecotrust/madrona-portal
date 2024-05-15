@@ -1,29 +1,17 @@
-from django.utils.safestring import mark_safe
-import re
-
-from django.db import models
 from django.conf import settings
-
+from django.db import models
+from django.utils.safestring import mark_safe
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
-
+import re
 if settings.WAGTAIL_VERSION > 4:
     from wagtail.models import Orderable
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel,TitleFieldPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
     from wagtail.snippets.models import register_snippet
-elif settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
-    from wagtail.snippets.models import register_snippet
-    TitleFieldPanel = FieldPanel
 else:
     from wagtail.core.models import Orderable
     from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
     from wagtail.snippets.models import register_snippet
-    TitleFieldPanel = FieldPanel
-
-from wagtail.admin.widgets.slug import SlugInput
-
 
 # The abstract model, complete with panels
 class MenuEntryBase(models.Model):
@@ -51,13 +39,11 @@ class MenuEntryBase(models.Model):
     )
 
     panels = [
-        TitleFieldPanel('title'),
+        FieldPanel('title'),
         PageChooserPanel('page'),
-        FieldPanel('page'),
         FieldPanel('url'),
         FieldPanel('display_options'),
         FieldPanel('show_divider_underneath'),
-        FieldPanel("slug", widget=SlugInput),
     ]
 
     @property
@@ -110,7 +96,7 @@ class Menu(ClusterableModel):
 
     panels = [
         MultiFieldPanel([
-            TitleFieldPanel('title'),
+            FieldPanel('title'),
             FieldPanel('active'),
             FieldPanel('is_user_menu'),
             FieldPanel('footer'),
@@ -152,6 +138,4 @@ class Menu(ClusterableModel):
 
         return mark_safe(s)
 
-# TODO suppport lower versions of wagtail
-# Menu.panels.append('entries', label="Entries" )
-Menu.panels.append(FieldPanel('entries'))
+Menu.panels.append(InlinePanel('entries', label="Entries"))
