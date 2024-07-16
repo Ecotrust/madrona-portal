@@ -37,4 +37,7 @@ dev_fixture.json
 env/
 marco/static/
 
+marco/marco/media.extra/
+marco/marco/static/
+marco/media/
 Vagrantfile
