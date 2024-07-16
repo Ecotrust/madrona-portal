@@ -72,9 +72,11 @@ class Story(Page):
     )
 
     search_fields = (
-        index.FilterField('latest_revision_created_at'),
-        index.SearchField('title'),
-        index.SearchField('description'),
+        index.FilterField("latest_revision_created_at"),
+        index.SearchField("title"),
+        index.AutocompleteField("title"),
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
     )
     content_panels = [
         MultiFieldPanel([

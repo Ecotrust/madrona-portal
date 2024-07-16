@@ -180,7 +180,7 @@ class OceanStorySection(Orderable, OceanStorySectionBase):
 class OceanStories(PageBase):
     subpage_types = ['OceanStory']
 
-    search_fields = (index.SearchField('description'),)
+    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
 
     def get_detail_children(self):
         return OceanStory.objects.child_of(self)
@@ -195,9 +195,12 @@ class OceanStory(DetailPageBase):
     explore_url = models.URLField(max_length=4096, blank=True, null=True)
 
     search_fields = DetailPageBase.search_fields + (
-        index.SearchField('description'),
-        index.SearchField('hook'),
-        index.SearchField('get_sections_search_text'),
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
+        index.SearchField("hook"),
+        index.AutocompleteField("hook"),
+        index.SearchField("get_sections_search_text"),
+        index.AutocompleteField("get_sections_search_text"),
     )
 
     def get_context(self, request):

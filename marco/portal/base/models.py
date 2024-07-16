@@ -38,7 +38,8 @@ class PortalImage(AbstractImage):
     creator_URL = models.URLField(blank=True)
 
     search_fields = [x for x in AbstractImage.search_fields] + [
-        index.SearchField('creator'),
+        index.SearchField("creator"),
+        index.AutocompleteField("creator"),
     ]
 
     admin_form_fields = (
@@ -132,8 +133,11 @@ class PageBase(Page):
         abstract = True
 
     description = RichTextField(blank=True, null=True)
-    search_fields = [x for x in Page.search_fields] + [ # Inherit search_fields from Page
-        index.SearchField('description'),
+    search_fields = [
+        x for x in Page.search_fields
+    ] + [  # Inherit search_fields from Page
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
     ]
 
     def get_sections_search_text(self):
@@ -165,7 +169,7 @@ class DetailPageBase(PageBase):
         related_name='+'
     )
 
-    search_fields = (index.SearchField('description'),)
+    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
 
     subpage_types = []
     content_panels = PageBase.content_panels + [
