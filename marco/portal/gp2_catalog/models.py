@@ -94,7 +94,6 @@ class CTAPage(Page):
                 ('details', blocks.RichTextBlock()),
                 ('row', CTARowDivider()),
             ],
-            use_json_field=True,
         )
     else:
         body = StreamField(
@@ -156,7 +155,6 @@ class ConnectPage(Page):
                 ('connection', CTAStreamBlock()),
                 ('details', blocks.RichTextBlock()),
             ],
-            use_json_field=True,
         )
     else:
         cta_list = StreamField(

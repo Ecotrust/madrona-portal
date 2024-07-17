@@ -58,7 +58,6 @@ class OceanStorySectionBase(MediaItem):
             ],
             null=True,
             blank=True,
-            use_json_field=True,
         )
     else:
         body = StreamField(
