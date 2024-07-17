@@ -1,6 +1,6 @@
 # Minimal requirements
-Django>=3.2,<3.3
-wagtail<6
+Django>=4.2,<4.3
+wagtail
 
 # Tentative additions:
 wagtail-import-export
