@@ -11,7 +11,6 @@ from django.views.generic.base import RedirectView, TemplateView
 
 if settings.WAGTAIL_VERSION > 1:
     from wagtail.admin import urls as wagtailadmin_urls
-    from wagtail.search import urls as wagtailsearch_urls
     from wagtail.documents import urls as wagtaildocs_urls
     from wagtail import urls as wagtail_urls
     from wagtail.contrib.sitemaps.views import sitemap
@@ -20,7 +19,6 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail.search.signal_handlers import register_signal_handlers as wagtailsearch_register_signal_handlers
 else:
     from wagtail.admin import urls as wagtailadmin_urls
-    from wagtail.search import urls as wagtailsearch_urls
     from wagtail.docs import urls as wagtaildocs_urls
     from wagtail import urls as wagtail_urls
     from wagtail.contrib.sitemaps.views import sitemap
