@@ -9,17 +9,17 @@ window.addEventListener('load', function () {
 
 loadedLayers = {};
 
-getCatalogEntry = function(layerId){
+getCatalogEntry = function(layerType, layerId){
   var layerKey = layerId.toString();
   if (Object.keys(loadedLayers).indexOf(layerKey) < 0) {
     $.ajax({
-      url: '/data_manager/get_layer_catalog_content/' + layerKey,
+      url: '/data_manager/get_layer_catalog_content/' + layerType + '/' + layerKey,
       success: function(data) {
-        $("#collapse-layer-" + layerKey).html(data.html);
+        $("#collapse-layer-" + layerType + "-" + layerKey).html(data.html);
         loadedLayers[layerKey] = 'Loaded';
       },
       error: function(data) {
-        $("#collapse-layer-" + layerKey).html('<div class="layer-loading-panel">Failed to retrieve layer info.</div>');
+        $("#collapse-layer-" + layerType + "-" + layerKey).html('<div class="layer-loading-panel">Failed to retrieve layer info.</div>');
         loadedLayers[layerKey] = 'Failed to load';
       }
     });

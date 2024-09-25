@@ -3,11 +3,11 @@
     <span id="layer-info-{{ layer.slug_name }}"></span>
     <div class="row">
       <div class="col-sm-9">
-        <h4 id='layer-accordion-{{ layer.id }}'>
+        <h4 id='layer-accordion-{{layer.type}}-{{ layer.id }}'>
           <a class="layer-name collapsed" title="View in Marine Planner"
-              data-toggle="collapse" href="#collapse-layer-{{ layer.id }}"
-              aria-expanded="false" aria-controls="collapse-layer-{{ layer.id }}"
-              onclick="getCatalogEntry({{ layer.id }})">
+              data-toggle="collapse" href="#collapse-layer-{{layer.type}}-{{ layer.id }}"
+              aria-expanded="false" aria-controls="collapse-layer-{{layer.type}}-{{ layer.id }}"
+              onclick="getCatalogEntry('{{layer.type}}', {{ layer.id }})">
             {{layer.name}}</a>
           {% if layer.is_sublayer %}
             <span class="layer-parent-name">
@@ -17,18 +17,18 @@
         </h4>
       </div>
       <div class="col-sm-3">
-        {% if layer.bookmark_link %}{% if layer.is_sublayer or not layer.sublayers|length > 0 %}
+        {% if layer.bookmark_link %}{% if not layer.children|length > 0 and layer.type == 'layer' %}
           <a href="{{layer.bookmark_link}}" target="_blank" class="view-in-map">View in MAP</a>
         {% endif %}{% endif %}
-        {% if not layer.is_sublayer and layer.sublayers|length > 0 %}
-        <span id="parent-accordion-{{ layer.id }}">
-          <a class="parent-collapse" data-toggle="collapse" href="#collapse-parent-{{ layer.id }}"
-          aria-expanded="false" aria-controls="collapse-parent-{{ layer.id }}">Sublayers</a>
-        </span>
+        {% if layer.children|length > 0  and  layer.type == 'theme' %}
+            <span id="parent-accordion-{{layer.type}}-{{ layer.id }}">
+              <a class="parent-collapse" data-toggle="collapse" href="#collapse-parent-{{layer.type}}-{{ layer.id }}"
+              aria-expanded="false" aria-controls="collapse-parent-{{layer.type}}-{{ layer.id }}">Sublayers</a>
+            </span>
         {% endif %}
       </div>
     </div>
-    <div id="collapse-layer-{{ layer.id }}" class="collapse">
+    <div id="collapse-layer-{{layer.type}}-{{ layer.id }}" class="collapse">
       <div class='layer-loading-panel'>
         <p><img src="{% static 'img/ajax-loader.gif' %}"> Loading...<p>
       </div>
