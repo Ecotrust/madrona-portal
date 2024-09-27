@@ -9,11 +9,6 @@
               aria-expanded="false" aria-controls="collapse-layer-{{layer.type}}-{{ layer.id }}"
               onclick="getCatalogEntry('{{layer.type}}', {{ layer.id }})">
             {{layer.name}}</a>
-          {% if layer.is_sublayer %}
-            <span class="layer-parent-name">
-              / {{ layer.parent.name }}
-            </span>
-          {% endif %}
         </h4>
       </div>
       <div class="col-sm-3">
