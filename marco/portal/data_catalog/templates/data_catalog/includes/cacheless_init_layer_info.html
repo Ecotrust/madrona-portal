@@ -23,7 +23,7 @@
         {% if layer.children|length > 0  and  layer.type == 'theme' %}
             <span id="parent-accordion-{{layer.type}}-{{ layer.id }}">
               <a class="parent-collapse" data-toggle="collapse" href="#collapse-parent-{{layer.type}}-{{ layer.id }}"
-              aria-expanded="false" aria-controls="collapse-parent-{{layer.type}}-{{ layer.id }}">Sublayers</a>
+              aria-expanded="false" aria-controls="collapse-parent-{{layer.type}}-{{ layer.id }}">Children</a>
             </span>
         {% endif %}
       </div>
