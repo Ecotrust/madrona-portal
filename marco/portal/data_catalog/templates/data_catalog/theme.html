@@ -22,14 +22,7 @@
   {% comment %} {% if children %} {% endcomment %}
     <div class="layer-list">
       {% for child in children %}
-        {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=child %}
-        <div id="collapse-parent-{{child.type}}-{{ child.id }}" class="collapse in">
-          {% for grandchild in child.children %}
-            <div class="sublayer-entry">
-              {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=grandchild %}
-            </div>
-          {% endfor %}
-        </div>
+        {% include "data_catalog/includes/theme_child.html" %}
       {% endfor %}
     </div>
   {% comment %} {% endif %} {% endcomment %}
