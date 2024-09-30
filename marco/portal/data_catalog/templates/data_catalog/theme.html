@@ -19,24 +19,13 @@
     {{ theme.description }}
     </div>
   </div>
-  {% if layers %}
+  {% comment %} {% if children %} {% endcomment %}
     <div class="layer-list">
-      {% for layer in layers %}
-        {% include "data_catalog/includes/cacheless_init_layer_info.html" %}
-        {% if layer.sublayers|length > 0 %}
-        <div id="collapse-parent-{{ layer.id }}" class="collapse in">
-        {% endif %}
-        {% for sublayer in layer.sublayers %}
-          <div class="sublayer-entry">
-            {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=sublayer %}
-          </div>
-        {% endfor %}
-        {% if layer.sublayers|length > 0 %}
-        </div>
-        {% endif %}
+      {% for child in children %}
+        {% include "data_catalog/includes/theme_child.html" %}
       {% endfor %}
     </div>
-  {% endif %}
+  {% comment %} {% endif %} {% endcomment %}
 {% endblock %}
 
 {% block media %}
