@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from data_manager import models as data_manager_models
-from layers.models import Theme, Layer
+from layers.models import Theme, Layer, ChildOrder
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import OuterRef, Subquery, Exists
 from portal.base.models import PortalImage
 
 # hack for POR-224, until POR-206
@@ -12,7 +14,17 @@ def wagtail_feature_image(self):
 Theme.wagtail_feature_image = wagtail_feature_image
 
 def theme_query():
-    return Theme.objects.filter(is_visible=True).exclude(name='companion').order_by('order')
+    child_orders = ChildOrder.objects.filter(object_id=OuterRef('pk'), content_type=ContentType.objects.get_for_model(Theme))
+    
+    return Theme.objects.filter(
+        is_visible=True
+    ).annotate(
+        has_parent=Exists(child_orders)
+    ).exclude(
+        name='companion'
+    ).filter(
+        has_parent=False  
+    ).order_by('order')
 
 
 def theme(request, theme_slug):
