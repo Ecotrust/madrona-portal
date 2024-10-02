@@ -22,9 +22,8 @@ ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
 COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
 STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
-MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
+MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini.mida')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
-
 
 cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
@@ -167,6 +166,7 @@ INSTALLED_APPS += [
     'portal.initial_data',
     'portal.welcome_snippet',
     'portal.news',
+    'corsheaders',
     'rest_framework',
 
     'flatblocks',
@@ -174,6 +174,7 @@ INSTALLED_APPS += [
 
     'data_manager',
     'layers',
+    'url_short',
     'visualize',
     'features',
     'scenarios',
@@ -209,6 +210,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -226,6 +228,10 @@ MIDDLEWARE = [
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Add the port your React app runs on
+]
+
 if WAGTAIL_VERSION > 1:
     try:
         __import__('wagtail.core.middleware.SiteMiddleware')
@@ -241,12 +247,18 @@ if WAGTAIL_VERSION > 1:
     MIDDLEWARE += [
         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     ]
+
 else:
     MIDDLEWARE += [
         'wagtail.core.middleware.SiteMiddleware',
         'wagtail.redirects.middleware.RedirectMiddleware',
     ]
-
+    if WAGTAIL_VERSION > 2.14:
+        WAGTAILSEARCH_BACKENDS = {
+        'default': {
+            'BACKEND': 'wagtail.search.backends.database',
+        }
+    }
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
 SITE_ID = 1
