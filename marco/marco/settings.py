@@ -22,7 +22,7 @@ ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
 COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
 STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
-MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini.mida')
+MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
 
 cfg = configparser.ConfigParser()
@@ -166,7 +166,6 @@ INSTALLED_APPS += [
     'portal.initial_data',
     'portal.welcome_snippet',
     'portal.news',
-    'corsheaders',
     'rest_framework',
 
     'flatblocks',
@@ -210,7 +209,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -228,9 +226,6 @@ MIDDLEWARE = [
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Add the port your React app runs on
-]
 
 if WAGTAIL_VERSION > 1:
     try:
