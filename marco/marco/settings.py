@@ -173,7 +173,7 @@ INSTALLED_APPS += [
 
     'data_manager',
     'layers',
-    'django_url_shortener',
+    'url_short',
     'visualize',
     'features',
     'scenarios',

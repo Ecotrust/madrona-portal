@@ -82,7 +82,7 @@ urlpatterns += [
     re_path(r'^data_manager/', include('layers.urls')),
     re_path(r'^old_manager/', include('data_manager.urls')),
     # re_path(r'^data_manager/', include('data_manager.urls')),
-    re_path(r'^url_shortener/', include('django_url_shortener.url_short.url_short.urls')),
+    re_path(r'^url_shortener/', include('url_short.urls')),
     re_path(r'^layers/', include('layers.urls')),
     re_path(r'^styleguide/$', marco_site_views.styleguide, name='styleguide'),
     re_path(r'^planner/', include('visualize.urls')),
