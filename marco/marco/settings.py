@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
-
+import sys
 import os
 import configparser
 from os.path import abspath, dirname
@@ -174,7 +174,7 @@ INSTALLED_APPS += [
 
     'data_manager',
     'layers',
-    'url_short',
+    'django_url_shortener',
     'visualize',
     'features',
     'scenarios',
