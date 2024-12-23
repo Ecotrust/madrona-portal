@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
-
+import sys
 import os
 import configparser
 from os.path import abspath, dirname
@@ -24,7 +24,6 @@ STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
 MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
-
 
 cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
@@ -174,6 +173,7 @@ INSTALLED_APPS += [
 
     'data_manager',
     'layers',
+    'url_short',
     'visualize',
     'features',
     'scenarios',
@@ -226,6 +226,7 @@ MIDDLEWARE = [
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
 
+
 if WAGTAIL_VERSION > 1:
     try:
         __import__('wagtail.core.middleware.SiteMiddleware')
@@ -241,12 +242,18 @@ if WAGTAIL_VERSION > 1:
     MIDDLEWARE += [
         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     ]
+
 else:
     MIDDLEWARE += [
         'wagtail.core.middleware.SiteMiddleware',
         'wagtail.redirects.middleware.RedirectMiddleware',
     ]
-
+    if WAGTAIL_VERSION > 2.14:
+        WAGTAILSEARCH_BACKENDS = {
+        'default': {
+            'BACKEND': 'wagtail.search.backends.database',
+        }
+    }
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
 SITE_ID = 1
