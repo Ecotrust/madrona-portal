@@ -253,6 +253,8 @@ MIDDLEWARE = [
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 # FILE_UPLOAD_HANDLERS = [
 #     'django.core.files.uploadhandler.MemoryFileUploadHandler',
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
