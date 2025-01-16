@@ -127,6 +127,11 @@ INSTALLED_APPS += [
     'marco_site',
     # 'kombu.transport.django',
 
+    # Django-autocomplete-light
+    'dal',
+    'dal_select2',
+    'dal_queryset_sequence',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -187,6 +192,7 @@ INSTALLED_APPS += [
     'django_social_share',
     'mapgroups',
     'import_export',
+
 ]
 try:
     __import__('nested_admin')
