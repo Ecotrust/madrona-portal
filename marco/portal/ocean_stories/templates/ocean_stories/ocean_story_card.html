@@ -1,6 +1,9 @@
 {% extends "portal/components/card.html" %}
 
 {% block media %}
-<div class="badge">{{ item.sections.all|length }}</div>
+<div class="badge labelled-badge">
+    {{ item.sections.all|length }}<br />
+    <span class="badge-text badge-label">{{ item.badge_label }}</span>
+</div>
 <a href="{{item.explore_url}}" title="{{item.explore_text}}"><span class="icon icon-marco"></span></a>
 {% endblock %}

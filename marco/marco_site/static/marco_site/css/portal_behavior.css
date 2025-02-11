@@ -1,5 +1,8 @@
 .detail div.badge {
   padding: 0;
+}
+
+.detail div.labelled-badge {
   font-size: 20px;
   line-height: 32px;
 }
@@ -7,6 +10,9 @@
 span.badge-text {
   display: table;
   margin: 0 auto;
+}
+
+span.badge-label {
   font-size: 11px;
   margin-top: -1.5rem;
 }
