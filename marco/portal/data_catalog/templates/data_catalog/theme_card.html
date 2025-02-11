@@ -15,7 +15,8 @@
 
 {% block media %}
 	<div class="badge">
-	{{ item.layer_count }}
+	{{ item.layer_count }}<br/>
+	<span class="badge-text">{{ item.badge_text }}</span>
 	</div>
 	<a href="{{item.url}}" title="{{item.display_name}}">
 		<span class="icon icon-marco"></span>
