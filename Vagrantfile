@@ -35,6 +35,11 @@ Vagrant.configure("2") do |config|
         puts "  -- Provider: QEMU"
         
         config.vm.box = "perk/ubuntu-2204-arm64"
+
+        config.vm.provider "qemu" do |qe|
+            qe.memory = "4096" # 4GB
+        end
+
         config.vm.network :forwarded_port, guest: 80, host: 8080  # nginx
         config.vm.network "forwarded_port", guest: 8000, host: 8000
         config.vm.network "forwarded_port", guest: 8001, host: 8001
@@ -50,15 +55,13 @@ Vagrant.configure("2") do |config|
         
         config.vm.synced_folder "./", "/usr/local/apps/madrona_portal",
         type: "smb",
-        smb_host: smb_host_ip
+        smb_host: smb_host_ip,
+        mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
 
         config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona_portal/apps",
         type: "smb",
-        smb_host: smb_host_ip
-
-        config.vm.provider "qemu" do |qe|
-            qe.memory = "4096" # 4GB
-        end
+        smb_host: smb_host_ip,
+        mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
 
     elsif OS.linux?
 
