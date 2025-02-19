@@ -8,6 +8,7 @@ python-social-auth
 social-auth-app-django<5.0
 python-jose
 pyjwt
+django-autocomplete-light
 django-social-share
 django-email-log
 django-compressor
@@ -16,6 +17,7 @@ django-wysiwyg
 django-recaptcha
 django-flatblocks
 django-nested-admin
+django-querysetsequence
 django-redis
 django-taggit<5.0
 rpc4django

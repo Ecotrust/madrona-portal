@@ -30,6 +30,7 @@ htmlcov
 config.ini
 config.mida.ini
 config.wcoa.ini
+pytest.ini
 marco.db
 
 .bashrc

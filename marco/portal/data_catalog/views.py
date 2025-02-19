@@ -1,6 +1,10 @@
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import OuterRef, Subquery, Exists
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
-from data_manager.models import *
+from data_manager import models as data_manager_models
+from layers.models import Theme, Layer, ChildOrder
 from portal.base.models import PortalImage
 
 # hack for POR-224, until POR-206
@@ -10,26 +14,28 @@ def wagtail_feature_image(self):
 
 Theme.wagtail_feature_image = wagtail_feature_image
 
-def theme_query():
-    return Theme.objects.filter(visible=True).exclude(name='companion').extra(
-        select={
-            'layer_count': "SELECT COUNT(*) FROM data_manager_layer_themes as mm LEFT JOIN data_manager_layer as l ON mm.layer_id = l.id WHERE mm.theme_id = data_manager_theme.id AND l.layer_type != 'placeholder'"
-        }
+def theme_query(site):
+    child_orders = ChildOrder.objects.filter(object_id=OuterRef('pk'), content_type=ContentType.objects.get_for_model(Theme))
+    
+    return Theme.objects.filter(
+        is_visible=True,
+        site=site
+    ).annotate(
+        has_parent=Exists(child_orders)
+    ).exclude(
+        name='companion'
+    ).filter(
+        has_parent=False  
     ).order_by('order')
 
-def theme(request, theme_slug):
-    from django.contrib.sites.shortcuts import get_current_site
-    site = get_current_site(request)
-    theme = get_object_or_404(theme_query(), name=theme_slug)
-    template = 'data_catalog/theme.html'
-    # layers = [x.dictCache(site.pk) for x in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('order')]
-    layers = []
-    for layer in theme.layer_set.all().exclude(layer_type='placeholder').exclude(is_sublayer=True).order_by('name'):
-        layers.append(layer.shortDict(site.pk))
 
+def theme(request, theme_slug):
+    site = get_current_site(request)
+    theme = get_object_or_404(theme_query(site), name=theme_slug)
+    template = 'data_catalog/theme.html'
     context = {
         'theme': theme,
-        'layers': layers,
+        'children': theme.shortDict(site=site)['children'],
     }
 
-    return render(request, template, context);
+    return render(request, template, context)

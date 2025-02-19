@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
-
+import sys
 import os
 import configparser
 from os.path import abspath, dirname
@@ -24,7 +24,6 @@ STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
 MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
-
 
 cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
@@ -149,6 +148,11 @@ INSTALLED_APPS += [
     'marco_site',
     # 'kombu.transport.django',
 
+    # Django-autocomplete-light
+    'dal',
+    'dal_select2',
+    'dal_queryset_sequence',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -206,6 +210,8 @@ INSTALLED_APPS += [
     # 'wagtailimportexport',
 
     'data_manager',
+    'layers',
+    'url_short',
     'visualize',
     'features',
     'scenarios',
@@ -219,6 +225,7 @@ INSTALLED_APPS += [
     'django_social_share',
     'mapgroups',
     'import_export',
+
 ]
 try:
     __import__('nested_admin')
@@ -259,6 +266,7 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 #     'django.core.files.uploadhandler.MemoryFileUploadHandler',
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
+
 
 # if WAGTAIL_VERSION > 1:
 #     try:

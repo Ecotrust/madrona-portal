@@ -246,6 +246,10 @@ class OceanStory(DetailPageBase):
 
     def is_first_sibling(self):
         return len(self.get_prev_siblings().live().filter(display_home_page=True)) == 0
+    
+    @property
+    def badge_label(self):
+        return 'Sections'
 
 
 OceanStory.content_panels = DetailPageBase.content_panels + [

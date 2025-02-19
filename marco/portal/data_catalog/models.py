@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 
 if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Page
@@ -15,8 +16,9 @@ class DataCatalog(PageBase):
     subpage_types = []
 
     def get_context(self, request, *args, **kwargs):
-    	return {
-    		'self': self,
-    		'request': request,
-    		'themes': theme_query()
-    	}
+        site = get_current_site(request)
+        return {
+            'self': self,
+            'request': request,
+            'themes': theme_query(site=site)
+        }

@@ -1,0 +1,12 @@
+{% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=child %}
+<div id="collapse-parent-{{child.type}}-{{ child.id }}" class="collapse in catalog-tier" style="margin-left: 5rem">
+    {% for grandchild in child.children %}
+        {% if grandchild.type == 'layer' %}
+            <div class="sublayer-entry">
+                {% include "data_catalog/includes/cacheless_init_layer_info.html" with layer=grandchild %}
+            </div>
+        {% else %}
+            {% include "data_catalog/includes/theme_child.html" with child=grandchild %}
+        {% endif %}
+    {% endfor %}
+</div>
