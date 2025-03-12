@@ -125,6 +125,7 @@ except ImportError as e:
 
 INSTALLED_APPS += [
     'marco_site',
+    'marco.apps.MadronaPortalConfig',
     # 'kombu.transport.django',
 
     # Django-autocomplete-light
@@ -295,6 +296,8 @@ else:
         default['PASSWORD'] = db_cfg.get('PASSWORD')
 
 DATABASES = {'default': default}
+
+DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona_portal')
 
 if 'CACHES' not in cfg.sections():
     cfg['CACHES'] = {}
