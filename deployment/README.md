@@ -34,7 +34,7 @@
         - `CELERYD_LOG_FILE': you may need to create `/var/log/celery` or point this somewhere where the celery user can write
             ```
             sudo mkdir /var/log/celery
-            sudo chown celery:celery /var/run/celery
+            sudo chown celery:celery /var/log/celery
             ```
 1. enable the celery service to start on boot
     ```
