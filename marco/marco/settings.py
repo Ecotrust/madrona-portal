@@ -61,6 +61,8 @@ from django.utils.log import DEFAULT_LOGGING
 LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
+if 'CATALOG' not in cfg.sections():
+    cfg['CATALOG'] = {}
 catalog_cfg = cfg['CATALOG']
 DATA_CATALOG_ENABLED = catalog_cfg.getboolean('DATA_CATALOG_ENABLED', True)
 #CATALOG_TECHNOLOGY: Current support for 'default' (built in catalog) and 'GeoPortal2'
@@ -296,6 +298,7 @@ else:
         default['PASSWORD'] = db_cfg.get('PASSWORD')
 
 DATABASES = {'default': default}
+
 
 DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona_portal')
 
@@ -706,9 +709,14 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
     except Exception as e:
         print(e)
         print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
-
-ADDITIONAL_APPS = eval(app_cfg.get('ADDITIONAL_APPS', []))
-ADDITIONAL_MIDDLEWARE = eval(app_cfg.get('ADDITIONAL_MIDDLEWARE', []))
+try:
+    ADDITIONAL_APPS = eval(app_cfg.get('ADDITIONAL_APPS', []))
+except Exception as e:
+    ADDITIONAL_APPS = []
+try:
+    ADDITIONAL_MIDDLEWARE = eval(app_cfg.get('ADDITIONAL_MIDDLEWARE', []))
+except Exception as e:  
+    ADDITIONAL_MIDDLEWARE = []
 
 INSTALLED_APPS += ADDITIONAL_APPS
 MIDDLEWARE += ADDITIONAL_MIDDLEWARE
