@@ -6,9 +6,9 @@ import django.db.models.deletion
 import modelcluster.fields
 from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
-    import wagtail.core.fields as wagtail_core_fields
+    import wagtail.fields as wagtail_core_fields
 else:
-    import wagtail.core.fields as wagtail_core_fields
+    import wagtail.fields as wagtail_core_fields
 
 
 class Migration(migrations.Migration):

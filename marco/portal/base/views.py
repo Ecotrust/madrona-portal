@@ -4,14 +4,14 @@ from django.shortcuts import render
 from django.template import RequestContext
 
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core import models
-    from wagtail.core.models import Page
+    from wagtail import models
+    from wagtail.models import Page
     from wagtail.images.models import Image
     from wagtail.search.index import get_indexed_models
     from wagtail.search.backends import get_search_backend
 else:
-    from wagtail.core import models
-    from wagtail.core.models import Page
+    from wagtail import models
+    from wagtail.models import Page
     from wagtail.images.models import Image
     from wagtail.search.index import get_indexed_models
     from wagtail.search.backends import get_search_backend

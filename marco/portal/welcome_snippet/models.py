@@ -6,20 +6,20 @@ from modelcluster.fields import ParentalKey
 from django.conf import settings
 
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.models import Orderable
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.core.fields import RichTextField
+    from wagtail.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition
 else:
-    from wagtail.core.models import Orderable
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
+    from wagtail.models import Orderable
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,PageChooserPanel
 
     from wagtail.snippets.models import register_snippet
-    from wagtail.core.fields import RichTextField
+    from wagtail.fields import RichTextField
 
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition

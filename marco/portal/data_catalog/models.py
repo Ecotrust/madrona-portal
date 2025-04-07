@@ -2,9 +2,9 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 
 if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 else:
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 
 
 from portal.base.models import PageBase

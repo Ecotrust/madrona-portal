@@ -92,7 +92,7 @@ try:
         'wagtail.images',
         'wagtail.search',
         'wagtail.admin',
-        'wagtail.core',
+        'wagtail',
         'wagtail.contrib.styleguide',
         'wagtail.contrib.sitemaps',
         'wagtail.locales',
@@ -103,7 +103,7 @@ except ImportError as e:
     # Wagtail v1 for merging in old MidA Portal
     WAGTAIL_VERSION = 1
     INSTALLED_APPS = [
-        'wagtail.core',
+        'wagtail',
         'wagtail.admin',
         'wagtail.docs',
         'wagtail.snippets',
@@ -114,7 +114,7 @@ except ImportError as e:
         'wagtail.search',
         'wagtail.redirects',
         'wagtail.forms',
-        'wagtail.contrib.wagtailsitemaps',
+        'wagtail.contrib.sitemaps',
     ]
 
 try:
@@ -225,7 +225,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.middleware.SiteMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
@@ -238,9 +238,9 @@ MIDDLEWARE = [
 
 if WAGTAIL_VERSION > 1:
     try:
-        __import__('wagtail.core.middleware.SiteMiddleware')
+        __import__('wagtail.middleware.SiteMiddleware')
         MIDDLEWARE += [
-            'wagtail.core.middleware.SiteMiddleware',
+            'wagtail.middleware.SiteMiddleware',
         ]
     except ImportError as e:
         # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
@@ -254,7 +254,7 @@ if WAGTAIL_VERSION > 1:
 
 else:
     MIDDLEWARE += [
-        'wagtail.core.middleware.SiteMiddleware',
+        'wagtail.middleware.SiteMiddleware',
         'wagtail.redirects.middleware.RedirectMiddleware',
     ]
     if WAGTAIL_VERSION > 2.14:
