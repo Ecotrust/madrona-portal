@@ -37,6 +37,7 @@ class Page(PageBase):
             blank=True, 
             null=True, 
             default=None,
+            use_json_field=True
         )
     else:
         body = StreamField(
@@ -47,6 +48,7 @@ class Page(PageBase):
             blank=True, 
             null=True, 
             default=None,
+            use_json_field=True
         )
 
     # search_fields = PageBase.search_fields + [
