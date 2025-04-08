@@ -71,16 +71,8 @@ CATALOG_PROXY = catalog_cfg.get('CATALOG_PROXY', '')
 CATALOG_SOURCE = catalog_cfg.get('CATALOG_SOURCE', 'http://127.0.0.1:9200')
 CATALOG_QUERY_ENDPOINT = catalog_cfg.get('CATALOG_QUERY_ENDPOINT', '/geoportal/elastic/metadata/item/_search/')
 
-
-# Application definition
 try:
-    # Thanks to tgandor for this inspiration to handle two different wagtail
-    #      versions conditionally while performing this terrible merge:
-    #   https://djangosnippets.org/snippets/3048/
-    __import__('wagtail.contrib.forms')
-    # Wagtail v2
-    WAGTAIL_VERSION = 2
-
+    # Wagtail v5
     INSTALLED_APPS = [
         'wagtail.contrib.forms',
         'wagtail.contrib.redirects',
@@ -92,30 +84,59 @@ try:
         'wagtail.images',
         'wagtail.search',
         'wagtail.admin',
-        'wagtail.core',
-        'wagtail.contrib.styleguide',
-        'wagtail.contrib.sitemaps',
-        'wagtail.locales',
-        'wagtail.contrib.table_block',
+        'wagtail',
     ]
+
+    import wagtail
+    WAGTAIL_VERSION = wagtail.VERSION[0]
+
 except ImportError as e:
-    # print(e)
-    # Wagtail v1 for merging in old MidA Portal
-    WAGTAIL_VERSION = 1
-    INSTALLED_APPS = [
-        'wagtail.core',
-        'wagtail.admin',
-        'wagtail.docs',
-        'wagtail.snippets',
-        'wagtail.users',
-        'wagtail.sites',
-        'wagtail.images',
-        'wagtail.embeds',
-        'wagtail.search',
-        'wagtail.redirects',
-        'wagtail.forms',
-        'wagtail.contrib.wagtailsitemaps',
-    ]
+    # Application definition
+    try:
+        # Thanks to tgandor for this inspiration to handle two different wagtail
+        #      versions conditionally while performing this terrible merge:
+        #   https://djangosnippets.org/snippets/3048/
+        __import__('wagtail.contrib.forms')
+        # Wagtail v2
+        WAGTAIL_VERSION = 2
+
+        INSTALLED_APPS = [
+            'wagtail.contrib.forms',
+            'wagtail.contrib.redirects',
+            'wagtail.embeds',
+            'wagtail.sites',
+            'wagtail.users',
+            'wagtail.snippets',
+            'wagtail.documents',
+            'wagtail.images',
+            'wagtail.search',
+            'wagtail.admin',
+            'wagtail',
+            'wagtail.contrib.styleguide',
+            'wagtail.contrib.sitemaps',
+            'wagtail.locales',
+            'wagtail.contrib.table_block',
+            'wagtail.redirects',
+        ]
+
+    except ImportError as e:
+        # print(e)
+        # Wagtail v1 for merging in old MidA Portal
+        WAGTAIL_VERSION = 1
+        INSTALLED_APPS = [
+            'wagtail',
+            'wagtail.admin',
+            'wagtail.docs',
+            'wagtail.snippets',
+            'wagtail.users',
+            'wagtail.sites',
+            'wagtail.images',
+            'wagtail.embeds',
+            'wagtail.search',
+            'wagtail.redirects',
+            'wagtail.forms',
+            'wagtail.contrib.sitemaps',
+        ]
 
 try:
     __import__('django_redis')
@@ -156,8 +177,20 @@ INSTALLED_APPS += [
     'modelcluster',
     'rpc4django',
     'tinymce',
+]
 
-    'captcha',
+# RDH 20240315: this is getting really messy, but django-recaptcha changed from calling itself 'captcha' when it hit v4
+#       Newer Wagtail versions use v4, earlier are stuck on v2 or 3, so swapping based on WAGTAIL_VERSION works for now...
+if WAGTAIL_VERSION > 4:
+    INSTALLED_APPS += [
+        'django_recaptcha',
+    ]
+else:
+    INSTALLED_APPS += [
+        'captcha',
+    ]
+
+INSTALLED_APPS += [
     'social_django',
     # 'django_redis',
 
@@ -177,7 +210,7 @@ INSTALLED_APPS += [
     'rest_framework',
 
     'flatblocks',
-    'wagtailimportexport',
+    # 'wagtailimportexport',
 
     'data_manager',
     'layers',
@@ -225,10 +258,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.middleware.SiteMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # FILE_UPLOAD_HANDLERS = [
 #     'django.core.files.uploadhandler.MemoryFileUploadHandler',
@@ -236,33 +271,28 @@ MIDDLEWARE = [
 # ]
 
 
-if WAGTAIL_VERSION > 1:
-    try:
-        __import__('wagtail.core.middleware.SiteMiddleware')
-        MIDDLEWARE += [
-            'wagtail.core.middleware.SiteMiddleware',
-        ]
-    except ImportError as e:
-        # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
-        MIDDLEWARE += [
-            'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
-        ]
-        WAGTAIL_VERSION = 2.11
-    MIDDLEWARE += [
-        'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-    ]
+# if WAGTAIL_VERSION > 1:
+#     try:
+#         __import__('wagtail.middleware.SiteMiddleware')
+#         MIDDLEWARE += [
+#             'wagtail.middleware.SiteMiddleware',
+#         ]
+#     except ImportError as e:
+#         # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
+#         MIDDLEWARE += [
+#             'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
+#         ]
+#         WAGTAIL_VERSION = 2.11
+#     MIDDLEWARE += [
+#         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+#     ]
+# else:
+MIDDLEWARE += [
+    # 'wagtail.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.redirects.middleware.RedirectMiddleware',
+]
 
-else:
-    MIDDLEWARE += [
-        'wagtail.core.middleware.SiteMiddleware',
-        'wagtail.redirects.middleware.RedirectMiddleware',
-    ]
-    if WAGTAIL_VERSION > 2.14:
-        WAGTAILSEARCH_BACKENDS = {
-        'default': {
-            'BACKEND': 'wagtail.search.backends.database',
-        }
-    }
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
 SITE_ID = 1

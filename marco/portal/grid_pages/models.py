@@ -2,18 +2,26 @@ from django.db import models
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, \
-        MultiFieldPanel
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Orderable
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.admin.panels import FieldPanel, InlinePanel, \
+        MultiFieldPanel,TitleFieldPanel
+    from wagtail.fields import RichTextField
+    from wagtail.models import Orderable
     from wagtail.search import index
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.admin.panels import FieldPanel, InlinePanel, \
+        MultiFieldPanel
+    from wagtail.fields import RichTextField
+    from wagtail.models import Orderable
+    from wagtail.search import index
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, \
+    from wagtail.admin.panels import FieldPanel, InlinePanel, \
         MultiFieldPanel
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Orderable
     from wagtail.search import index
+    TitleFieldPanel = FieldPanel
 
 from portal.base.models import PageBase, DetailPageBase, MediaItem
 
@@ -26,7 +34,7 @@ class GridPageSectionBase(MediaItem):
     body = RichTextField(blank=True)
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
         FieldPanel('body', classname="full"),
     ]
@@ -47,7 +55,7 @@ class GridPageSection(Orderable, GridPageSectionBase):
 class GridPage(PageBase):
     subpage_types = ['GridPageDetail']
 
-    search_fields = (index.SearchField('description'),)
+    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
 
     def get_detail_children(self):
         return GridPageDetail.objects.child_of(self)
@@ -66,8 +74,9 @@ class GridPageDetail(DetailPageBase):
     metric = models.CharField(max_length=4, blank=True, null=True)
 
     search_fields = DetailPageBase.search_fields + (
-        index.SearchField('description'),
-        index.FilterField('metric'),
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
+        index.FilterField("metric"),
     )
 
     content_panels = DetailPageBase.content_panels + [

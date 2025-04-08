@@ -28,6 +28,8 @@ htmlcov
 .idea
 .coverage
 config.ini
+config.mida.ini
+config.wcoa.ini
 pytest.ini
 marco.db
 
@@ -36,4 +38,8 @@ dev_fixture.json
 env/
 marco/static/
 
+marco/marco/media.extra/
+marco/marco/static/
+marco/media/
 Vagrantfile
+Icon*

@@ -5,22 +5,31 @@ from django.db.models import Q
 from modelcluster.fields import ParentalKey
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Page, Orderable
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page, Orderable
+    from wagtail.search import index
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
+        InlinePanel, TitleFieldPanel
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page, Orderable
     from wagtail.images.edit_handlers import ImageChooserPanel
 
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
         InlinePanel
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.core.fields import RichTextField
-    from wagtail.core.models import Page, Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page, Orderable
     from wagtail.images.edit_handlers import ImageChooserPanel
 
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel, \
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel, \
         InlinePanel
+    TitleFieldPanel = FieldPanel
+
 
 from portal.base.models import MediaItem
 from portal.base.models import PageBase, DetailPageBase
@@ -63,16 +72,18 @@ class Story(Page):
     )
 
     search_fields = (
-        index.FilterField('latest_revision_created_at'),
-        index.SearchField('title'),
-        index.SearchField('description'),
+        index.FilterField("latest_revision_created_at"),
+        index.SearchField("title"),
+        index.AutocompleteField("title"),
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
     )
     content_panels = [
         MultiFieldPanel([
             FieldPanel('posted'),
             FieldPanel('map_link'),
-            ImageChooserPanel('feature_image'),
-            FieldPanel('title'),
+            FieldPanel('feature_image'),
+            TitleFieldPanel('title'),
             FieldPanel('description'),
         ], "News Story"),
     ]
