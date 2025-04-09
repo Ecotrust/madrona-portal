@@ -78,8 +78,8 @@ mapEngine.setBaseLayer = function(layer) {
 mapEngine.fetchDataLayer = function(id) {
   if (!mapEngine.dataLayers.hasOwnProperty(id)) {
     if (!mapEngine.layerCatalog.hasOwnProperty(id)) {
-      console.warn("Ignoring unknown layer id " + id);
-      return false;
+      // fake it - the layer is loaded by `app.addLayerToMap` and will query for the layer details from the ID alone.
+      mapEngine.layerCatalog[id] = {'id': id, 'name': 'Loading...'};
     }
     // create new layer, add to map, hide it, add to dataLayers at [ID]
     var layerObj = app.addLayerToMap(mapEngine.layerCatalog[id]);

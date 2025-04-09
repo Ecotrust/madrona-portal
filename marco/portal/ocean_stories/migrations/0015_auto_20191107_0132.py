@@ -3,11 +3,11 @@
 from django.db import migrations
 from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
-    import wagtail.core.blocks as wagtail_core_blocks
-    import wagtail.core.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
+    import wagtail.fields as wagtail_core_fields
 else:
-    import wagtail.core.blocks as wagtail_core_blocks
-    import wagtail.core.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
+    import wagtail.fields as wagtail_core_fields
 
 
 class Migration(migrations.Migration):

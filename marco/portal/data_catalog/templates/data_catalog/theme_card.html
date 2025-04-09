@@ -14,8 +14,9 @@
 {% block heading %}<a href="{{ item.name }}">{{ item.display_name }}</a>{% endblock %}
 
 {% block media %}
-	<div class="badge">
-	{{ item.layer_count }}
+	<div class="badge labelled-badge">
+	{{ item.layer_count }}<br/>
+	<span class="badge-text badge-label">{{ item.badge_text }}</span>
 	</div>
 	<a href="{{item.url}}" title="{{item.display_name}}">
 		<span class="icon icon-marco"></span>

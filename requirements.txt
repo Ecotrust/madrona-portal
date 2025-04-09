@@ -1,6 +1,6 @@
 # Minimal requirements
-Django>=3.2,<3.3
-wagtail<6
+Django>=4.2,<4.3
+wagtail
 
 # Tentative additions:
 wagtail-import-export
@@ -8,6 +8,7 @@ python-social-auth
 social-auth-app-django<5.0
 python-jose
 pyjwt
+django-autocomplete-light
 django-social-share
 django-email-log
 django-compressor
@@ -16,12 +17,13 @@ django-wysiwyg
 django-recaptcha
 django-flatblocks
 django-nested-admin
+django-querysetsequence
 django-redis
 django-taggit<5.0
 rpc4django
 
 ##################################
-#-e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
+# -e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
 ### OR ####
 #-e git+https://github.com/Ecotrust/mp-data-manager.git@gp2#egg=mp_data_manager-gp2
 ##################################
@@ -51,7 +53,7 @@ celery
 # Django-Celery is incompatible with py3/Django2
 #django-celery
 django-celery-email
-
+django-colorfield
 django-libsass
 
 # Note: django-libsass needs libsass>0.4
@@ -68,3 +70,4 @@ django-import-export
 pyshp
 
 owslib
+

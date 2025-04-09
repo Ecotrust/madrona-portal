@@ -18,18 +18,26 @@ from django.core.exceptions import ValidationError
 from modelcluster.fields import ParentalKey
 from portal.base.models import PageBase, DetailPageBase, MediaItem
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Orderable
-    from wagtail.core.fields import StreamField
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Orderable
+    from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,TitleFieldPanel
+    from wagtail.blocks import RichTextBlock, RawHTMLBlock    
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.models import Orderable
+    from wagtail.fields import StreamField
+    from wagtail.search import index
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel
+    from wagtail.blocks import RichTextBlock, RawHTMLBlock
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.core.models import Orderable
-    from wagtail.core.fields import StreamField
+    from wagtail.models import Orderable
+    from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
-    from wagtail.core.blocks import RichTextBlock, RawHTMLBlock
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel
+    from wagtail.blocks import RichTextBlock, RawHTMLBlock
+    TitleFieldPanel = FieldPanel
 
 def grouper(iterable, n, fillvalue=None):
     """Collect data into fixed-length chunks or blocks.
@@ -42,22 +50,34 @@ def grouper(iterable, n, fillvalue=None):
 # The abstract model for ocean story sections, complete with panels
 class OceanStorySectionBase(MediaItem):
     title = models.CharField(max_length=255, blank=True)
-    body = StreamField(
-        [
-            ('rich_text', RichTextBlock()),
-            ('raw_html', RawHTMLBlock()),
-        ],
-        null=True,
-        blank=True
-    )
+    if settings.WAGTAIL_VERSION > 3:
+        body = StreamField(
+            [
+                ('rich_text', RichTextBlock()),
+                ('raw_html', RawHTMLBlock()),
+            ],
+            null=True,
+            blank=True,
+            use_json_field=True
+        )
+    else:
+        body = StreamField(
+            [
+                ('rich_text', RichTextBlock()),
+                ('raw_html', RawHTMLBlock()),
+            ],
+            null=True,
+            blank=True,
+            use_json_field=True
+        )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "
        "display the map's legend to the right of the the section text."))
 
     panels = [
-        FieldPanel('title'),
+        TitleFieldPanel('title'),
         MultiFieldPanel(MediaItem.panels, "media"),
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
         FieldPanel('map_state'),
         FieldPanel('map_legend'),
     ]
@@ -161,7 +181,7 @@ class OceanStorySection(Orderable, OceanStorySectionBase):
 class OceanStories(PageBase):
     subpage_types = ['OceanStory']
 
-    search_fields = (index.SearchField('description'),)
+    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
 
     def get_detail_children(self):
         return OceanStory.objects.child_of(self)
@@ -176,9 +196,12 @@ class OceanStory(DetailPageBase):
     explore_url = models.URLField(max_length=4096, blank=True, null=True)
 
     search_fields = DetailPageBase.search_fields + (
-        index.SearchField('description'),
-        index.SearchField('hook'),
-        index.SearchField('get_sections_search_text'),
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
+        index.SearchField("hook"),
+        index.AutocompleteField("hook"),
+        index.SearchField("get_sections_search_text"),
+        index.AutocompleteField("get_sections_search_text"),
     )
 
     def get_context(self, request):
@@ -225,6 +248,10 @@ class OceanStory(DetailPageBase):
 
     def is_first_sibling(self):
         return len(self.get_prev_siblings().live().filter(display_home_page=True)) == 0
+    
+    @property
+    def badge_label(self):
+        return 'Sections'
 
 
 OceanStory.content_panels = DetailPageBase.content_panels + [

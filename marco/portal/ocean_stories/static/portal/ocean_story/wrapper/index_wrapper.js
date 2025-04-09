@@ -86,21 +86,12 @@ function mount(mapElement, story, animate) {
     return current_layers;
   }
 
-  // $.getJSON("/data_manager/api/layers/", function(data) {
-  $.getJSON("/data_manager/get_json", function(data) {
-    if (data.hasOwnProperty('layers')) {
-      // data = data.layers;
-      data = getAllLayers({}, data.layers);
-    }
-
-    var dataLayers = _.indexBy(data, 'id');
-    os_map = mapEngine.updateMap(story, dataLayers);
-    scrollSpy('.content', 'a.anchor[id^=\'section-\']', function(sectionIndex){
-      // return os_map.goToSection(story, sectionIndex);
-      app.storySection = sectionIndex;
-      return os_map.goToSection(sectionIndex);
-    })
-  });
+  os_map = mapEngine.updateMap(story, {});
+  scrollSpy('.content', 'a.anchor[id^=\'section-\']', function(sectionIndex){
+    // return os_map.goToSection(story, sectionIndex);
+    app.storySection = sectionIndex;
+    return os_map.goToSection(sectionIndex);
+  })
 }
 
 window.oceanStory = mount;

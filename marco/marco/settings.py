@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
-
+import sys
 import os
 import configparser
 from os.path import abspath, dirname
@@ -24,7 +24,6 @@ STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 
 MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
-
 
 cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
@@ -62,6 +61,8 @@ from django.utils.log import DEFAULT_LOGGING
 LOGGING = DEFAULT_LOGGING
 LOGGING['handlers']['mail_admins']['include_html'] = True
 
+if 'CATALOG' not in cfg.sections():
+    cfg['CATALOG'] = {}
 catalog_cfg = cfg['CATALOG']
 DATA_CATALOG_ENABLED = catalog_cfg.getboolean('DATA_CATALOG_ENABLED', True)
 #CATALOG_TECHNOLOGY: Current support for 'default' (built in catalog) and 'GeoPortal2'
@@ -70,16 +71,8 @@ CATALOG_PROXY = catalog_cfg.get('CATALOG_PROXY', '')
 CATALOG_SOURCE = catalog_cfg.get('CATALOG_SOURCE', 'http://127.0.0.1:9200')
 CATALOG_QUERY_ENDPOINT = catalog_cfg.get('CATALOG_QUERY_ENDPOINT', '/geoportal/elastic/metadata/item/_search/')
 
-
-# Application definition
 try:
-    # Thanks to tgandor for this inspiration to handle two different wagtail
-    #      versions conditionally while performing this terrible merge:
-    #   https://djangosnippets.org/snippets/3048/
-    __import__('wagtail.contrib.forms')
-    # Wagtail v2
-    WAGTAIL_VERSION = 2
-
+    # Wagtail v5
     INSTALLED_APPS = [
         'wagtail.contrib.forms',
         'wagtail.contrib.redirects',
@@ -91,30 +84,59 @@ try:
         'wagtail.images',
         'wagtail.search',
         'wagtail.admin',
-        'wagtail.core',
-        'wagtail.contrib.styleguide',
-        'wagtail.contrib.sitemaps',
-        'wagtail.locales',
-        'wagtail.contrib.table_block',
+        'wagtail',
     ]
+
+    import wagtail
+    WAGTAIL_VERSION = wagtail.VERSION[0]
+
 except ImportError as e:
-    # print(e)
-    # Wagtail v1 for merging in old MidA Portal
-    WAGTAIL_VERSION = 1
-    INSTALLED_APPS = [
-        'wagtail.core',
-        'wagtail.admin',
-        'wagtail.docs',
-        'wagtail.snippets',
-        'wagtail.users',
-        'wagtail.sites',
-        'wagtail.images',
-        'wagtail.embeds',
-        'wagtail.search',
-        'wagtail.redirects',
-        'wagtail.forms',
-        'wagtail.contrib.wagtailsitemaps',
-    ]
+    # Application definition
+    try:
+        # Thanks to tgandor for this inspiration to handle two different wagtail
+        #      versions conditionally while performing this terrible merge:
+        #   https://djangosnippets.org/snippets/3048/
+        __import__('wagtail.contrib.forms')
+        # Wagtail v2
+        WAGTAIL_VERSION = 2
+
+        INSTALLED_APPS = [
+            'wagtail.contrib.forms',
+            'wagtail.contrib.redirects',
+            'wagtail.embeds',
+            'wagtail.sites',
+            'wagtail.users',
+            'wagtail.snippets',
+            'wagtail.documents',
+            'wagtail.images',
+            'wagtail.search',
+            'wagtail.admin',
+            'wagtail',
+            'wagtail.contrib.styleguide',
+            'wagtail.contrib.sitemaps',
+            'wagtail.locales',
+            'wagtail.contrib.table_block',
+            'wagtail.redirects',
+        ]
+
+    except ImportError as e:
+        # print(e)
+        # Wagtail v1 for merging in old MidA Portal
+        WAGTAIL_VERSION = 1
+        INSTALLED_APPS = [
+            'wagtail',
+            'wagtail.admin',
+            'wagtail.docs',
+            'wagtail.snippets',
+            'wagtail.users',
+            'wagtail.sites',
+            'wagtail.images',
+            'wagtail.embeds',
+            'wagtail.search',
+            'wagtail.redirects',
+            'wagtail.forms',
+            'wagtail.contrib.sitemaps',
+        ]
 
 try:
     __import__('django_redis')
@@ -126,7 +148,13 @@ except ImportError as e:
 
 INSTALLED_APPS += [
     'marco_site',
+    'marco.apps.MadronaPortalConfig',
     # 'kombu.transport.django',
+
+    # Django-autocomplete-light
+    'dal',
+    'dal_select2',
+    'dal_queryset_sequence',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -149,8 +177,20 @@ INSTALLED_APPS += [
     'modelcluster',
     'rpc4django',
     'tinymce',
+]
 
-    'captcha',
+# RDH 20240315: this is getting really messy, but django-recaptcha changed from calling itself 'captcha' when it hit v4
+#       Newer Wagtail versions use v4, earlier are stuck on v2 or 3, so swapping based on WAGTAIL_VERSION works for now...
+if WAGTAIL_VERSION > 4:
+    INSTALLED_APPS += [
+        'django_recaptcha',
+    ]
+else:
+    INSTALLED_APPS += [
+        'captcha',
+    ]
+
+INSTALLED_APPS += [
     'social_django',
     # 'django_redis',
 
@@ -170,9 +210,11 @@ INSTALLED_APPS += [
     'rest_framework',
 
     'flatblocks',
-    'wagtailimportexport',
+    # 'wagtailimportexport',
 
     'data_manager',
+    'layers',
+    'url_short',
     'visualize',
     'features',
     'scenarios',
@@ -186,6 +228,7 @@ INSTALLED_APPS += [
     'django_social_share',
     'mapgroups',
     'import_export',
+
 ]
 try:
     __import__('nested_admin')
@@ -215,36 +258,40 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'wagtail.core.middleware.SiteMiddleware',
+    # 'wagtail.middleware.SiteMiddleware',
     # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'marco.host_site_middleware.HostSiteMiddleware',
 ]
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # FILE_UPLOAD_HANDLERS = [
 #     'django.core.files.uploadhandler.MemoryFileUploadHandler',
 #     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 # ]
 
-if WAGTAIL_VERSION > 1:
-    try:
-        __import__('wagtail.core.middleware.SiteMiddleware')
-        MIDDLEWARE += [
-            'wagtail.core.middleware.SiteMiddleware',
-        ]
-    except ImportError as e:
-        # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
-        MIDDLEWARE += [
-            'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
-        ]
-        WAGTAIL_VERSION = 2.11
-    MIDDLEWARE += [
-        'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-    ]
-else:
-    MIDDLEWARE += [
-        'wagtail.core.middleware.SiteMiddleware',
-        'wagtail.redirects.middleware.RedirectMiddleware',
-    ]
+
+# if WAGTAIL_VERSION > 1:
+#     try:
+#         __import__('wagtail.middleware.SiteMiddleware')
+#         MIDDLEWARE += [
+#             'wagtail.middleware.SiteMiddleware',
+#         ]
+#     except ImportError as e:
+#         # https://docs.wagtail.io/en/stable/releases/2.11.html#sitemiddleware-moved-to-wagtail-contrib-legacy
+#         MIDDLEWARE += [
+#             'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
+#         ]
+#         WAGTAIL_VERSION = 2.11
+#     MIDDLEWARE += [
+#         'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+#     ]
+# else:
+MIDDLEWARE += [
+    # 'wagtail.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.redirects.middleware.RedirectMiddleware',
+]
 
 # Valid site IDs are 1 and 2, corresponding to the primary site(1) and the
 # test site(2)
@@ -281,6 +328,9 @@ else:
         default['PASSWORD'] = db_cfg.get('PASSWORD')
 
 DATABASES = {'default': default}
+
+
+DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona_portal')
 
 if 'CACHES' not in cfg.sections():
     cfg['CACHES'] = {}
@@ -689,9 +739,14 @@ if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
     except Exception as e:
         print(e)
         print('PROJECT APP (%s) settings not imported' % PROJECT_APP)
-
-ADDITIONAL_APPS = eval(app_cfg.get('ADDITIONAL_APPS', []))
-ADDITIONAL_MIDDLEWARE = eval(app_cfg.get('ADDITIONAL_MIDDLEWARE', []))
+try:
+    ADDITIONAL_APPS = eval(app_cfg.get('ADDITIONAL_APPS', []))
+except Exception as e:
+    ADDITIONAL_APPS = []
+try:
+    ADDITIONAL_MIDDLEWARE = eval(app_cfg.get('ADDITIONAL_MIDDLEWARE', []))
+except Exception as e:  
+    ADDITIONAL_MIDDLEWARE = []
 
 INSTALLED_APPS += ADDITIONAL_APPS
 MIDDLEWARE += ADDITIONAL_MIDDLEWARE

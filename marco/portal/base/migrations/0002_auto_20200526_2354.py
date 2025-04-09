@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import wagtail.core.models
+import wagtail.models
 import wagtail.images.models
 
 
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         # migrations.AddField(
         #     model_name='portalimage',
         #     name='collection',
-        #     field=models.ForeignKey(default=wagtail.core.models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
+        #     field=models.ForeignKey(default=wagtail.models.get_root_collection_id, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Collection', verbose_name='collection'),
         # ),
         # migrations.AddField(
         #     model_name='portalrendition',
