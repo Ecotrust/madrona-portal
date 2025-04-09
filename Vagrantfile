@@ -121,8 +121,23 @@ Vagrant.configure("2") do |config|
     elsif OS.windows?
 
         puts "Windows OS detected"
-        puts "Please add configuration to VagrantFile"
+        puts "Applying default Windows configuration"
 
+        # Default synced folder setup for Windows
+        smb_host_ip = "192.168.1.1" # Fallback IP for Windows
+
+        config.vm.synced_folder "./", "/usr/local/apps/madrona_portal",
+        type: "smb",
+        smb_host: smb_host_ip,
+        mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
+
+        config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona_portal/apps",
+        type: "smb",
+        smb_host: smb_host_ip,
+        mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
+
+        config.ssh.insert_key = true
+        config.ssh.forward_agent = true
     else
       
         puts "Unknown OS detected"
