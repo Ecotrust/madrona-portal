@@ -28,14 +28,14 @@ elif settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Orderable
     from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel
     from wagtail.blocks import RichTextBlock, RawHTMLBlock
     TitleFieldPanel = FieldPanel
 else:
     from wagtail.models import Orderable
     from wagtail.fields import StreamField
     from wagtail.search import index
-    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel,StreamFieldPanel
+    from wagtail.admin.panels import FieldPanel,InlinePanel,MultiFieldPanel
     from wagtail.blocks import RichTextBlock, RawHTMLBlock
     TitleFieldPanel = FieldPanel
 
@@ -58,6 +58,7 @@ class OceanStorySectionBase(MediaItem):
             ],
             null=True,
             blank=True,
+            use_json_field=True
         )
     else:
         body = StreamField(
@@ -67,6 +68,7 @@ class OceanStorySectionBase(MediaItem):
             ],
             null=True,
             blank=True,
+            use_json_field=True
         )
     map_state = models.TextField()
     map_legend = models.BooleanField(default=False, help_text=("Check to "

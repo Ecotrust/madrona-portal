@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
         def OS.linux?
             OS.unix? and not OS.mac?
         end
+
     end
 
     if OS.mac?
@@ -69,7 +70,7 @@ Vagrant.configure("2") do |config|
         # config.vm.box = "marco-base-v0.4"
         # config.vm.box_url = "http://portal.midatlanticocean.org/static/vagrant_boxes/p97-base-v0.4.box"
         #config.vm.box = "ubuntu/bionic64"
-        config.vm.box = "ubuntu/focal64"
+        config.vm.box = "ubuntu/jammy64"
 
         #Enforce provisioning of 5GB of RAM - required for running MARCO properly
         #If you don't have 5 GB, you can drop the memory value, or comment everything out completely.
@@ -78,7 +79,7 @@ Vagrant.configure("2") do |config|
         #   "--memory", "5120"
         # ]
         config.vm.provider :virtualbox do |vb|
-            vb.customize ["modifyvm", :id, "--memory", 2048]
+            vb.customize ["modifyvm", :id, "--memory", 4096]
         end
 
         if Vagrant.has_plugin?("vagrant-vbguest")
@@ -93,6 +94,8 @@ Vagrant.configure("2") do |config|
         config.vm.network :forwarded_port, guest: 8000, host: 8000  # django dev server
         config.vm.network :forwarded_port, guest: 8001, host: 8001  # django dev server
         config.vm.network :forwarded_port, guest: 8002, host: 8002  # django dev server
+        config.vm.network :forwarded_port, guest: 8003, host: 8003  # django dev server
+        config.vm.network :forwarded_port, guest: 3000, host: 8300  # django dev server
         # config.vm.network :forwarded_port, guest: 5432, host: 65432  # postgresql
 
         # config.ssh.forward_agent = true
