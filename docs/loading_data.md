@@ -104,7 +104,7 @@ levels that you'll never hit. You can choose to grab the full set or a subset th
 includes all layers but omits zoom levels > 9. 
 
 ```
-cd marco-portal2/static/data_manager
+cd madrona-portal/static/data_manager
 
 # Use the subset
 cd marco_site/fixtures
