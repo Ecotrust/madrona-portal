@@ -26,7 +26,7 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
   git clone https://github.com/Ecotrust/madrona-features.git
   git clone https://github.com/Ecotrust/madrona-manipulators.git
   git clone https://github.com/Ecotrust/madrona-scenarios.git
-  git clone https://github.com/Ecotrust/marco-map_groups.git
+  git clone https://github.com/Ecotrust/mp-map-groups.git
   git clone https://github.com/Ecotrust/mp-accounts.git
   git clone https://github.com/Ecotrust/mp-data-manager.git
   git clone https://github.com/Ecotrust/mp-drawing.git

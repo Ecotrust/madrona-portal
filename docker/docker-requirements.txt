@@ -45,8 +45,8 @@ pygdal<3.2.4
 -e /usr/local/apps/madrona-portal/apps/mp-drawing
 #-e git+https://github.com/Ecotrust/mp-explore.git@main#egg=explore
 -e /usr/local/apps/madrona-portal/apps/mp-explore
-#-e git+https://github.com/Ecotrust/marco-map_groups.git@main#egg=map_groups
--e /usr/local/apps/madrona-portal/apps/marco-map_groups
+#-e git+https://github.com/Ecotrust/mp-map-groups.git@main#egg=map_groups
+-e /usr/local/apps/madrona-portal/apps/mp-map-groups
 #-e git+https://github.com/Ecotrust/p97-nursery.git@main#egg=nursery
 -e /usr/local/apps/madrona-portal/apps/p97-nursery
 #-e git+https://github.com/Ecotrust/mp-proxy.git@main#egg=proxy

@@ -36,7 +36,7 @@ rpc4django
 #-e git+https://github.com/Ecotrust/madrona-manipulators.git@main#egg=madrona_manipulators
 #-e git+https://github.com/Ecotrust/mp-drawing.git@main#egg=mp_drawing
 #-e git+https://github.com/Ecotrust/mp-explore.git@main#egg=mp_explore
-#-e git+https://github.com/Ecotrust/marco-map_groups.git@main#egg=marco-map_groups
+#-e git+https://github.com/Ecotrust/mp-map-groups.git@main#egg=mp-map-groups
 #-e git+https://github.com/Ecotrust/p97-nursery.git@main#egg=p97-nursery
 #-e git+https://github.com/Ecotrust/mp-proxy.git@main#egg=mp_proxy
 
