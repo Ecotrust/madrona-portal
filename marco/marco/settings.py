@@ -157,7 +157,7 @@ INSTALLED_APPS += [
     'rpc4django',
     'tinymce',
 
-    'captcha',
+    'django_recaptcha',
     'social_django',
     # 'django_redis',
 
