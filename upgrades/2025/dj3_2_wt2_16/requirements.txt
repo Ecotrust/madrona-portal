@@ -12,7 +12,7 @@ django-email-log
 django-compressor
 django-tinymce
 django-wysiwyg
-django-recaptcha
+django-recaptcha==2.0.6
 django-flatblocks
 django-nested-admin
 django-querysetsequence
