@@ -1,6 +1,6 @@
 # Minimal requirements
-Django>=3.2,<3.3
-wagtail<6
+Django>=4.2,<4.3
+wagtail
 
 # Tentative additions:
 wagtail-import-export
@@ -23,7 +23,7 @@ django-taggit<5.0
 rpc4django
 
 ##################################
-#-e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
+# -e git+https://github.com/Ecotrust/mp-data-manager.git@main#egg=mp_data_manager
 ### OR ####
 #-e git+https://github.com/Ecotrust/mp-data-manager.git@gp2#egg=mp_data_manager-gp2
 ##################################
@@ -36,7 +36,7 @@ rpc4django
 #-e git+https://github.com/Ecotrust/madrona-manipulators.git@main#egg=madrona_manipulators
 #-e git+https://github.com/Ecotrust/mp-drawing.git@main#egg=mp_drawing
 #-e git+https://github.com/Ecotrust/mp-explore.git@main#egg=mp_explore
-#-e git+https://github.com/Ecotrust/marco-map_groups.git@main#egg=marco-map_groups
+#-e git+https://github.com/Ecotrust/mp-map-groups.git@main#egg=mp-map-groups
 #-e git+https://github.com/Ecotrust/p97-nursery.git@main#egg=p97-nursery
 #-e git+https://github.com/Ecotrust/mp-proxy.git@main#egg=mp_proxy
 
@@ -53,7 +53,7 @@ celery
 # Django-Celery is incompatible with py3/Django2
 #django-celery
 django-celery-email
-
+django-colorfield
 django-libsass
 
 # Note: django-libsass needs libsass>0.4

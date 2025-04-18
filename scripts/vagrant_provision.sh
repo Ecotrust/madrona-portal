@@ -33,7 +33,7 @@ echo "setting up virtualenvs"
     $PIP install -e $PROJECT_DIR/apps/mp-visualize && \
     $PIP install -e $PROJECT_DIR/apps/mp-data-manager && \
     $PIP install -e $PROJECT_DIR/apps/mp-proxy && \
-    $PIP install -e $PROJECT_DIR/apps/marco-map_groups && \
+    $PIP install -e $PROJECT_DIR/apps/mp-map-groups && \
     $PIP install -e $PROJECT_DIR/apps/p97-nursery && \
     $PIP install -e $PROJECT_DIR/apps/p97settings && \
     $PIP install -e $PROJECT_DIR/apps/django-recaptcha-develop

@@ -5,20 +5,28 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
-if settings.WAGTAIL_VERSION > 1:
-    from wagtail.core.models import Page
-    from wagtail.core.fields import RichTextField
+if settings.WAGTAIL_VERSION > 3:
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel,TitleFieldPanel
+    from wagtail.images.models import AbstractImage, AbstractRendition, Image
+elif settings.WAGTAIL_VERSION > 1:
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
+    from wagtail.search import index
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
+    TitleFieldPanel = FieldPanel
 else:
-    from wagtail.core.models import Page
-    from wagtail.core.fields import RichTextField
+    from wagtail.models import Page
+    from wagtail.fields import RichTextField
     from wagtail.search import index
-    from wagtail.admin.edit_handlers import FieldPanel,MultiFieldPanel
+    from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
+    TitleFieldPanel = FieldPanel
 
 
 
@@ -30,7 +38,8 @@ class PortalImage(AbstractImage):
     creator_URL = models.URLField(blank=True)
 
     search_fields = [x for x in AbstractImage.search_fields] + [
-        index.SearchField('creator'),
+        index.SearchField("creator"),
+        index.AutocompleteField("creator"),
     ]
 
     admin_form_fields = (
@@ -53,6 +62,7 @@ class PortalRendition(AbstractRendition):
     image = models.ForeignKey('PortalImage', related_name='renditions', on_delete=models.CASCADE)
     # Wagtail 1.8 deviates drastically from Wagtail 1.7. We need to support both for
     #   the automated migration from wagtail 1.3 to 2.9
+    # TODO: Check if support needed for Wagtail 4.2 https://docs.wagtail.org/en/stable/releases/4.2.html#upgrade-considerations
     import wagtail
     if hasattr(wagtail, 'VERSION') and wagtail.VERSION[0] > 0 and (wagtail.VERSION[0] > 1 or wagtail.VERSION[1] > 7):
         class Meta:
@@ -104,7 +114,7 @@ class MediaItem(PageSection):
     )
 
     panels = [
-        ImageChooserPanel('media_image'),
+        FieldPanel('media_image'),
         FieldPanel('media_embed_url'),
         FieldPanel('media_caption'),
         FieldPanel('media_position'),
@@ -123,8 +133,11 @@ class PageBase(Page):
         abstract = True
 
     description = RichTextField(blank=True, null=True)
-    search_fields = [x for x in Page.search_fields] + [ # Inherit search_fields from Page
-        index.SearchField('description'),
+    search_fields = [
+        x for x in Page.search_fields
+    ] + [  # Inherit search_fields from Page
+        index.SearchField("description"),
+        index.AutocompleteField("description"),
     ]
 
     def get_sections_search_text(self):
@@ -132,7 +145,7 @@ class PageBase(Page):
 
     content_panels = [
         MultiFieldPanel([
-            FieldPanel('title', classname="title"),
+            TitleFieldPanel('title', classname="title"),
             FieldPanel('description'),
         ], 'Page')
     ]
@@ -156,11 +169,11 @@ class DetailPageBase(PageBase):
         related_name='+'
     )
 
-    search_fields = (index.SearchField('description'),)
+    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
 
     subpage_types = []
     content_panels = PageBase.content_panels + [
         MultiFieldPanel([
-            ImageChooserPanel('feature_image'),
+            FieldPanel('feature_image'),
         ], 'Detail')
     ]

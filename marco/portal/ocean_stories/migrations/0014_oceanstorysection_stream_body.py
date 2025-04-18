@@ -8,13 +8,13 @@
 from django.db import migrations
 from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
-    import wagtail.core.fields as wagtail_core_fields
-    import wagtail.core.blocks as wagtail_core_blocks
-    from wagtail.core.rich_text import RichText
+    import wagtail.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
+    from wagtail.rich_text import RichText
 else:
-    import wagtail.wagtailcore.fields as wagtail_core_fields
-    import wagtail.wagtailcore.blocks as wagtail_core_blocks
-    from wagtail.wagtailcore.rich_text import RichText
+    import wagtail.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
+    from wagtail.rich_text import RichText
 
 def convert_to_streamfield(apps, schema_editor):
     OsSection = apps.get_model("ocean_stories","OceanStorySection")

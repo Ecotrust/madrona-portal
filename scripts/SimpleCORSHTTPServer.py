@@ -13,7 +13,7 @@ Suggested usage:
 $ python manage.py collectstatic
 $ python manage.py compress
 $ cd STATIC_ROOT
-$ python2 path/to/marco-portal2/scripts/SimpleCORSHTTPServer
+$ python2 path/to/madrona-portal/scripts/SimpleCORSHTTPServer
 
 """
 

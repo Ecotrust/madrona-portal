@@ -4,7 +4,7 @@
 import re
 from django import template
 from django.utils.text import slugify
-from wagtail.core.rich_text import RichText, expand_db_html
+from wagtail.rich_text import RichText, expand_db_html
 from django.template.loader import render_to_string
 
 

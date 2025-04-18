@@ -8,7 +8,7 @@
 The following is the **_recommended_** folder structure for the **entire** MARCO project and the customized provisioning script is inherently dependent on it. Altering the folder and naming structure will require modifications to the provisioning script, so please be aware! The provisioning script is designed to be a **one-step** install after initial setup.
 
 ```
-  -- marco-portal2
+  -- madrona-portal
     -- apps (all remaining repositories within Madrona Portal)
       -- mardona-analysistools
       -- madrona-features
@@ -17,8 +17,8 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
 
 1. Download the required code and dependencies:
 ```
-  git clone https://github.com/Ecotrust/marco-portal2.git
-  mv marco-portal2 madrona-portal
+  git clone https://github.com/Ecotrust/madrona-portal.git
+  mv madrona-portal madrona-portal
   cd madrona-portal
   mkdir apps
   cd apps
@@ -26,7 +26,7 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
   git clone https://github.com/Ecotrust/madrona-features.git
   git clone https://github.com/Ecotrust/madrona-manipulators.git
   git clone https://github.com/Ecotrust/madrona-scenarios.git
-  git clone https://github.com/Ecotrust/marco-map_groups.git
+  git clone https://github.com/Ecotrust/mp-map-groups.git
   git clone https://github.com/Ecotrust/mp-accounts.git
   git clone https://github.com/Ecotrust/mp-data-manager.git
   git clone https://github.com/Ecotrust/mp-drawing.git
@@ -36,7 +36,7 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
   git clone https://github.com/Ecotrust/p97-nursery.git
 ```
 
-2.  Once your folder structure is set up, create a `config.ini` file by making a copy of the `config.ini.template` located at `marco-portal2/marco` and modify the following
+2.  Once your folder structure is set up, create a `config.ini` file by making a copy of the `config.ini.template` located at `madrona-portal/marco` and modify the following
       * **SECRET_KEY** = [Punch in some random gibberish]
       * **MEDIA_ROOT** = /home/vagrant/marco_portal2/media
       * **STATIC_ROOT** = /home/vagrant/marco_portal2/static
@@ -57,15 +57,15 @@ scp -r user@live_server:~/webapps/marco_portal_media/original_images ./media/   
 scp user@live_server:~/webapps/marco_portal_media/index.html ./media/           #12s
 ```
 
-5. Retrieve the data & content fixture from `~/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `marco-portal2`
+5. Retrieve the data & content fixture from `~/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `madrona-portal`
 ```
-cd [working dir]/marco-portal2
+cd [working dir]/madrona-portal
 scp user@live_server:~/fixtures/dev_fixture.json ./                              #25s
 ```
 
 6. Download and install [vagrant](https://www.vagrantup.com/downloads.html) and [virtual box](https://www.virtualbox.org/wiki/Downloads) (if you haven't already done so already)
 
-7. At the root of `marco-portal2`, run `vagrant up` and let it install ALL of dependencies MARCO relies upon
+7. At the root of `madrona-portal`, run `vagrant up` and let it install ALL of dependencies MARCO relies upon
 
 8. At this point, you should be completely setup!
   * Note: At this point, there still seem to be issues with Wagtail Pages, and therefore Ocean Stories.
@@ -130,7 +130,7 @@ Since this project is modularized, changes to a submodule only requires server u
     *  **Production** - `cd ~/webapps/marco_portal/marco/src/`  
 4.  Once you're at that path - `git fetch && git reset -q --hard origin/master`
     *  `origin/master` pertains to the main master branch - you can change that to whatever your branch you'd like
-    *  Of note, the master *marco-portal2* branch runs as `origin/prototype`
+    *  Of note, the master *madrona-portal* branch runs as `origin/prototype`
 5.  Navigate to `cd ~/webapps/marco_portal/marco`
 6.  Run `python manage.py collectstatic` to collect all the neccessary static (js/css) files
     * you can use the -i flag to ignore utfgrids in the rare chance that those files seems to be "collecting"
@@ -143,11 +143,11 @@ Adding a new module to marco requires a few additional steps for both local/deve
 
 **Local/Development setup**:  
 
-1. create directory within `marco-portal2/apps`
+1. create directory within `madrona-portal/apps`
     * Use `git clone` for exisiting module or create a new direcotry and use `git init` to set up your new repository.
         * If this is a new git repository create a new remote origin repo within the [MidAtlanticPortal](https://github.com/MidAtlanticPortal) orgainization. *Next steps assume your new module is ready to use.*
-2. open `marco-portal2/requirements.txt` and add the newly created git remote repository (*e.g.* `-e git+https://github.com/MidAtlanticPortal/your_new_repo.git@master#egg=an_alias`). *the `@master#egg=` assigns an alias (simple name) for your module*
-3. open `marco-portal2/marco/marco/settings.py` and add your new module's alias as an `INSTALLED_APPS`. (*e.g.*, `INSTALLED_APPS = [ 'an_alias']`)
+2. open `madrona-portal/requirements.txt` and add the newly created git remote repository (*e.g.* `-e git+https://github.com/MidAtlanticPortal/your_new_repo.git@master#egg=an_alias`). *the `@master#egg=` assigns an alias (simple name) for your module*
+3. open `madrona-portal/marco/marco/settings.py` and add your new module's alias as an `INSTALLED_APPS`. (*e.g.*, `INSTALLED_APPS = [ 'an_alias']`)
 4. run `vagrant provision`
 
 

@@ -4,12 +4,12 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 from django.conf import settings
 if settings.WAGTAIL_VERSION > 1:
-    import wagtail.core.fields as wagtail_core_fields
-    import wagtail.core.blocks as wagtail_core_blocks
+    import wagtail.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
     import wagtail.images.blocks as wagtail_images_blocks
 else:
-    import wagtail.core.fields as wagtail_core_fields
-    import wagtail.core.blocks as wagtail_core_blocks
+    import wagtail.fields as wagtail_core_fields
+    import wagtail.blocks as wagtail_core_blocks
     import wagtail.images.blocks as wagtail_images_blocks
 import django.db.models.deletion
 

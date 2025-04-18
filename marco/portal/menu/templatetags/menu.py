@@ -3,7 +3,7 @@ from django.template.loader import get_template
 from portal.menu.models import Menu
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.safestring import SafeText
 
 register = template.Library()
@@ -29,5 +29,5 @@ def menus(context, kind='header', menu_type='dropdown'):
         'highlighted': highlighted,
         'request': context['request'],
     })
-    return SafeText(force_text(render(context['request'], template_name, return_context).content))
+    return SafeText(force_str(render(context['request'], template_name, return_context).content))
     # return render(context['request'], template_name, return_context)

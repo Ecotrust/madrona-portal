@@ -46,7 +46,7 @@ libsass==0.20.0
 -e git+https://github.com/MidAtlanticPortal/madrona-features.git@dj2#egg=madrona_features
 -e git+https://github.com/MidAtlanticPortal/madrona-manipulators.git@py3#egg=madrona_manipulators
 -e git+https://github.com/MidAtlanticPortal/madrona-scenarios.git@wagtail_1_3_merge#egg=madrona_scenarios
--e git+https://github.com/MidAtlanticPortal/marco-map_groups.git@dj2#egg=mapgroups
+-e git+https://github.com/MidAtlanticPortal/mp-map-groups.git@dj2#egg=mapgroups
 # Markdown==3.1.1
 MarkupPy==1.14
 -e git+https://github.com/MidAtlanticPortal/mp-accounts.git@wagtail_1_3_merge#egg=mp_accounts
