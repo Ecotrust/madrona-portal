@@ -1,9 +1,9 @@
-# Minimal requirements
+# Upgrade Wagtail from 2.16.3 to 3.0; django-recaptcha from 2.0.6 to 4.0
 Django>=3.2,<3.3
-wagtail==2.16.3
+wagtail>3.0,<4.0
 wagtail-import-export
 python-social-auth
-social-auth-app-django<5.0
+social-auth-app-django
 python-jose
 pyjwt
 django-autocomplete-light
@@ -12,18 +12,18 @@ django-email-log
 django-compressor
 django-tinymce
 django-wysiwyg
-django-recaptcha
+django-recaptcha>=4.0,<4.1
 django-flatblocks
 django-nested-admin
 django-querysetsequence
 django-redis
-django-taggit<5.0
+django-taggit
 rpc4django
 celery
 django-celery-email
 django-libsass
 libsass
-psycopg2-binary<2.9
+psycopg2-binary
 elasticsearch
 django-import-export
 pyshp
