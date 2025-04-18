@@ -8,7 +8,7 @@ python-jose
 pyjwt
 django-autocomplete-light
 django-social-share
-django-email-log
+django-email-log==1.0.0
 django-compressor
 django-tinymce
 django-wysiwyg
