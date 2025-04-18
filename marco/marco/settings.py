@@ -156,8 +156,8 @@ INSTALLED_APPS += [
     'modelcluster',
     'rpc4django',
     'tinymce',
-
-    'django_recaptcha',
+    'captcha', #v2.0.6
+    # 'django_recaptcha', #v4.0+
     'social_django',
     # 'django_redis',
 

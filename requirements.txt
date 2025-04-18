@@ -70,3 +70,4 @@ django-import-export
 pyshp
 
 owslib
+django-colorfield
