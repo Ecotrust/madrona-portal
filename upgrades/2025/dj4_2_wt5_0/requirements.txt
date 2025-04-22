@@ -10,7 +10,7 @@ pyjwt>=2.10
 django-autocomplete-light
 django-social-share
 django-email-log>=1.4
-django-compressor>4.5.1
+django-compressor>=4.5.1
 rcssmin>=1.1.2
 rjsmin>=1.2.2
 django-tinymce>=4.1.0
