@@ -1,4 +1,4 @@
-# Upgrade Wagtail from 4.2 to 5.0; Django from 3.2 to 4.2
+# Upgrade Wagtail from 5.0 to 5.1
 Django>=4.2,<5.0
 wagtail>5.1,<5.2
 wagtail-import-export
