@@ -1,6 +1,6 @@
 # Minimal requirements
 Django>=3.2,<3.3
-wagtail<6
+wagtail<3
 
 # Tentative additions:
 wagtail-import-export
@@ -13,9 +13,10 @@ django-email-log
 django-compressor
 django-tinymce
 django-wysiwyg
-django-recaptcha
+django-recaptcha==2.0.6
 django-flatblocks
 django-nested-admin
+django-picklefield<3.0
 django-redis
 django-taggit<5.0
 rpc4django
@@ -60,7 +61,7 @@ libsass
 
 # Recommended components (require additional setup):
 # pg2 2.9 breaks migrations: https://stackoverflow.com/a/68025007/706797
-psycopg2-binary<2.9
+psycopg2-binary
 elasticsearch
 
 django-import-export
@@ -68,3 +69,4 @@ django-import-export
 pyshp
 
 owslib
+django-colorfield
