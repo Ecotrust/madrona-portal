@@ -18,6 +18,7 @@ django-wysiwyg
 django-recaptcha>=4.0.0
 django-flatblocks
 django-nested-admin
+django-picklefield>3.0
 django-querysetsequence
 django-redis
 django-taggit
