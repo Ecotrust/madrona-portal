@@ -70,7 +70,8 @@ Vagrant.configure("2") do |config|
         # config.vm.box = "marco-base-v0.4"
         # config.vm.box_url = "http://portal.midatlanticocean.org/static/vagrant_boxes/p97-base-v0.4.box"
         #config.vm.box = "ubuntu/bionic64"
-        config.vm.box = "ubuntu/jammy64"
+        # config.vm.box = "ubuntu/jammy64"
+        config.vm.box = "bento/ubuntu-24.04"
 
         #Enforce provisioning of 5GB of RAM - required for running MARCO properly
         #If you don't have 5 GB, you can drop the memory value, or comment everything out completely.
