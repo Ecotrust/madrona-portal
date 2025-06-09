@@ -44,6 +44,7 @@ Vagrant.configure("2") do |config|
         config.vm.network :forwarded_port, guest: 80, host: 8080  # nginx
         config.vm.network "forwarded_port", guest: 8000, host: 8000
         config.vm.network "forwarded_port", guest: 8001, host: 8001
+        config.vm.network "forwarded_port", guest: 8002, host: 8002
         # config.vm.network "forwarded_port", guest: 8080, host: 8080
         # config.vm.network "forwarded_port", guest: 5432, host: 65432
         # config.vm.network "forwarded_port", id: "ssh", guest: 22, host: 1243
