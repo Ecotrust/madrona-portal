@@ -18,9 +18,9 @@ PROJECT_ROOT = dirname(dirname(dirname(abspath(__file__))))
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets'))
-COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components'))
-STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
+ASSETS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'assets')) # assets directory
+COMPONENTS_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', 'bower_components')) # Bower components directory
+STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles')) # SCSS files under assets/styles
 
 MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", default='config.ini')
 CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
@@ -151,7 +151,10 @@ except ImportError as e:
 
 INSTALLED_APPS += [
     'marco_site',
-    'marco.apps.MadronaPortalConfig',
+    'marco.apps.MadronaPortalConfig', 
+    # DLP 2025.06.11: This is where favoring marco/marco static files over other apps happens. 
+        # INSTALLED_APPS sets precedence from top to bottom (e.g., 0 indexed INSTALLED_APPS static files are chosen over other apps).
+
     # 'kombu.transport.django',
 
     # Django-autocomplete-light
@@ -399,13 +402,15 @@ STATICFILES_DIRS = (
     ASSETS_DIR,
     STATIC_CORE,
 )
+# Precedence for static files in STATICFILES_DIRS is determined by the order of the directories in STATICFILES_DIRS
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'compressor.finders.CompressorFinder',
-)
+) 
+# Precedence for static files for in App (i.e., AppDirectoriesFinder) is determined by the order of INSTALLED_APPS
 
 MEDIA_ROOT = app_cfg.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = app_cfg.get('MEDIA_URL', '/media/')
