@@ -23,7 +23,7 @@ celery
 django-celery-email
 django-libsass
 libsass
-psycopg2-binary<2.9
+psycopg2-binary>2.9
 elasticsearch
 django-import-export
 pyshp
