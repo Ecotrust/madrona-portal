@@ -29,3 +29,4 @@ django-import-export
 pyshp
 owslib
 django-colorfield
+pillow-heif<0.22
