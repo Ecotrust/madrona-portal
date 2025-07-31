@@ -17,14 +17,14 @@
    ```
 1. add the service file
    ```
-   sudo cp ./celery.service /etc/systemd/system/
+   sudo cp /usr/local/apps/madrona-portal/deployment/celery.service /etc/systemd/system/
    ```
    - You will likely need to edit the `WorkingDirectory` setting to get to the core app in madrona-portal
 1. add the celery config file
    ```
-   sudo cp ./celery.conf /etc/conf.d/celery
+   sudo mkdir /etc/conf.d
+   sudo cp /usr/local/apps/madrona-portal/deployment/celery.conf /etc/conf.d/celery
    ```
-   - You may need to create the directory /etc/conf.d
    - You may need to edit several of these configurations, namely:
      - `CELERYD_NODES`: "w1" will get you one worker, "w1 w2 w3" will get you three
      - `CELERY_BIN`: the location of your celery binary
