@@ -32,13 +32,13 @@
     </span>
     <span class="divider"></span>
     <span data-toggle="tooltip" data-placement="bottom" title="View Metadata">
-      <a class="btn btn-mini{% if not layer.metadata_link %} disabled{% endif %}" href="{{ layer.metadata_link }}">
+      <a class="btn btn-mini{% if not layer.metadata_link %} disabled{% endif %}" href="{{ layer.metadata_link }}" target="_blank">
         metadata <i class="fa fa-arrow-down"></i>
       </a>
     </span>
     <span class="divider"></span>
     <span data-toggle="tooltip" data-placement="bottom" title="{{ layer.data_source }}">
-      <a class="btn btn-mini{% if not layer.source %} disabled{% endif %}" href=" {{ layer.source }}">
+      <a class="btn btn-mini{% if not layer.source %} disabled{% endif %}" href=" {{ layer.source }}" target="_blank">
         source <i class="fa fa-external-link-square"></i>
       </a>
     </span>
