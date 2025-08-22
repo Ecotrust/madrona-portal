@@ -38,7 +38,7 @@
     </span>
     <span class="divider"></span>
     <span data-toggle="tooltip" data-placement="bottom" title="{% if layer.data_source %}{{ layer.data_source }}{% else %}{{ layer.source }}{% endif %}">
-      <a class="btn btn-mini{% if not layer.source %} disabled{% endif %}" href=" {{ layer.source }}" target="_blank" rel="noopener noreferrer">
+      <a class="btn btn-mini{% if not layer.source %} disabled{% endif %}" href="{{ layer.source }}" target="_blank" rel="noopener noreferrer">
         source <i class="fa fa-external-link-square"></i>
       </a>
     </span>
