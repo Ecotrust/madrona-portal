@@ -45,15 +45,15 @@
       If layer.data_source but no source, show data_source name without any links.
     -->
     {% if layer.source %}
-      <a href="{{layer.source}}">
-    {% endif %}
-    {% if layer.data_source %}
-      {{ layer.data_source }}
-    {% else %}
-      {{ layer.source }}
-    {% endif %}
-    {% if layer.source %}
+      <a href="{{ layer.source }}">
+        {% if layer.data_source %}
+          {{ layer.data_source }}
+        {% else %}
+          {{ layer.source }}
+        {% endif %}
       </a>
+    {% else %}
+      {{ layer.data_source }}
     {% endif %}
   </p>
   <p class="notes"><strong>Notes:</strong> {{layer.data_overview|anchored_richtext}}</p>
