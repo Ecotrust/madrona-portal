@@ -91,7 +91,7 @@ class PageSection(models.Model):
         text_vals = []
         for field in self.index_fields:
             val = getattr(self, field)
-            if val and type(val) == StreamValue:
+            if val and isinstance(val, StreamValue):
                 val = val.raw_text
             if val and val is not None:
                 text_vals.append(str(val))
