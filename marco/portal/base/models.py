@@ -7,13 +7,13 @@ from django.conf import settings
 
 if settings.WAGTAIL_VERSION > 3:
     from wagtail.models import Page
-    from wagtail.fields import RichTextField
+    from wagtail.fields import RichTextField, StreamValue
     from wagtail.search import index
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel,TitleFieldPanel
     from wagtail.images.models import AbstractImage, AbstractRendition, Image
 elif settings.WAGTAIL_VERSION > 1:
     from wagtail.models import Page
-    from wagtail.fields import RichTextField
+    from wagtail.fields import RichTextField, StreamValue
     from wagtail.search import index
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
@@ -21,7 +21,7 @@ elif settings.WAGTAIL_VERSION > 1:
     TitleFieldPanel = FieldPanel
 else:
     from wagtail.models import Page
-    from wagtail.fields import RichTextField
+    from wagtail.fields import RichTextField, StreamValue
     from wagtail.search import index
     from wagtail.admin.panels import FieldPanel,MultiFieldPanel
     from wagtail.images.edit_handlers import ImageChooserPanel
@@ -88,7 +88,15 @@ class PageSection(models.Model):
     index_fields = ()
 
     def get_search_text(self):
-        return '\n'.join(getattr(self, field) for field in self.index_fields)
+        text_vals = []
+        for field in self.index_fields:
+            val = getattr(self, field)
+            if val and type(val) == StreamValue:
+                val = val.raw_text
+            if val and not val == None:
+                text_vals.append(str(val))
+        # return '\n'.join(getattr(self, field) for field in self.index_fields)
+        return '\n'.join(x for x in text_vals)
 
 
 class MediaItem(PageSection):
