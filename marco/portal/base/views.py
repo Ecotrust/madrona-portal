@@ -7,13 +7,13 @@ if settings.WAGTAIL_VERSION > 1:
     from wagtail import models
     from wagtail.models import Page
     from wagtail.images.models import Image
-    from wagtail.search.index import get_indexed_models
+    from wagtail.search.index import get_indexed_models, SearchField
     from wagtail.search.backends import get_search_backend
 else:
     from wagtail import models
     from wagtail.models import Page
     from wagtail.images.models import Image
-    from wagtail.search.index import get_indexed_models
+    from wagtail.search.index import get_indexed_models, SearchField
     from wagtail.search.backends import get_search_backend
 
 from portal.base.models import PortalImage
@@ -36,7 +36,7 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
     layer_results = []
 
     if len(query_string) >= 2:
-        s = get_search_backend()
+        backend = get_search_backend()
         models = get_indexed_models()
         # remove unnecessary models
         for i in [Page, Image, PortalImage]:
@@ -44,7 +44,8 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
 
         # search wagtail pages
         for model in models:
-            results = s.search(query_string, model)
+            sfs = [x.field_name for x in model.search_fields if type(x) == SearchField]
+            results = backend.search(query_string, model, fields=sfs)
             for item in results:
                 if isinstance(item, (OceanStory, OceanStories)):
                     ocean_story_results.append(item)
@@ -54,7 +55,7 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
                     data_needs_results.append(item)
                 elif item.url and '/resources/' in item.url:
                     resources_results.append(item)
-
+            
         # search themes from data_catalog
         for theme in Theme.objects.filter(visible=True, display_name__icontains=query_string):
             theme_results.append(theme)

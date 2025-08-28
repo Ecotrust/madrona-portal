@@ -87,6 +87,11 @@ class OceanStorySectionBase(MediaItem):
         'body',
     )
 
+    search_fields =  [
+        index.SearchField("title"),
+        index.SearchField("body"),
+    ]
+
     class Meta:
         abstract = True
 
@@ -196,12 +201,14 @@ class OceanStory(DetailPageBase):
     explore_url = models.URLField(max_length=4096, blank=True, null=True)
 
     search_fields = DetailPageBase.search_fields + (
+        index.SearchField("title"),
         index.SearchField("description"),
         index.AutocompleteField("description"),
         index.SearchField("hook"),
         index.AutocompleteField("hook"),
-        index.SearchField("get_sections_search_text"),
-        index.AutocompleteField("get_sections_search_text"),
+        # how does this differ from https://docs.wagtail.org/en/v6.3.5/topics/search/indexing.html#indexing-callables-and-other-attributes
+        # index.SearchField("get_sections_search_text"),
+        # index.AutocompleteField("get_sections_search_text"),
     )
 
     def get_context(self, request):
