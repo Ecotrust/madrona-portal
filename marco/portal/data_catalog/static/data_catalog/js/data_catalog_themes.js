@@ -15,7 +15,7 @@ getCatalogEntry = function(layerType, layerId, themeId) {
     let url = '/data_manager/get_layer_catalog_content/' + layerType + '/' + layerKey;
     if (themeId !== undefined) {
       url += '/' + themeId;
-    } 
+    }
     $.ajax({
       url: url,
       success: function(data) {
