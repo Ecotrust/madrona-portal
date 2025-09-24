@@ -31,7 +31,11 @@
     </span>
     <span class="divider"></span>
     <span data-toggle="tooltip" data-placement="bottom" title="{{ layer.tiles }}">
-      <a class="btn btn-mini{% if not layer.tiles_link %} disabled{% endif %}" href="{{ layer.tiles_link }}">
+      {% if not theme is None %}
+        <a class="btn btn-mini{% if not layer.tiles_link %} disabled{% endif %}" href="/data-catalog/{{theme.name}}/{{ layer.tiles_link }}">
+      {% else %}
+        <a class="btn btn-mini{% if not layer.tiles_link %} disabled{% endif %}" href="/data-catalog/{{ layer.tiles_link }}">
+      {% endif %}
         tiles <i class="fa fa-external-link-square"></i>
       </a>
     </span>
