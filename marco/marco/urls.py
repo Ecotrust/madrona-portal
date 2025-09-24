@@ -76,8 +76,8 @@ urlpatterns += [
 
     # url(r'^data-catalog/', include('portal.data_catalog.urls')),
     # TODO: we need to prevent Theme names with spaces or special characters.
-    re_path(r'^data-catalog/([A-Za-z0-9_\-|\s|\'(\'|\')\']+)/?$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
-    re_path(r'^data-catalog/[A-Za-z0-9_\-|\s|\'(\'|\')\']*/?', include('explore.urls')),
+    re_path(r'^data-catalog/([\w\-\s\(\)]+)/?$', data_catalog_views.theme, name="portal.data_catalog.views.theme"),
+    re_path(r'^data-catalog/[\w\-\s\(\)]*/?', include('explore.urls')),
     re_path(r'^data_manager/?', include('layers.urls')),
     re_path(r'^old_manager/?', include('data_manager.urls')),
     # re_path(r'^data_manager/', include('data_manager.urls')),

@@ -34,7 +34,7 @@ def theme(request, theme_slug):
     site = get_current_site(request)
     try:
         theme = get_object_or_404(theme_query(site), name=theme_slug)
-    except:
+    except Exception as e:
         return tiles_page(request, slug=theme_slug)
     template = 'data_catalog/theme.html'
     context = {
