@@ -6,6 +6,7 @@ from django.template import RequestContext
 from data_manager import models as data_manager_models
 from layers.models import Theme, Layer, ChildOrder
 from portal.base.models import PortalImage
+from explore.views import tiles_page
 
 # hack for POR-224, until POR-206
 def wagtail_feature_image(self):
@@ -31,7 +32,10 @@ def theme_query(site):
 
 def theme(request, theme_slug):
     site = get_current_site(request)
-    theme = get_object_or_404(theme_query(site), name=theme_slug)
+    try:
+        theme = get_object_or_404(theme_query(site), name=theme_slug)
+    except Exception as e:
+        return tiles_page(request, slug=theme_slug)
     template = 'data_catalog/theme.html'
     context = {
         'theme': theme,
