@@ -25,7 +25,7 @@ from data_manager.models import Layer, Theme
 
 register = template.Library()
 
-def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
+def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE, context = {}):
     query_string = request.GET.get('q', '')
 
     ocean_story_results = []
@@ -64,8 +64,8 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
         layer_results.extend(Layer.objects.exclude(layer_type='placeholder').filter(themes__visible=True, name__icontains=query_string))
 
     sum_data_results = len(theme_results) + len(layer_results) + len(data_needs_results) + len(resources_results)
-    
-    return render(request, template, {
+
+    context_response = context | {
         'ocean_story_results': ocean_story_results,
         'calendar_news_results': calendar_news_results,
         'data_needs_results': data_needs_results,
@@ -73,4 +73,6 @@ def search(request, template=settings.WAGTAILSEARCH_RESULTS_TEMPLATE):
         'theme_results': theme_results,
         'layer_results': layer_results,
         'sum_data_results': sum_data_results,
-    });
+    }
+    
+    return render(request, template, context_response)
