@@ -63,6 +63,7 @@
 </header>
 {% endblock %} <!-- header_tag -->
 
+{% block main %}
 <div>
     {% block outer_content %}
     {% block page_header_container %}
@@ -96,6 +97,7 @@
 </footer>
 {% endblock footer_wrap %}
 {% endblock outer_content %}
+{% endblock main %}
 
 {% compress js %}
 <script src="{% static 'jquery/dist/jquery.js' %}"></script>
