@@ -739,12 +739,6 @@ if 'visualize' in INSTALLED_APPS:
 if 'data_manager' in INSTALLED_APPS:
     from data_manager.settings import *
 
-PLANNER_APPS = [
-    'visualize',
-    'drawing',
-    # 'survey',
-]
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SERVER_SRID = 4326
