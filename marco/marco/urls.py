@@ -95,9 +95,6 @@ urlpatterns += [
     re_path(r'^join/?', RedirectView.as_view(url='/account/register/')),
 
     re_path(r'^images/', include(wagtailimages_urls)),
-    # re_path(r'', include(wagtail_urls)),
-    # re_path(r'', include(wagtailimportexport_urls)),
-    # re_path(r'', include(wagtail_urls)),
 ]
 
 if 'survey' in settings.INSTALLED_APPS:
