@@ -227,7 +227,7 @@ INSTALLED_APPS += [
     'drawing',
     'manipulators',
     'explore',
-    'survey',
+    # 'survey',
 
     # Account management
     'social.apps.django_app.default',
