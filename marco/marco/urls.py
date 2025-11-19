@@ -95,10 +95,12 @@ urlpatterns += [
     re_path(r'^join/?', RedirectView.as_view(url='/account/register/')),
 
     re_path(r'^images/', include(wagtailimages_urls)),
-    re_path(r'', include(wagtail_urls)),
-    # re_path(r'', include(wagtailimportexport_urls)),
-    re_path(r'', include(wagtail_urls)),
 ]
+
+if 'survey' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        re_path(r'^survey/?', include('survey.urls', namespace='survey')),
+    ]
 
 if hasattr(settings, 'HANDLER_404'):
     handler404 = settings.HANDLER_404
@@ -109,3 +111,5 @@ if settings.DEBUG:
 
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [re_path(r'', include(wagtail_urls)),]

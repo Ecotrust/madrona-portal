@@ -5,6 +5,7 @@ wagtail
 # Tentative additions:
 wagtail-import-export
 python-social-auth
+# social-auth-app-django>5.4
 social-auth-app-django<5.0
 python-jose
 pyjwt
@@ -39,6 +40,7 @@ rpc4django
 #-e git+https://github.com/Ecotrust/mp-map-groups.git@main#egg=mp-map-groups
 #-e git+https://github.com/Ecotrust/p97-nursery.git@main#egg=p97-nursery
 #-e git+https://github.com/Ecotrust/mp-proxy.git@main#egg=mp_proxy
+#-e git+https://github.com/Ecotrust/mp-survey.git@main#egg=mp_survey
 
 ##################################
 #-e git+https://github.com/Ecotrust/mida-portal.git@main#egg=mida
@@ -62,6 +64,7 @@ libsass
 
 # Recommended components (require additional setup):
 # pg2 2.9 breaks migrations: https://stackoverflow.com/a/68025007/706797
+# psycopg2-binary>2.9.9
 psycopg2-binary<2.9
 elasticsearch
 

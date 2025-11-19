@@ -227,6 +227,7 @@ INSTALLED_APPS += [
     'drawing',
     'manipulators',
     'explore',
+    # 'survey',
 
     # Account management
     'social.apps.django_app.default',
@@ -738,6 +739,10 @@ if 'visualize' in INSTALLED_APPS:
 if 'data_manager' in INSTALLED_APPS:
     from data_manager.settings import *
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SERVER_SRID = 4326
+
 PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', False)
 if PROJECT_SETTINGS_FILE and not PROJECT_SETTINGS_FILE == 'False':
     try:
@@ -758,8 +763,6 @@ except Exception as e:
 
 INSTALLED_APPS += ADDITIONAL_APPS
 MIDDLEWARE += ADDITIONAL_MIDDLEWARE
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if False:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
