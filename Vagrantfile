@@ -4,8 +4,11 @@
 # Function to dynamically get the host IP
 # Used for setting the `smb_host` in config.vm.synced_folder
 def get_host_ip
-    # This example uses `ifconfig` and `grep` to find inet interface and host IP address
-    host_ip = `ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`.strip
+    # This uses `route` to find the host's default IP address 
+    # and pipes it through to `awk` and `ifconfig`  
+    # to extract the IP address of the host machine.
+    host_ip = `route -n get default | awk '/interface:/{print $2}' | xargs ifconfig | awk '/inet / {print $2}'`.strip
+
     return host_ip
 end
 
