@@ -42,19 +42,34 @@ APP_TEAM_NAME = app_cfg.get('APP_TEAM_NAME', "{} Team".format(APP_NAME))
 TEMPLATE_DEBUG = app_cfg.getboolean('TEMPLATE_DEBUG', True)
 
 SECRET_KEY = app_cfg.get('SECRET_KEY', 'you forgot to set the secret key')
-host_list = app_cfg.get('ALLOWED_HOSTS')
-if type(host_list) == str:
-    if '[' in host_list and ']' in host_list:
-        import ast
-        ALLOWED_HOSTS = ast.literal_eval(host_list)
-    elif ',' in host_list:
-        ALLOWED_HOSTS = host_list.split(',')
+host_list = os.environ.get('ALLOWED_HOSTS', app_cfg.get('ALLOWED_HOSTS'))
+if isinstance(host_list, str):
+    host_value = host_list.strip()
+    if host_value.startswith('[') and host_value.endswith(']'):
+        # Prefer a real list literal: ["localhost", "127.0.0.1", "::1"]
+        try:
+            import ast
+            parsed_hosts = ast.literal_eval(host_value)
+            if isinstance(parsed_hosts, (list, tuple)):
+                ALLOWED_HOSTS = [str(h).strip() for h in parsed_hosts if str(h).strip()]
+            else:
+                ALLOWED_HOSTS = [str(parsed_hosts).strip()]
+        except (SyntaxError, ValueError):
+            ALLOWED_HOSTS = [h.strip() for h in host_value[1:-1].split(',') if h.strip()]
+    elif ',' in host_value:
+        ALLOWED_HOSTS = [h.strip() for h in host_value.split(',') if h.strip()]
     else:
-        ALLOWED_HOSTS = [host_list]
-elif type(host_list) == list:
-    ALLOWED_HOSTS = host_list
+        ALLOWED_HOSTS = [host_value]
+elif isinstance(host_list, list):
+    ALLOWED_HOSTS = [str(h).strip() for h in host_list if str(h).strip()]
 else:
     ALLOWED_HOSTS = [str(host_list)]
+
+# Normalize bracketed IPv6 host forms like [::1] to ::1 for Django host checks.
+ALLOWED_HOSTS = [
+    h[1:-1] if h.startswith('[') and h.endswith(']') and ':' in h else h
+    for h in ALLOWED_HOSTS
+]
 
 # Set logging to default, and then make admin error emails come through as HTML
 from django.utils.log import DEFAULT_LOGGING
@@ -342,7 +357,7 @@ DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona_portal')
 if 'CACHES' not in cfg.sections():
     cfg['CACHES'] = {}
 
-cache_cfg = cfg['DATABASE']
+cache_cfg = cfg['CACHES']
 
 # ------------------------------------------------------------------------------
 # Redis sessions and caching
@@ -396,12 +411,23 @@ STATIC_ROOT = app_cfg.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 STATIC_URL = app_cfg.get('STATIC_URL', '/static/')
 STATIC_CORE = app_cfg.get('STATIC_CORE', '/usr/local/apps/marco_portal_static/')
 
-STATICFILES_DIRS = (
-    STYLES_DIR,
-    COMPONENTS_DIR,
-    ASSETS_DIR,
-    STATIC_CORE,
-)
+static_root_path = os.path.abspath(STATIC_ROOT)
+staticfiles_dirs = []
+
+for static_dir in (STYLES_DIR, COMPONENTS_DIR, ASSETS_DIR, STATIC_CORE):
+    if not static_dir:
+        continue
+
+    normalized_static_dir = os.path.abspath(static_dir)
+    if normalized_static_dir == static_root_path:
+        continue
+
+    if normalized_static_dir in [os.path.abspath(path) for path in staticfiles_dirs]:
+        continue
+
+    staticfiles_dirs.append(static_dir)
+
+STATICFILES_DIRS = tuple(staticfiles_dirs)
 # Precedence for static files in STATICFILES_DIRS is determined by the order of the directories in STATICFILES_DIRS
 
 STATICFILES_FINDERS = (
