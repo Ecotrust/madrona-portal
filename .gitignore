@@ -29,9 +29,12 @@ htmlcov
 .coverage
 config.ini
 config.mida.ini
+config.mida.docker.ini
 config.wcoa.ini
+config.wcoa.docker.ini
 pytest.ini
 marco.db
+.env
 
 .bashrc
 dev_fixture.json
