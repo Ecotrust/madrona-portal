@@ -14,7 +14,7 @@
 set -euo pipefail
 
 DC="docker compose --env-file docker/.env.dev -f docker/docker-compose.yml"
-WCOA_FX="../madrona-apps/wcoa/wcoa/fixtures"
+WCOA_FX="/usr/local/apps/madrona_portal/apps/wcoa/wcoa/fixtures"
 
 echo "Exporting wcoa_init.json  (base, wagtailcore, wagtailimages, wcoa) ..."
 $DC run --rm app \
