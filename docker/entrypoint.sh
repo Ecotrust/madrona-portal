@@ -50,11 +50,30 @@ from wagtail.models import Page
 print(Page.objects.filter(depth__gt=1).count())
 PY
 )
-if [ "$PAGE_COUNT" = "0" ]; then
-    echo "Fresh database — loading initial fixtures..."
-    python marco/manage.py loaddata wcoa_init wcoa_init_layers wagtail_menus
-    echo "Initial fixtures loaded."
-fi
+echo "Page count in database: $PAGE_COUNT"
+
+python - <<'PY'
+import sys, os
+sys.path.insert(0, 'marco')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
+
+import django
+django.setup()
+
+from wagtail.models import Page
+Page.objects.all().delete()
+
+from portal.base.models import *
+PortalRendition.objects.all().delete()
+PY
+
+# if [ "$PAGE_COUNT" = "1" ]; then
+# echo "Fresh database — loading initial fixtures..."
+	# python marco/manage.py loaddata initial_data.json
+	# TODO: if we can import SQL sucessfully using docker exec, then update here with psql command
+# echo "Initial fixtures loaded."
+# fi
+
 
 python marco/manage.py runserver 0:8000
 #uwsgi --socket :8000 --master --enable-threads --module marco.marco.wsgi

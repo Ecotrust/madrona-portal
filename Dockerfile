@@ -51,21 +51,23 @@ RUN apt-get update && apt-get upgrade -y && \
       perl libxml2-dev \
       libproj-dev proj-bin \
       libffi-dev openssl \
+      postgresql postgresql-contrib postgresql-client postgis \
+      postgresql-server-dev-16 \
     && rm -rf /var/lib/apt/lists/*
 
-    # Create a virtual environment so pip installs don't conflict with system Python
-    RUN python3 -m venv /opt/venv
-    ENV PATH="/opt/venv/bin:$PATH"
+# Create a virtual environment so pip installs don't conflict with system Python
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-    # Install the local layers app first so later package resolution can satisfy
-    # any dependency on the mp-layers distribution from the local checkout.
-    RUN pip install --upgrade pip setuptools wheel && \
-      pip install --no-deps -e /usr/local/apps/madrona-portal/apps/mp-layers && \
-      pip install -r /requirements.txt
+# Install the local layers app first so later package resolution can satisfy
+# any dependency on the mp-layers distribution from the local checkout.
+RUN pip install --upgrade pip setuptools wheel && \
+  pip install --no-deps -e /usr/local/apps/madrona-portal/apps/mp-layers && \
+  pip install -r /requirements.txt
 
-    # Install GDAL Python bindings matched to the system GDAL version.
-    # Installed separately so this layer is cached independently.
-    RUN pip install "GDAL==$(gdal-config --version)" --no-cache-dir
+# Install GDAL Python bindings matched to the system GDAL version.
+# Installed separately so this layer is cached independently.
+RUN pip install "GDAL==$(gdal-config --version)" --no-cache-dir
 
 RUN chmod +x /entrypoint.sh
 
