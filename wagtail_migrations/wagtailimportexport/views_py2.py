@@ -54,7 +54,7 @@ def import_from_api(request):
                     "%(count)s pages imported.",
                     page_count) % {'count': page_count}
                 )
-            return redirect('wagtailadmin_explore', parent_page.pk)
+            return redirect('wagtailadmin_pages:explore', parent_page.pk)
     else:
         form = ImportFromAPIForm()
 
@@ -90,7 +90,7 @@ def import_from_file(request):
                     "%(count)s pages imported.",
                     page_count) % {'count': page_count}
                 )
-            return redirect('wagtailadmin_explore', parent_page.pk)
+            return redirect('wagtailadmin_pages:explore', parent_page.pk)
     else:
         form = ImportFromFileForm()
 
