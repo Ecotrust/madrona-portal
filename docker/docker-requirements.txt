@@ -79,8 +79,8 @@ django-celery-email
 
 
 # Note: django-libsass needs libsass>0.4
-#libsass
-#django-libsass
+libsass
+django-libsass
 
 # Recommended components (require additional setup):
 # pg2 2.9 breaks migrations: https://stackoverflow.com/a/68025007/706797
