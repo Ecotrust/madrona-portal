@@ -78,6 +78,9 @@ RUN chown -R madrona_user:madrona_user /vol
 RUN chown -R madrona_user:madrona_user /usr/local/apps/madrona-portal
 RUN chmod -R 755 /vol/web
 
+# Ensure the virtual environment is owned by the madrona_user so it can install packages if needed. 
+RUN chown -R madrona_user:madrona_user /opt/venv
+
 USER madrona_user
 
 EXPOSE 8000
