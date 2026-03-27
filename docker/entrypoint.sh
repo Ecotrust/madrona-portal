@@ -67,12 +67,14 @@ from portal.base.models import *
 PortalRendition.objects.all().delete()
 PY
 
-# if [ "$PAGE_COUNT" = "1" ]; then
-# echo "Fresh database — loading initial fixtures..."
-	# python marco/manage.py loaddata initial_data.json
+if [ "$PAGE_COUNT" = "1" ]; then
+echo "Fresh database — loading initial fixtures..."
+	# python marco/manage.py loaddata apps/wcoa/wcoa/fixtures/wcoa_init2.json
+	# python marco/manage.py loaddata apps/wcoa/wcoa/fixtures/wcoa_init_layers2.json
+	# python marco/manage.py loaddata apps/wcoa/wcoa/fixtures/wagtail_menus2.json
 	# TODO: if we can import SQL sucessfully using docker exec, then update here with psql command
-# echo "Initial fixtures loaded."
-# fi
+echo "Initial fixtures loaded."
+fi
 
 
 python marco/manage.py runserver 0:8000
