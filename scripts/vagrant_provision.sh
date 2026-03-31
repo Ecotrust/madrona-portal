@@ -1,4 +1,6 @@
 #!/bin/bash
+# LEGACY — Vagrant-based provisioning. Primary dev environment is now Docker Compose.
+# See docker/docker-compose.yml and README for current setup instructions.
 PROJECT_NAME=$1
 APP_NAME=$2
 
