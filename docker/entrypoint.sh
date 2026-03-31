@@ -34,6 +34,7 @@ PY
 # ---------------------------------------------------------------------------
 python marco/manage.py migrate --noinput
 python marco/manage.py collectstatic --noinput
+python marco/manage.py compress --force
 
 # ---------------------------------------------------------------------------
 # 3. Seed a fresh database with initial fixture data
