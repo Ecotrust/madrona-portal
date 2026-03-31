@@ -1,79 +1,103 @@
+# Madrona Portal — Docker Compose (WCOA)
+#
+# Quick start (full Docker stack):
+#   cp ../.env.example ../.env   # then fill in real values
+#   docker compose -f docker/docker-compose.yml --profile full up --build
+#
+# Dev infrastructure only (db + Redis, for use with local Django dev server):
+#   docker compose -f docker/docker-compose.yml up
+#   python marco/manage.py runserver  # in a separate terminal
+
 services:
+
   app:
     build:
       context: ../../
       dockerfile: madrona_portal/Dockerfile
-    # command: dockerize -wait tcp://db:5432 sh -c "python manage.py migrate --noinput"
-    # command: dockerize -wait tcp://db:5432 sh -c "python manage.py loaddata /usr/local/apps/TEKDB/TEKDB/TEKDB/fixtures/all_dummy_data.json"
     volumes:
       - static_data:/vol/web
+    env_file:
+      - ../.env            # load all secrets from the project-root .env file
     environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - MP_PROJECT_CONFIG=config.wcoa.docker.ini
-      - SQL_ENGINE=${SQL_ENGINE}
-      - SQL_DATABASE=${SQL_DATABASE}
-      - SQL_USER=${SQL_USER}
-      - SQL_PASSWORD=${SQL_PASSWORD}
-      - SQL_HOST=${SQL_HOST}
-      - SQL_PORT=${SQL_PORT}
-      - PROJ_DIR=${PROJ_DIR}
-    depends_on:
-      - db
-    links:
-      - ${SQL_HOST}
-    ports:
-      - "8000:8000"
-    networks:
-    # maybe not necessary
-      - djangonetwork
+      # Config file selection — override specific values via env vars below.
+      - MP_PROJECT_CONFIG=${MP_PROJECT_CONFIG:-config.wcoa.docker.ini}
 
-  # proxy:
-  #   build:
-  #     context: ../../proxy
-  #   volumes:
-  #     - static_data:/vol/static
-  #     # - media_data:/vol/media
-  #   ports:
-  #     - "${PROXY_PORT}:8080"
-  #   depends_on:
-  #     - app
-  #   networks:
-  #     - djangonetwork
+      # Core Django
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,::1}
+      - DEBUG=${DEBUG:-True}
+
+      # Database (DB_* preferred; SQL_* aliases kept for legacy compatibility)
+      - DB_ENGINE=${DB_ENGINE:-django.contrib.gis.db.backends.postgis}
+      - DB_NAME=${DB_NAME:-wcoa_docker_db}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - DB_PORT=5432
+
+      # Redis — single URL used for cache, Celery broker, and result backend.
+      # Auth segment (:password@) is included only when REDIS_PASSWORD is set.
+      - REDIS_URL=redis://${REDIS_PASSWORD:+:${REDIS_PASSWORD}@}tasks:6379/1
+      - CELERY_BROKER_URL=redis://${REDIS_PASSWORD:+:${REDIS_PASSWORD}@}tasks:6379/0
+
+      # Application server mode
+      - DJANGO_ENV=${DJANGO_ENV:-development}
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-3}
+    depends_on:
+      db:
+        condition: service_healthy
+      tasks:
+        condition: service_healthy
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    networks:
+      - djangonetwork
+    profiles:
+      - full
+    restart: unless-stopped
 
   db:
     image: postgis/postgis:16-3.4
     volumes:
       - postgis-data:/var/lib/postgresql
     environment:
-      - POSTGRES_USER=${SQL_USER}
-      - POSTGRES_PASSWORD=${SQL_PASSWORD}
-      - POSTGRES_DB=${SQL_DATABASE}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-wcoa_docker_db}
     ports:
-      - ${SQL_PORT}:5432
+      - "${DB_PORT:-5432}:5432"
     networks:
       - djangonetwork
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-wcoa_docker_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   tasks:
     image: redis:7-alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    # Only pass --requirepass when REDIS_PASSWORD is non-empty.
+    # An empty REDIS_PASSWORD causes "wrong number of arguments" in Redis 7.
+    command: redis-server ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}
     ports:
-      - ${TASK_PORT}:6379
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - redis-data:/var/lib/redis
-      - redis.conf:/usr/local/etc/redis/redis.conf
-
-    environment:
-     - REDIS_REPLICATION_MODE=master
+      - redis-data:/data
     networks:
       - djangonetwork
+    healthcheck:
+      # -a flag is only passed when a password is configured.
+      test: ["CMD-SHELL", "redis-cli ${REDIS_PASSWORD:+-a ${REDIS_PASSWORD}} ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   postgis-data:
   static_data:
   redis-data:
-  redis.conf:
-  # media_data:
 
 networks:
   djangonetwork:

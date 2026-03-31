@@ -1,46 +1,52 @@
 #!/bin/sh
+# Madrona Portal — Docker entrypoint
+# Waits for the database, runs migrations, seeds a fresh DB, then starts the server.
 
-# Exit on errors
 set -e
 
-# Wait for the database service before running migrations.
+# ---------------------------------------------------------------------------
+# 1. Wait for the database to accept connections
+# ---------------------------------------------------------------------------
 python - <<'PY'
-import os
-import socket
-import time
+import os, socket, time, sys
 
-host = os.environ.get("SQL_HOST", "db")
-port = int(os.environ.get("DB_INTERNAL_PORT", "5432"))
-timeout_seconds = int(os.environ.get("DB_WAIT_TIMEOUT", "90"))
+# Accept both DB_HOST (preferred) and legacy SQL_HOST
+host = os.environ.get("DB_HOST") or os.environ.get("SQL_HOST", "db")
+port = int(os.environ.get("DB_PORT") or os.environ.get("SQL_PORT", "5432"))
+timeout = int(os.environ.get("DB_WAIT_TIMEOUT", "90"))
 
+print(f"Waiting for database at {host}:{port} (timeout {timeout}s)...", flush=True)
 start = time.time()
 while True:
-	try:
-		with socket.create_connection((host, port), timeout=2):
-			break
-	except OSError:
-		if time.time() - start > timeout_seconds:
-			raise SystemExit(f"Timed out waiting for database at {host}:{port}")
-		time.sleep(1)
+    try:
+        with socket.create_connection((host, port), timeout=2):
+            break
+    except OSError:
+        if time.time() - start > timeout:
+            sys.exit(f"Timed out waiting for database at {host}:{port}")
+        time.sleep(1)
+
+print("Database is up.", flush=True)
 PY
 
-# if [ -n "$SQL_HOST" ]; then
-# 	echo "Waiting for database at ${SQL_HOST}:${DB_INTERNAL_PORT:-5432}..."
-# 	# pg_isready is available after installing postgresql-client in the image
-# 	until pg_isready -h "$SQL_HOST" -p "${DB_INTERNAL_PORT:-5432}" >/dev/null 2>&1; do
-# 		echo "Postgres is unavailable - sleeping"
-# 		sleep 1
-# 	done
-# 	echo "Postgres is up"
-# fi
-
-python marco/manage.py collectstatic --noinput
+# ---------------------------------------------------------------------------
+# 2. Migrate and collect static files
+# ---------------------------------------------------------------------------
 python marco/manage.py migrate --noinput
+python marco/manage.py collectstatic --noinput
 
-# On a fresh database (no real Wagtail content pages yet), load the initial
-# fixture data so the site starts with working navigation and content.
-# The check is skipped safely if Django fails to import for any reason.
-PAGE_COUNT=$(python - 2>/dev/null <<'PY' || echo "unknown"
+# ---------------------------------------------------------------------------
+# 3. Seed a fresh database with initial fixture data
+#
+# A brand-new PostGIS install contains exactly one Wagtail Page row (the
+# Wagtail root page, depth=1).  We count pages at depth > 1 — if none exist,
+# this is a fresh database and we load the initial fixture.
+#
+# IMPORTANT: We never wipe content on an existing database.  That would
+# destroy real data.  Set FORCE_RELOAD_FIXTURES=1 only in CI or dev reset
+# scenarios where wiping the database is intentional.
+# ---------------------------------------------------------------------------
+CONTENT_PAGES=$(python - 2>/dev/null <<'PY' || echo "unknown"
 import sys, os
 sys.path.insert(0, 'marco')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
@@ -50,12 +56,66 @@ from wagtail.models import Page
 print(Page.objects.filter(depth__gt=1).count())
 PY
 )
-if [ "$PAGE_COUNT" = "0" ]; then
-    echo "Fresh database — loading initial fixtures..."
-    python marco/manage.py loaddata wcoa_init wcoa_init_layers wagtail_menus
+
+echo "Content pages in database: ${CONTENT_PAGES}"
+
+if [ "${CONTENT_PAGES}" = "0" ] || [ "${FORCE_RELOAD_FIXTURES:-0}" = "1" ]; then
+    echo "Fresh database detected — loading initial fixtures..."
+
+    # Clear stale search index entries and image renditions so the fixture
+    # loads cleanly into the empty database.
+    python - <<'PY'
+import sys, os
+sys.path.insert(0, 'marco')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
+import django
+django.setup()
+
+from wagtail.search.models import Query
+Query.objects.all().delete()
+
+try:
+    from portal.base.models import PortalRendition
+    PortalRendition.objects.all().delete()
+except Exception:
+    pass
+PY
+
+    python marco/manage.py loaddata initial_data.json
     echo "Initial fixtures loaded."
+else
+    echo "Existing database — skipping fixture load."
 fi
 
-python marco/manage.py runserver 0:8000
-#uwsgi --socket :8000 --master --enable-threads --module marco.marco.wsgi
-#exec "$@"
+# ---------------------------------------------------------------------------
+# 4. Start the application server
+#
+# DEBUG=True  → Django's runserver (auto-reload, no gunicorn needed)
+# DEBUG=False → gunicorn (multi-worker, production-safe)
+#
+# Override with DJANGO_ENV=production to force gunicorn regardless of DEBUG.
+# ---------------------------------------------------------------------------
+DJANGO_DEBUG=$(python - <<'PY'
+import sys, os
+sys.path.insert(0, 'marco')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
+import django
+django.setup()
+from django.conf import settings
+print("true" if settings.DEBUG else "false")
+PY
+)
+
+if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
+    echo "Starting gunicorn (production mode)..."
+    exec gunicorn marco.wsgi:application \
+        --bind 0.0.0.0:8000 \
+        --workers "${GUNICORN_WORKERS:-3}" \
+        --timeout "${GUNICORN_TIMEOUT:-120}" \
+        --chdir marco \
+        --access-logfile - \
+        --error-logfile -
+else
+    echo "Starting Django development server..."
+    exec python marco/manage.py runserver 0.0.0.0:8000
+fi
