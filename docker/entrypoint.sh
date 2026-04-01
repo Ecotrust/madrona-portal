@@ -72,9 +72,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
 import django
 django.setup()
 
-from wagtail.search.models import Query
-Query.objects.all().delete()
-
 # Remove the default site created by the sites migration so the
 # fixture can load its own site configuration without a key conflict.
 from django.contrib.sites.models import Site
