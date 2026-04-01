@@ -40,6 +40,12 @@ services:
       - REDIS_URL=redis://${REDIS_PASSWORD:+:${REDIS_PASSWORD}@}tasks:6379/1
       - CELERY_BROKER_URL=redis://${REDIS_PASSWORD:+:${REDIS_PASSWORD}@}tasks:6379/0
 
+      # Superuser bootstrap — only creates if username doesn't already exist.
+      # Leave DJANGO_SUPERUSER_PASSWORD empty to skip (safe for production).
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-}
+
       # Application server mode
       - DJANGO_ENV=${DJANGO_ENV:-development}
       - GUNICORN_WORKERS=${GUNICORN_WORKERS:-3}
