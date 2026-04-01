@@ -259,6 +259,7 @@ SITE_ID = 1
 INTERNAL_IPS = ('127.0.0.1',)
 ROOT_URLCONF = 'marco.urls'
 WSGI_APPLICATION = 'marco.wsgi.application'
+APPEND_SLASH=True
 
 # ---------------------------------------------------------------------------
 # Database (PostGIS by default)

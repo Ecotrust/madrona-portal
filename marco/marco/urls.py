@@ -53,6 +53,7 @@ urlpatterns += [
 
     # /rpc endpoint removed — see each sub-app's api.py for DRF replacements
 
+    re_path(r'^auth/', include('social_django.urls', namespace='social')),
     re_path(r'^account/', include('accounts.urls'), name='account'),
     re_path(r'^collaborate/groups/', include('mapgroups.urls'), name='groups'),
     re_path(r'^groups/', include('mapgroups.urls'), name='groups'),

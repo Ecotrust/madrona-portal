@@ -60,7 +60,7 @@ PY
 
 echo "Content pages in database: ${CONTENT_PAGES}"
 
-if [ "${CONTENT_PAGES}" = "0" ] || [ "${FORCE_RELOAD_FIXTURES:-0}" = "1" ]; then
+if [ "${CONTENT_PAGES:-0}" -lt "5" ] || [ "${FORCE_RELOAD_FIXTURES:-0}" = "1" ]; then
     echo "Fresh database detected — loading initial fixtures..."
 
     # Clear stale search index entries and image renditions so the fixture
@@ -75,6 +75,11 @@ django.setup()
 from wagtail.search.models import Query
 Query.objects.all().delete()
 
+# Remove the default site created by the sites migration so the
+# fixture can load its own site configuration without a key conflict.
+from django.contrib.sites.models import Site
+Site.objects.all().delete()
+
 try:
     from portal.base.models import PortalRendition
     PortalRendition.objects.all().delete()
@@ -82,7 +87,12 @@ except Exception:
     pass
 PY
 
-    python marco/manage.py loaddata initial_data.json
+    python marco/manage.py loaddata initial_data_prod.json
+    # Load per-app reference fixtures that aren't included in the main fixture.
+    # Use absolute paths so only this specific file is loaded (not other apps'
+    # initial_data.json files that happen to share the same name).
+    python marco/manage.py loaddata \
+        apps/madrona-scenarios/scenarios/fixtures/initial_data.json
     echo "Initial fixtures loaded."
 else
     echo "Existing database — skipping fixture load."
