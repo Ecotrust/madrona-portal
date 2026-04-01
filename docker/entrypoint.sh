@@ -63,8 +63,7 @@ echo "Content pages in database: ${CONTENT_PAGES}"
 if [ "${CONTENT_PAGES:-0}" -lt "5" ] || [ "${FORCE_RELOAD_FIXTURES:-0}" = "1" ]; then
     echo "Fresh database detected — loading initial fixtures..."
 
-    # Clear stale search index entries and image renditions so the fixture
-    # loads cleanly into the empty database.
+    # Clear rows created by migrations that would conflict with fixture data.
     python - <<'PY'
 import sys, os
 sys.path.insert(0, 'marco')
@@ -72,10 +71,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
 import django
 django.setup()
 
-# Remove the default site created by the sites migration so the
-# fixture can load its own site configuration without a key conflict.
+# The sites migration creates a default site and initial_data migration
+# creates placeholder pages — both conflict with fixture data.
 from django.contrib.sites.models import Site
 Site.objects.all().delete()
+
+from wagtail.models import Page
+Page.objects.filter(depth__gt=1).delete()
 
 try:
     from portal.base.models import PortalRendition
