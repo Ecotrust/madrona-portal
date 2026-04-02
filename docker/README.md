@@ -1,71 +1,194 @@
 # Docker Development Guide — Madrona Portal (WCOA)
 
-## Repository layout
+## Quick start
 
-This stack assumes the standard monorepo layout:
+These steps take a fresh machine from nothing to a running portal.
 
-```
-madrona-apps-claude/
-├── madrona_portal/          ← main Django project (this repo)
-│   ├── docker/
-│   │   ├── docker-compose.yml
-│   │   └── entrypoint.sh
-│   ├── Dockerfile
-│   └── .env                 ← your local secrets (never committed)
-└── madrona-apps/            ← sibling repo with all sub-app packages
-    ├── wcoa/
-    ├── mp-layers/
-    └── ...
-```
+### Step 1 — Create the workspace directory
 
-All commands below are run from the **`madrona_portal/`** directory unless noted.
-
----
-
-## 1. Prerequisites
-
-- Docker Desktop (Mac/Windows) or Docker Engine + Compose plugin (Linux)
-- `madrona-apps/` checked out as a sibling of `madrona_portal/` (the Dockerfile copies from it at build time)
-
----
-
-## 2. Configure environment
-
-Copy the example and fill in real values:
+All repos live inside a single parent directory. The Dockerfile build
+context is the parent, so the layout is not optional.
 
 ```bash
-cp .env.example .env   # if .env.example exists; otherwise edit .env directly
+mkdir portals
+cd portals
 ```
 
-Minimum required values in `.env`:
+### Step 2 — Clone madrona-portal
+
+```bash
+git clone -b docker https://github.com/Ecotrust/madrona-portal.git madrona_portal
+```
+
+### Step 3 — Clone the sub-app packages
+
+The Dockerfile copies all of these at build time. Clone them into a
+`madrona-apps/` sibling directory:
+
+```bash
+mkdir madrona-apps && cd madrona-apps
+
+git clone https://github.com/Ecotrust/django_url_shortener.git
+git clone https://github.com/Ecotrust/madrona-analysistools.git
+git clone https://github.com/Ecotrust/madrona-features.git
+git clone https://github.com/Ecotrust/madrona-manipulators.git
+git clone https://github.com/Ecotrust/madrona-scenarios.git
+git clone https://github.com/Ecotrust/mp-accounts.git
+git clone https://github.com/Ecotrust/mp-data-manager.git
+git clone https://github.com/Ecotrust/mp-drawing.git
+git clone https://github.com/Ecotrust/mp-explore.git
+git clone https://github.com/Ecotrust/mp-layers.git
+git clone https://github.com/Ecotrust/mp-map-groups.git
+git clone https://github.com/Ecotrust/mp-proxy.git
+git clone https://github.com/Ecotrust/mp-visualize.git
+git clone https://github.com/Ecotrust/p97-nursery.git
+git clone -b vagrant2docker https://github.com/Ecotrust/wcoa.git
+
+cd ..
+```
+
+Your workspace should now look like:
+
+```
+portals/
+├── madrona_portal/     ← cloned from Ecotrust/madrona-portal, branch: docker
+└── madrona-apps/
+    ├── wcoa/           ← branch: vagrant2docker
+    ├── mp-layers/
+    └── ...             ← all others on main
+```
+
+### Step 4 — Configure environment
+
+From `madrona_portal/`:
+
+```bash
+cd madrona_portal
+cp .env.example .env
+```
+
+Edit `.env` and set at minimum:
 
 ```ini
-SECRET_KEY=<random string>
+SECRET_KEY=<long random string>
 DB_PASSWORD=<postgres password>
+DJANGO_SUPERUSER_PASSWORD=<your dev admin password>
 ```
 
-Other notable defaults (override in `.env` as needed):
+Everything else has working defaults for local development.
 
-| Variable | Default | Notes |
-|---|---|---|
-| `APP_PORT` | `8000` | Host port the Django app binds to |
-| `DB_NAME` | `wcoa_docker_db` | PostgreSQL database name |
-| `DB_USER` | `postgres` | PostgreSQL user |
-| `DB_PORT` | `5432` | Host port for PostgreSQL |
-| `REDIS_PORT` | `6379` | Host port for Redis |
-| `MP_PROJECT_CONFIG` | `config.wcoa.docker.ini` | Django config file (do not change for WCOA) |
-| `DEBUG` | `False` | Set `True` to use Django dev server instead of gunicorn |
-| `DJANGO_SUPERUSER_PASSWORD` | *(empty)* | If set, a superuser is created on first start |
-| `DJANGO_SUPERUSER_USERNAME` | `admin` | Superuser username |
-| `DJANGO_SUPERUSER_EMAIL` | `admin@example.com` | Superuser email |
+### Step 5 — Build the image
+
+Run this from the **workspace root** (`madrona_portal/`), not from
+inside `madrona_portal/`. The build context must include both repos.
+
+```bash
+cd ..   # back to portals/
+
+docker buildx build \
+    --builder desktop-linux \
+    --load \
+    -f madrona_portal/Dockerfile \
+    -t madrona_portal-app:latest \
+    .
+```
+
+This takes several minutes on a first build (compiling GDAL, installing
+Python packages). Subsequent builds are fast thanks to layer caching.
+
+> **Why `docker buildx build` and not `docker compose build`?**
+> `docker compose build` has a caching bug: when a `.git` directory exists
+> inside the build context, BuildKit reads files from the git object store
+> (committed versions) rather than the filesystem. If you forget to commit
+> a change, the old version is silently baked into the image. The same
+> restriction applies — always commit changes to `madrona_portal/` or
+> `madrona-apps/` before rebuilding.
+
+### Step 6 — Start the full stack
+
+From `madrona_portal/`:
+
+```bash
+cd madrona_portal
+
+docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d
+```
+
+The `--profile full` flag is required to start the `app` container.
+Without it only `db` (PostGIS) and `tasks` (Redis) start.
+
+On first boot the entrypoint automatically:
+
+1. Waits for PostgreSQL to accept connections
+2. Runs `migrate`
+3. Runs `collectstatic` and `compress`
+4. Detects a fresh database and loads initial fixtures (1,782 + 22 objects)
+5. Creates the superuser defined in `.env` (if `DJANGO_SUPERUSER_PASSWORD` is set)
+6. Starts the application server
+
+Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
 ---
 
-## 3. Build the image
+## Everyday usage
 
-Use `docker buildx build` directly — `docker compose build` has a known caching issue where it silently reads committed (not filesystem) file versions when a `.git` directory exists in the build context.
+All `docker compose` commands below are run from **`madrona_portal/`**.
 
-From the **repo root** (`madrona-apps-claude/`):
+### View logs
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile full logs -f app
+```
+
+### Run a management command
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile full \
+    run --rm app python marco/manage.py <command>
+```
+
+Examples:
+
+```bash
+# Django shell
+... run --rm app python marco/manage.py shell
+
+# Create superuser manually
+... run --rm app python marco/manage.py createsuperuser
+
+# Load a fixture
+... run --rm app python marco/manage.py loaddata /path/to/fixture.json
+```
+
+### Open a database shell
+
+```bash
+docker exec -it docker-db-1 psql -U postgres wcoa_docker_db
+```
+
+---
+
+## Dev infrastructure only (local Django server)
+
+To run Django locally against Docker-managed PostGIS and Redis (no app container):
+
+```bash
+# Start only db and tasks (omit --profile full)
+docker compose -f docker/docker-compose.yml --env-file .env up -d
+
+# Then in a separate terminal, from madrona_portal/:
+cd marco
+python manage.py runserver
+```
+
+---
+
+## Rebuilding after code changes
+
+> **Commit first.** BuildKit reads from the git object store — uncommitted
+> changes are invisible to the build.
+
+From the **workspace root** (`portals/`):
 
 ```bash
 docker buildx build \
@@ -76,121 +199,46 @@ docker buildx build \
     .
 ```
 
-Add `--no-cache` to force a full rebuild (e.g. after changing `requirements.txt`).
-
-> **Important:** Always commit changes to `madrona_portal/` before rebuilding. BuildKit reads files from the git object store, not the filesystem, when a `.git` directory is present in the build context.
-
----
-
-## 4. Start the full stack
+Then from `madrona_portal/`:
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d
+docker compose -f docker/docker-compose.yml --env-file .env --profile full \
+    up -d --force-recreate app
 ```
 
-The `--profile full` flag is required to start the `app` service. Without it, only `db` (PostGIS) and `tasks` (Redis) start — useful for running Django locally against Docker infrastructure.
-
-Services:
-
-| Service | Image | Host port |
-|---|---|---|
-| `app` | `madrona_portal-app:latest` | `${APP_PORT}` (default 8000) |
-| `db` | `postgis/postgis:16-3.4` | `${DB_PORT}` (default 5432) |
-| `tasks` | `redis:7-alpine` | `${REDIS_PORT}` (default 6379) |
+Add `--no-cache` to the buildx command to force a full dependency reinstall
+(needed when `docker-requirements.txt` changes).
 
 ---
 
-## 5. What happens on first startup
-
-The entrypoint (`docker/entrypoint.sh`) runs in order:
-
-1. **Waits** for PostgreSQL to accept connections
-2. **Migrates** (`manage.py migrate`)
-3. **Collects static files** (`manage.py collectstatic`)
-4. **Compresses assets** (`manage.py compress --force`)
-5. **Seeds fixtures** — if fewer than 5 content pages exist (fresh DB), loads:
-   - `apps/wcoa/wcoa/fixtures/initial_data_prod.json` (1,782 objects: pages, layers, themes, etc.)
-   - `apps/madrona-scenarios/scenarios/fixtures/initial_data.json` (22 objects)
-6. **Creates superuser** — only if `DJANGO_SUPERUSER_PASSWORD` is set and the username doesn't exist
-7. **Starts the server** — gunicorn in production (`DEBUG=False`), Django dev server otherwise
-
-Open: http://localhost:${APP_PORT}/
-
----
-
-## 6. Dev infrastructure only (no app container)
-
-To run Django locally with only the Docker DB and Redis:
+## Reset to a clean state
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file .env up -d
-# db and tasks start; app does not (no --profile full)
-
-cd marco
-python manage.py runserver
-```
-
----
-
-## 7. Common one-off commands
-
-```bash
-# Django shell
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    run --rm app python marco/manage.py shell
-
-# Create superuser manually
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    run --rm app python marco/manage.py createsuperuser
-
-# Run migrations
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    run --rm app python marco/manage.py migrate
-
-# Load a fixture
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    run --rm app python marco/manage.py loaddata /path/to/fixture.json
-
-# Open a psql shell in the DB container
-docker exec -it docker-db-1 psql -U postgres wcoa_docker_db
-```
-
----
-
-## 8. Rebuild after code changes
-
-After changing Python source files, templates, or static assets in `madrona_portal/` or `madrona-apps/`:
-
-1. Commit your changes (required for BuildKit to pick them up)
-2. Rebuild from the repo root:
-   ```bash
-   docker buildx build --builder desktop-linux --load \
-       -f madrona_portal/Dockerfile -t madrona_portal-app:latest .
-   ```
-3. Restart the app container:
-   ```bash
-   docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-       up -d --force-recreate app
-   ```
-
----
-
-## 9. Reset everything (fresh start)
-
-```bash
+# From madrona_portal/
 docker compose -f docker/docker-compose.yml --env-file .env --profile full down -v
 ```
 
-`-v` removes the PostGIS and Redis volumes. Next `up` will re-run migrations and reload fixtures.
+`-v` removes the PostGIS and Redis volumes. The next `up` will re-run
+migrations and reload fixtures from scratch.
 
 ---
 
-## 10. Disk space
+## Services and ports
 
-Docker's build cache can grow large. Check usage and prune:
+| Service | Image | Default host port | Override via |
+|---|---|---|---|
+| `app` | `madrona_portal-app:latest` | `8000` | `APP_PORT` in `.env` |
+| `db` | `postgis/postgis:16-3.4` | `5432` | `DB_PORT` in `.env` |
+| `tasks` | `redis:7-alpine` | `6379` | `REDIS_PORT` in `.env` |
+
+---
+
+## Disk space
+
+Docker's build cache can grow large over time:
 
 ```bash
-docker system df
-docker system prune -f        # removes stopped containers, dangling images, unused networks, build cache
-docker volume prune -f        # removes unused volumes (DESTRUCTIVE — removes DB data if containers are stopped)
+docker system df                  # show usage breakdown
+docker system prune -f            # remove stopped containers, dangling images, unused networks, build cache
+docker volume prune -f            # remove unused volumes — only run when all containers are stopped
 ```

@@ -11,6 +11,7 @@
 services:
 
   app:
+    image: madrona_portal-app:latest
     build:
       context: ../../
       dockerfile: madrona_portal/Dockerfile
