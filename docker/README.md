@@ -128,12 +128,6 @@ On first boot the entrypoint automatically:
 
 Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
----
-
-## Everyday usage
-
-All `docker compose` commands below are run from **`madrona_portal/`**.
-
 ---  
 
 ## Deploy to fully containerized live instance
@@ -162,7 +156,11 @@ docker compose -f docker/docker-compose.yml --env-file .env --profile full \
 Add `--no-cache` to the buildx command to force a full dependency reinstall
 (needed when `docker-requirements.txt` changes).
 
----  
+---
+
+## Everyday usage
+
+All `docker compose` commands below are run from **`madrona_portal/`**.
 
 ### View logs
 
