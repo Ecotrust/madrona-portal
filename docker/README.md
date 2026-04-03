@@ -134,6 +134,36 @@ Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
 All `docker compose` commands below are run from **`madrona_portal/`**.
 
+---  
+
+## Deploy to fully containerized live instance
+
+1. Set up your `.env`
+2. Build and run (from `portals/`):
+
+```bash
+docker buildx build \
+    --builder desktop-linux \
+    --load \
+    -f madrona_portal/Dockerfile \
+    -t madrona_portal-app:latest \
+    .
+```
+
+### Redeploying after code changes
+
+Then from `madrona_portal/`:
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile full \
+    up -d --force-recreate app
+```
+
+Add `--no-cache` to the buildx command to force a full dependency reinstall
+(needed when `docker-requirements.txt` changes).
+
+---  
+
 ### View logs
 
 ```bash

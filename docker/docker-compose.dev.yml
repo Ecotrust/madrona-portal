@@ -1,0 +1,52 @@
+# Madrona Portal — Development Compose Override
+#
+# Layers on top of docker-compose.yml to enable live code sync from the host.
+# Python's editable installs follow .pth files to the mounted directories, so
+# any file saved on the host is immediately visible inside the container.
+#
+# Usage (from madrona_portal/):
+#   docker compose \
+#     -f docker/docker-compose.yml \
+#     -f docker/docker-compose.dev.yml \
+#     --env-file .env --profile full up
+#
+# Django's runserver (active when DEBUG=True) auto-reloads on .py changes.
+# Template changes are picked up per-request — no restart needed.
+# Static file changes are served directly by runserver — no collectstatic needed.
+#
+# What still requires a container restart:
+#   - New pip packages  (pip install must run inside the venv)
+#   - config.ini changes
+#
+# What still requires manage.py migrate:
+#   - New migration files (run: docker exec docker-app-1 python marco/manage.py migrate)
+
+services:
+  app:
+    environment:
+      - DEBUG=True
+    volumes:
+      # Mount the main Django project tree from the host.
+      # Changes to Python, templates, and config files are live immediately.
+      - ../marco:/usr/local/apps/madrona-portal/marco
+
+      # Mount the WCOA app package from the host.
+      - ../../madrona-apps/wcoa:/usr/local/apps/madrona-portal/apps/wcoa
+
+      # Mount other madrona-apps packages you are actively developing.
+      # Comment out any you are NOT changing — using the baked image copy
+      # for those packages is faster and avoids unnecessary inotify watches.
+      - ../../madrona-apps/mp-data-manager:/usr/local/apps/madrona-portal/apps/mp-data-manager
+      - ../../madrona-apps/mp-layers:/usr/local/apps/madrona-portal/apps/mp-layers
+      - ../../madrona-apps/mp-accounts:/usr/local/apps/madrona-portal/apps/mp-accounts
+      - ../../madrona-apps/mp-drawing:/usr/local/apps/madrona-portal/apps/mp-drawing
+      - ../../madrona-apps/mp-visualize:/usr/local/apps/madrona-portal/apps/mp-visualize
+      - ../../madrona-apps/madrona-features:/usr/local/apps/madrona-portal/apps/madrona-features
+      - ../../madrona-apps/madrona-manipulators:/usr/local/apps/madrona-portal/apps/madrona-manipulators
+      - ../../madrona-apps/madrona-scenarios:/usr/local/apps/madrona-portal/apps/madrona-scenarios
+      - ../../madrona-apps/mp-map-groups:/usr/local/apps/madrona-portal/apps/mp-map-groups
+      - ../../madrona-apps/mp-explore:/usr/local/apps/madrona-portal/apps/mp-explore
+      - ../../madrona-apps/mp-proxy:/usr/local/apps/madrona-portal/apps/mp-proxy
+      - ../../madrona-apps/p97-nursery:/usr/local/apps/madrona-portal/apps/p97-nursery
+      - ../../madrona-apps/django_url_shortener:/usr/local/apps/madrona-portal/apps/django_url_shortener
+      - ../../madrona-apps/madrona-analysistools:/usr/local/apps/madrona-portal/apps/madrona-analysistools
