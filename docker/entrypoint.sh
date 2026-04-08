@@ -86,10 +86,11 @@ except Exception:
     pass
 PY
 
-    python marco/manage.py loaddata initial_data_prod.json
-    # Load per-app reference fixtures that aren't included in the main fixture.
     # Use absolute paths so only this specific file is loaded (not other apps'
-    # initial_data.json files that happen to share the same name).
+    # files that happen to share the same name).
+    python marco/manage.py loaddata \
+        apps/wcoa/wcoa/fixtures/initial_data_prod.json
+    # Load per-app reference fixtures that aren't included in the main fixture.
     python marco/manage.py loaddata \
         apps/madrona-scenarios/scenarios/fixtures/initial_data.json
     echo "Initial fixtures loaded."
