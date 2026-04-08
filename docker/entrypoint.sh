@@ -86,31 +86,57 @@ except Exception:
     pass
 PY
 
-    # Ensure ContentTypes exist for every installed app before loading fixtures.
-    # Wagtail Page fixtures reference content types by natural key
-    # (e.g. ["wcoa", "ctapage"]); if the ContentType row is missing, Django
-    # silently leaves content_type_id = NULL and the INSERT fails.
-    # create_contenttypes is idempotent — safe to call on every run.
+    # Load fixtures in a single Python process so that ContentTypes created
+    # here are guaranteed to be visible when loaddata deserializes FK natural
+    # keys.  Wagtail Page records reference content types by natural key
+    # (e.g. ["wcoa", "ctapage"]); if the ContentType row is absent Django's
+    # deserializer defers the FK and the INSERT fails with a NOT NULL violation.
     python - <<'PY'
 import sys, os
 sys.path.insert(0, 'marco')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
 import django
 django.setup()
-from django.apps import apps
-from django.contrib.contenttypes.management import create_contenttypes
-for app_config in apps.get_app_configs():
-    create_contenttypes(app_config, verbosity=0)
-print('Content types verified.', flush=True)
-PY
 
-    # Use absolute paths so only this specific file is loaded (not other apps'
-    # files that happen to share the same name).
-    python marco/manage.py loaddata \
-        apps/wcoa/wcoa/fixtures/initial_data_prod.json
-    # Load per-app reference fixtures that aren't included in the main fixture.
-    python marco/manage.py loaddata \
-        apps/madrona-scenarios/scenarios/fixtures/initial_data.json
+# Step 1: ensure every installed app's ContentTypes exist before loading
+# fixture data.  create_contenttypes is idempotent.
+from django.apps import apps as django_apps
+from django.contrib.contenttypes.management import create_contenttypes
+from django.contrib.contenttypes.models import ContentType
+
+for app_config in django_apps.get_app_configs():
+    create_contenttypes(app_config, verbosity=0)
+
+# Confirm the wcoa types that the fixture depends on are present.
+wcoa_models = [
+    'ctapage', 'connectpage', 'catalogiframepage',
+    'catalogthemegridpage', 'catalogthemegridpagedetail',
+    'ohidashboard', 'wcoaoceanstories', 'wcoaoceanstory',
+]
+missing = []
+for model in wcoa_models:
+    if not ContentType.objects.filter(app_label='wcoa', model=model).exists():
+        # Force-create it so loaddata can resolve the natural key.
+        ContentType.objects.get_or_create(app_label='wcoa', model=model)
+        missing.append(model)
+if missing:
+    print(f'WARNING: had to force-create ContentTypes: {missing}', flush=True)
+else:
+    print('All wcoa ContentTypes verified.', flush=True)
+
+# Step 2: load fixtures — same process, same DB session.
+from django.core.management import call_command
+call_command(
+    'loaddata',
+    'apps/wcoa/wcoa/fixtures/initial_data_prod.json',
+    verbosity=1,
+)
+call_command(
+    'loaddata',
+    'apps/madrona-scenarios/scenarios/fixtures/initial_data.json',
+    verbosity=1,
+)
+PY
     echo "Initial fixtures loaded."
 else
     echo "Existing database — skipping fixture load."
