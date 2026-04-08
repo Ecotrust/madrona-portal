@@ -17,6 +17,7 @@ services:
       dockerfile: madrona_portal/Dockerfile
     volumes:
       - static_data:/vol/web
+      - media_data:/vol/web
     env_file:
       - ../.env            # load all secrets from the project-root .env file
     environment:
@@ -66,7 +67,7 @@ services:
   db:
     image: postgis/postgis:16-3.4
     volumes:
-      - postgis-data:/var/lib/postgresql
+      - postgis_data:/var/lib/postgresql
     environment:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -90,7 +91,7 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - redis-data:/data
+      - redis_data:/data
     networks:
       - djangonetwork
     healthcheck:
@@ -102,9 +103,10 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgis-data:
   static_data:
-  redis-data:
+  media_data:
+  postgis_data:
+  redis_data:
 
 networks:
   djangonetwork:

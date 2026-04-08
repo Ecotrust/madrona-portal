@@ -284,6 +284,14 @@ GUNICORN_WORKERS=4
 Leave everything else at its default for now. You can add email, OAuth, and
 Elasticsearch credentials later.
 
+### 4.4 Create ini file 
+
+```bash
+cd ~/portals/madrona_portal/marco
+cp config.docker.ini.template config.docker.wcoa.ini
+```
+
+
 ---
 
 ## Phase 5 — Build the Docker Image
