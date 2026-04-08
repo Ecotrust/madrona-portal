@@ -73,6 +73,7 @@ elasticsearch-dsl>=7.0,<8.0
 # APIs
 # ---------------------------------------------------------------------------
 # rpc4django removed — replaced by djangorestframework API views
+rpc4django
 djangorestframework>=3.14,<4.0
 
 # ---------------------------------------------------------------------------
