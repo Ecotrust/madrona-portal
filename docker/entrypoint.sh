@@ -86,6 +86,24 @@ except Exception:
     pass
 PY
 
+    # Ensure ContentTypes exist for every installed app before loading fixtures.
+    # Wagtail Page fixtures reference content types by natural key
+    # (e.g. ["wcoa", "ctapage"]); if the ContentType row is missing, Django
+    # silently leaves content_type_id = NULL and the INSERT fails.
+    # create_contenttypes is idempotent — safe to call on every run.
+    python - <<'PY'
+import sys, os
+sys.path.insert(0, 'marco')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
+import django
+django.setup()
+from django.apps import apps
+from django.contrib.contenttypes.management import create_contenttypes
+for app_config in apps.get_app_configs():
+    create_contenttypes(app_config, verbosity=0)
+print('Content types verified.', flush=True)
+PY
+
     # Use absolute paths so only this specific file is loaded (not other apps'
     # files that happen to share the same name).
     python marco/manage.py loaddata \
