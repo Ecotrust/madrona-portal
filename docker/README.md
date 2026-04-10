@@ -77,13 +77,28 @@ DJANGO_SUPERUSER_PASSWORD=<your dev admin password>
 
 Everything else has working defaults for local development.
 
+### Step 4.1 - Create ini file 
+
+```bash
+cd marco
+cp config.docker.ini.template config.docker.wcoa.ini
+```
+
+Edit `config.docker.wcoa.ini` :
+
+```ini
+LOCATION = redis://tasks:6379/1
+CELERY_RESULT_BACKEND = redis://tasks:6379/1
+CELERY_BROKER_URL = redis://tasks:6379/0
+```
+
 ### Step 5 — Build the image
 
 Run this from the **workspace root** (`madrona_portal/`), not from
 inside `madrona_portal/`. The build context must include both repos.
 
 ```bash
-cd ..   # back to portals/
+cd ../../   # back to portals/
 
 docker buildx build \
     --builder desktop-linux \
