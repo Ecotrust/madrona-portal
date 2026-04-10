@@ -23,6 +23,7 @@ import explore.urls
 from visualize.urls import api_urlpatterns as visualize_api_urlpatterns
 from drawing.urls import api_urlpatterns as drawing_api_urlpatterns
 from mapgroups.urls import api_urlpatterns as mapgroups_api_urlpatterns
+from marco.rpc_compat import rpc_view
 
 from portal.base import views as base_views
 from portal.data_catalog import views as data_catalog_views
@@ -55,7 +56,9 @@ urlpatterns += [
     re_path(r'^django-admin/', admin.site.urls),
     re_path(r'^admin/', include(wagtailadmin_urls)),
 
-    # /rpc endpoint removed — DRF replacements from each sub-app's api.py
+    # /rpc — JSON-RPC 2.0 compat shim for legacy frontend JS (see rpc_compat.py)
+    re_path(r'^rpc/', rpc_view),
+    # DRF REST replacements from each sub-app's api.py
     re_path(r'^api/', include(visualize_api_urlpatterns)),
     re_path(r'^api/', include(drawing_api_urlpatterns)),
     re_path(r'^api/', include(mapgroups_api_urlpatterns)),
