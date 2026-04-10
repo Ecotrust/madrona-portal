@@ -20,6 +20,10 @@ import mapgroups.urls
 import accounts.urls
 import explore.urls
 
+from visualize.urls import api_urlpatterns as visualize_api_urlpatterns
+from drawing.urls import api_urlpatterns as drawing_api_urlpatterns
+from mapgroups.urls import api_urlpatterns as mapgroups_api_urlpatterns
+
 from portal.base import views as base_views
 from portal.data_catalog import views as data_catalog_views
 from marco_site import views as marco_site_views
@@ -51,7 +55,10 @@ urlpatterns += [
     re_path(r'^django-admin/', admin.site.urls),
     re_path(r'^admin/', include(wagtailadmin_urls)),
 
-    # /rpc endpoint removed — see each sub-app's api.py for DRF replacements
+    # /rpc endpoint removed — DRF replacements from each sub-app's api.py
+    re_path(r'^api/', include(visualize_api_urlpatterns)),
+    re_path(r'^api/', include(drawing_api_urlpatterns)),
+    re_path(r'^api/', include(mapgroups_api_urlpatterns)),
 
     re_path(r'^auth/', include('social_django.urls', namespace='social')),
     re_path(r'^account/', include('accounts.urls'), name='account'),
