@@ -81,10 +81,10 @@ Everything else has working defaults for local development.
 
 ```bash
 cd marco
-cp config.docker.ini.template config.docker.wcoa.ini
+cp config.docker.ini.template config.wcoa.docker.ini
 ```
 
-Edit `config.docker.wcoa.ini` :
+Edit `config.wcoa.docker.ini` :
 
 ```ini
 LOCATION = redis://tasks:6379/1
@@ -143,7 +143,14 @@ On first boot the entrypoint automatically:
 
 Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
+### Step 7 - Import the Database
+To import a database dump, copy the file into the ... 
+
+```bash
+
 ---  
+
+# Untested instructions below this line — will update after testing
 
 ## Deploy to fully containerized live instance
 

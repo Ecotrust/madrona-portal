@@ -288,7 +288,7 @@ Elasticsearch credentials later.
 
 ```bash
 cd ~/portals/madrona_portal/marco
-cp config.docker.ini.template config.docker.wcoa.ini
+cp config.docker.ini.template config.wcoa.docker.ini
 ```
 
 
