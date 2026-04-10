@@ -195,6 +195,52 @@ docker compose -f docker/docker-compose.yml --env-file .env --profile full exec 
 
 *Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump (PostgreSQL 12) up to date with the current codebase (PostgreSQL 16).
 
+---  
+
+### Step 8 — Importing production media files into the Dockerized Application
+
+#### Prerequisites
+- `madrona_portal/.env` exists with `MEDIA_ROOT` set to a valid directory
+- Production media files are available
+
+#### Step 8.1a - Copy the media files into Docker
+
+Get your docker container name or ID for the `app` service:
+```bash
+docker ps
+```
+
+Then use `docker cp` to copy media files from the production location to the local directory specified by `MEDIA_ROOT` in `.env`.
+```bash
+docker cp <path_to_prod_media>/. <container_name_or_id>:/vol/web/media/
+```
+
+Example `docker cp` command:
+```bash
+docker cp madrona-apps/wcoa/media/. docker-app-1:/vol/web/media/
+```
+
+#### Step 8.1b — Sync media files
+Use `rsync` or a similar tool to copy media files from the production location to the local directory specified by `MEDIA_ROOT` in `.env`.
+Using `rsync` command:
+```bash
+rsync -avz <user>@<host>:/path/to/remote/media/ <local_media_directory>/
+```
+
+Then use `docker cp` to copy media files from the local directory to the Docker container:
+```bash
+docker cp <local_media_directory>/. <container_name_or_id>:/vol/web/media/
+```
+
+Make sure to include the trailing slashes to sync the contents correctly.
+`-avz` flags preserve permissions, show progress, and compress data during transfer.
+
+#### Step 8.2 — Verify media access
+
+```bash
+docker exec <container_name_or_id> du -sh /vol/web/media/
+docker exec <container_name_or_id> ls /vol/web/media/
+```
 
 ---  
 
