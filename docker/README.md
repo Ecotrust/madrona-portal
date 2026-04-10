@@ -195,6 +195,45 @@ docker compose -f docker/docker-compose.yml --env-file .env --profile full exec 
 
 *Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump (PostgreSQL 12) up to date with the current codebase (PostgreSQL 16).
 
+#### Step 7.4 - Migration to mp-layers
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile full exec app python marco/manage.py migrate migration_to_layers
+```
+
+```bash
+docker exec -it <container_id> bash
+```
+
+Then inside the container:
+
+```bash
+python marco/manage.py shell
+```
+
+```python
+from layers.models import Theme
+from data_manager.models import Theme as Dm_theme
+
+
+for theme in Dm_theme.all_objects.all():
+ 	try:
+         	new_theme = Theme.all_objects.get(pk=theme.pk)
+         	if new_theme.parent == None and new_theme.name != 'companion':
+                 	new_theme.is_top_theme = True
+                 	new_theme.save()
+ 	except Exception:
+         	pass
+```
+
+exit the shell
+
+```bash
+python marco/manage.py collectstatic
+python marco/manage.py compress
+```
+
+
 ---  
 
 ### Step 8 — Importing production media files into the Dockerized Application
