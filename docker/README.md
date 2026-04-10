@@ -143,10 +143,58 @@ On first boot the entrypoint automatically:
 
 Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
-### Step 7 - Import the Database
-To import a database dump, copy the file into the ... 
+### Step 7 - Importing a Production SQL Dump into the Dockerized Database
+
+#### Prerequisites
+- Docker Compose stack is running — `docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d`
+- `madrona_portal/.env` exists with `DB_NAME`, `DB_USER`, and `DB_PASSWORD` set
+
+
+#### Step 7.1 — Ensure you have the db-restore script
+
+`madrona_portal/scripts/db-restore.sh` has the following behaviour:
+- Loads DB credentials from `.env`
+- Verifies the `db` container is healthy before proceeding
+- With `--drop`: terminates active connections, drops and recreates the database, and enables the PostGIS extension
+- Streams the dump file directly into the container via `docker compose exec` (no temp files)
+- Prints next-step instructions on completion
+
+Made sure it is executable:
+```bash
+chmod +x madrona_portal/scripts/db-restore.sh
+```
+
+
+#### Step 7.2 — Run the restore
+
+From `madrona_portal/`:
+```bash
+./scripts/db-restore.sh --drop <path_to_your_sql>
+```
+*example:*
+```bash
+./scripts/db-restore.sh --drop ../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
+```
+
+The `--drop` flag was used to ensure a clean import. The script:
+1. Terminated all active connections to `wcoa_docker_db`
+2. Dropped and recreated the database
+3. Enabled the `postgis` extension
+4. Streamed the sql dump into the container via `psql`
+
+**Expected warnings (non-fatal):**
+- `ERROR: relation "..." does not exist` — pg_dump tries to drop constraints before creating them; safe to ignore on a fresh DB
+- `ERROR: role "wcoa_user" does not exist` — prod uses a dedicated app role; dev uses `postgres` which has full access
+
+
+#### Step 7.3 — Apply migrations
 
 ```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile full exec app python marco/manage.py migrate
+```
+
+*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump (PostgreSQL 12) up to date with the current codebase (PostgreSQL 16).
+
 
 ---  
 
