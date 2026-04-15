@@ -67,7 +67,7 @@ def _env(env_key: str, cfg_section: configparser.SectionProxy, cfg_key: str,
 # ---------------------------------------------------------------------------
 # Core settings
 # ---------------------------------------------------------------------------
-DEBUG = app_cfg.getboolean('DEBUG', True)
+DEBUG = app_cfg.getboolean('DEBUG', False)
 
 APP_NAME = app_cfg.get('APP_NAME', 'Marine Planner')
 APP_URL = app_cfg.get('APP_URL', '')
