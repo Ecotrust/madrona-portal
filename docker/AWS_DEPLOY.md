@@ -307,7 +307,7 @@ cd ~/portals
 
 docker buildx build \
     --load \
-    -f madrona-portal/Dockerfile \
+    -f madrona-portal/docker/Dockerfile \
     -t madrona-portal-app:latest \
     .
 ```
