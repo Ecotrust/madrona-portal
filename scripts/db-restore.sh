@@ -41,7 +41,7 @@ info() { echo "[db-restore] $*"; }
 # ---------------------------------------------------------------------------
 DROP_FIRST=false
 DUMP_FILE=""
-ENV_FILE=../docker/.env
+ENV_FILE="$(dirname "${BASH_SOURCE[0]}")/../docker/.env"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
