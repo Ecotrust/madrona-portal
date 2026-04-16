@@ -11,8 +11,7 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "::1"]
 SECRET_KEY = 
-# TODO: Does the MEDIA_ROOT need to be updated here? potentially /usr/local/apps/madrona-portal/apps/wcoa/media/
-MEDIA_ROOT = /vol/web/media
+MEDIA_ROOT = /usr/local/apps/mardona-portal/media
 MEDIA_URL = /media/
 TIME_ZONE = UTC
 GA_ACCOUNT = 

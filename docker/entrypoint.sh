@@ -1,6 +1,10 @@
 #!/bin/sh
 # Madrona Portal — Docker entrypoint
-# Waits for the database, runs migrations, seeds a fresh DB, then starts the server.
+# Waits for the database, then starts the application server.
+#
+# By default only step 1 (DB wait) and step 5 (server start) run.
+# Set DB_INIT=1 to also run steps 2-4 (migrate, seed fixtures, create superuser).
+# This is intentionally opt-in to protect existing databases.
 
 set -e
 
@@ -28,6 +32,13 @@ while True:
 
 print("Database is up.", flush=True)
 PY
+
+# ---------------------------------------------------------------------------
+# 2-4. Database initialisation (opt-in via DB_INIT=1)
+# ---------------------------------------------------------------------------
+if [ "${DB_INIT:-0}" != "1" ]; then
+    echo "DB_INIT not set — skipping migrations, fixtures, and superuser creation."
+else
 
 # ---------------------------------------------------------------------------
 # 2. Migrate and collect static files
@@ -166,6 +177,8 @@ else:
 PY
 fi
 
+fi  # end DB_INIT block
+
 # ---------------------------------------------------------------------------
 # 5. Start the application server
 #
@@ -185,16 +198,16 @@ print("true" if settings.DEBUG else "false")
 PY
 )
 
-if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
-    echo "Starting gunicorn (production mode)..."
-    exec gunicorn marco.wsgi:application \
-        --bind 0.0.0.0:8000 \
-        --workers "${GUNICORN_WORKERS:-3}" \
-        --timeout "${GUNICORN_TIMEOUT:-120}" \
-        --chdir marco \
-        --access-logfile - \
-        --error-logfile -
-else
-    echo "Starting Django development server..."
-    exec python marco/manage.py runserver 0.0.0.0:8000
-fi
+# if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
+#     echo "Starting gunicorn (production mode)..."
+#     exec gunicorn marco.wsgi:application \
+#         --bind 0.0.0.0:8008 \
+#         --workers "${GUNICORN_WORKERS:-3}" \
+#         --timeout "${GUNICORN_TIMEOUT:-120}" \
+#         --chdir marco \
+#         --access-logfile - \
+#         --error-logfile -
+# else
+echo "Starting Django development server..."
+exec python marco/manage.py runserver 0.0.0.0:8000
+# fi

@@ -11,16 +11,44 @@
 services:
 
   app:
-    image: madrona_portal-app:latest
+    # image: madrona-portal-app:latest
     build:
       context: ../../
-      dockerfile: madrona_portal/Dockerfile
+      dockerfile: madrona-portal/docker/Dockerfile
     volumes:
       - static_data:/vol/web
-      - media_data:/vol/web
+      - ./media:/usr/local/apps/madrona-portal/media
+      # Mount the main Django project tree from the host.
+      # Changes to Python, templates, and config files are live immediately.
+      - ../marco:/usr/local/apps/madrona-portal/marco
+
+      # Mount the WCOA app package from the host.
+      - ../../madrona-apps/wcoa:/usr/local/apps/madrona-portal/apps/wcoa
+
+      # Mount other madrona-apps packages you are actively developing.
+      # Comment out any you are NOT changing — using the baked image copy
+      # for those packages is faster and avoids unnecessary inotify watches.
+      - ../../madrona-apps/mp-data-manager:/usr/local/apps/madrona-portal/apps/mp-data-manager
+      - ../../madrona-apps/mp-layers:/usr/local/apps/madrona-portal/apps/mp-layers
+      - ../../madrona-apps/mp-accounts:/usr/local/apps/madrona-portal/apps/mp-accounts
+      - ../../madrona-apps/mp-drawing:/usr/local/apps/madrona-portal/apps/mp-drawing
+      - ../../madrona-apps/mp-visualize:/usr/local/apps/madrona-portal/apps/mp-visualize
+      - ../../madrona-apps/madrona-features:/usr/local/apps/madrona-portal/apps/madrona-features
+      - ../../madrona-apps/madrona-manipulators:/usr/local/apps/madrona-portal/apps/madrona-manipulators
+      - ../../madrona-apps/madrona-scenarios:/usr/local/apps/madrona-portal/apps/madrona-scenarios
+      - ../../madrona-apps/mp-map-groups:/usr/local/apps/madrona-portal/apps/mp-map-groups
+      - ../../madrona-apps/mp-explore:/usr/local/apps/madrona-portal/apps/mp-explore
+      - ../../madrona-apps/mp-proxy:/usr/local/apps/madrona-portal/apps/mp-proxy
+      - ../../madrona-apps/p97-nursery:/usr/local/apps/madrona-portal/apps/p97-nursery
+      - ../../madrona-apps/django_url_shortener:/usr/local/apps/madrona-portal/apps/django_url_shortener
+      - ../../madrona-apps/madrona-analysistools:/usr/local/apps/madrona-portal/apps/madrona-analysistools
     env_file:
-      - ../.env            # load all secrets from the project-root .env file
+      - ./.env            # load all secrets from the project-root .env file
     environment:
+      # DB_INIT=1 runs migrations, fixtures, and superuser creation on startup.
+      # Defaults to 0 (skip) to protect existing databases.
+      - DB_INIT=${DB_INIT:-0}
+
       # Config file selection — override specific values via env vars below.
       - MP_PROJECT_CONFIG=${MP_PROJECT_CONFIG:-config.wcoa.docker.ini}
 
@@ -58,10 +86,9 @@ services:
         condition: service_healthy
     ports:
       - "${APP_PORT:-8000}:8000"
+      - "${APP_PORT:-8008}:8008"
     networks:
       - djangonetwork
-    profiles:
-      - full
     restart: unless-stopped
 
   db:
@@ -104,7 +131,6 @@ services:
 
 volumes:
   static_data:
-  media_data:
   postgis_data:
   redis_data:
 

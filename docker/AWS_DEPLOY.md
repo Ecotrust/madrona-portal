@@ -161,7 +161,7 @@ sudo systemctl enable containerd
 ## Phase 3 — Clone the Repositories
 
 The Dockerfile build context must be the **workspace root** — a parent
-directory containing both `madrona_portal/` and `madrona-apps/` as siblings.
+directory containing both `madrona-portal/` and `madrona-apps/` as siblings.
 This layout is required; it is not optional.
 
 ### 3.1 Set up SSH access to GitHub (on the server)
@@ -198,7 +198,7 @@ mkdir ~/portals && cd ~/portals
 Clone the main portal:
 
 ```bash
-git clone -b docker git@github.com:Ecotrust/madrona-portal.git madrona_portal
+git clone -b docker git@github.com:Ecotrust/madrona-portal.git madrona-portal
 ```
 
 Clone all sub-apps:
@@ -229,7 +229,7 @@ Verify the layout:
 
 ```bash
 ls ~/portals/
-# madrona_portal/  madrona-apps/
+# madrona-portal/  madrona-apps/
 ```
 
 ---
@@ -239,7 +239,7 @@ ls ~/portals/
 ### 4.1 Create the `.env` file
 
 ```bash
-cd ~/portals/madrona_portal
+cd ~/portals/madrona-portal
 cp .env.example .env
 ```
 
@@ -287,7 +287,7 @@ Elasticsearch credentials later.
 ### 4.4 Create ini file 
 
 ```bash
-cd ~/portals/madrona_portal/marco
+cd ~/portals/madrona-portal/marco
 cp config.docker.ini.template config.wcoa.docker.ini
 ```
 
@@ -307,8 +307,8 @@ cd ~/portals
 
 docker buildx build \
     --load \
-    -f madrona_portal/Dockerfile \
-    -t madrona_portal-app:latest \
+    -f madrona-portal/Dockerfile \
+    -t madrona-portal-app:latest \
     .
 ```
 
@@ -323,10 +323,10 @@ Watch for any errors. Common first-build issues:
 
 ## Phase 6 — Start the Stack
 
-From `~/portals/madrona_portal/`:
+From `~/portals/madrona-portal/`:
 
 ```bash
-cd ~/portals/madrona_portal
+cd ~/portals/madrona-portal
 
 docker compose -f docker/docker-compose.yml \
     --env-file .env \
@@ -444,7 +444,7 @@ ALLOWED_HOSTS=portal.yourdomain.com,<ELASTIC_IP>,localhost
 Then restart the app container to pick up the change:
 
 ```bash
-cd ~/portals/madrona_portal
+cd ~/portals/madrona-portal
 docker compose -f docker/docker-compose.yml --env-file .env --profile full \
     up -d --force-recreate app
 ```
@@ -471,7 +471,7 @@ After=docker.service network-online.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/ubuntu/portals/madrona_portal
+WorkingDirectory=/home/ubuntu/portals/madrona-portal
 ExecStart=/usr/bin/docker compose \
     -f docker/docker-compose.yml \
     --env-file .env \
@@ -515,22 +515,22 @@ be included in the image.
 **2. On the server — pull and rebuild:**
 
 ```bash
-cd ~/portals/madrona_portal && git pull
+cd ~/portals/madrona-portal && git pull
 cd ~/portals/madrona-apps/<changed-app> && git pull   # repeat for each changed sub-app
 
 cd ~/portals
 
 docker buildx build \
     --load \
-    -f madrona_portal/Dockerfile \
-    -t madrona_portal-app:latest \
+    -f madrona-portal/Dockerfile \
+    -t madrona-portal-app:latest \
     .
 ```
 
 **3. Recreate the app container:**
 
 ```bash
-cd ~/portals/madrona_portal
+cd ~/portals/madrona-portal
 
 docker compose -f docker/docker-compose.yml --env-file .env --profile full \
     up -d --force-recreate app
@@ -543,7 +543,7 @@ container restart (~5–10 seconds).
 
 ## Useful Commands (on the server)
 
-All `docker compose` commands run from `~/portals/madrona_portal/`.
+All `docker compose` commands run from `~/portals/madrona-portal/`.
 
 ```bash
 # Tail app logs
@@ -578,7 +578,7 @@ docker compose -f docker/docker-compose.yml --env-file .env --profile full down 
 
 | Service | Image | Internal port | Exposed to host |
 |---|---|---|---|
-| `app` | `madrona_portal-app:latest` | 8000 | Yes — proxied by Nginx |
+| `app` | `madrona-portal-app:latest` | 8000 | Yes — proxied by Nginx |
 | `db` | `postgis/postgis:16-3.4` | 5432 | Yes (restrict in security group) |
 | `tasks` | `redis:7-alpine` | 6379 | Yes (restrict in security group) |
 | `geoportal` | built from `wcoa/docker` | 8080 | Yes (add Nginx location if needed) |
