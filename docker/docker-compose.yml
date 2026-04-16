@@ -86,7 +86,6 @@ services:
         condition: service_healthy
     ports:
       - "${APP_PORT:-8000}:8000"
-      - "${GUNICORN_PORT:-8008}:8008"
     networks:
       - djangonetwork
     restart: unless-stopped
