@@ -234,13 +234,6 @@ From `madrona-portal/docker`:
 cp -r {your_media_dir}/* ./media/
 ```
 
-#### Step 8.2 — Verify media access
-
-```bash
-docker exec <container_name_or_id> du -sh /vol/web/media/
-docker exec <container_name_or_id> ls /vol/web/media/
-```
-
 ---  
 
 # Untested instructions below this line — will update after testing
