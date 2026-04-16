@@ -94,8 +94,11 @@ CELERY_BROKER_URL = redis://tasks:6379/0
 
 ### Step 5 — Build the image
 
-Run this from the **workspace root** (`madrona-portal/`), not from
-inside `madrona-portal/`. The build context must include both repos.
+Run this command from `madrona-portal/docker` (the previous step leaves
+you in `madrona-portal/marco`, so `cd ../docker` gets you there). The
+Docker build context for this command is `../../`, which resolves to the
+parent workspace directory `portals/` that contains both
+`madrona-portal/` and `madrona-apps/`.
 
 If running this build from a MAC, add `--builder desktop-linux` to the `buildx build` command. 
 
