@@ -4,19 +4,22 @@
 #
 # Usage:
 #   ./scripts/db-restore.sh <dump.sql>
-#   ./scripts/db-restore.sh --drop <dump.sql>   # drop & recreate DB first
+#   ./scripts/db-restore.sh --drop <dump.sql>          # drop & recreate DB first
+#   ./scripts/db-restore.sh --env-file <path> <dump.sql>
 #
 # Run from anywhere — this script always operates relative to madrona_portal/.
 #
 # Prerequisites:
-#   1. Docker Compose stack is running:
-#        docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d
-#   2. madrona_portal/.env exists and contains DB_NAME, DB_USER, DB_PASSWORD.
+#   1. Docker Compose stack is running from madrona-portal/docker:
+#        docker compose up
+#   2. madrona_portal/docker/.env exists and contains DB_NAME, DB_USER, DB_PASSWORD.
 #
 # Options:
-#   --drop    Terminate all active connections, drop, and recreate the target
-#             database before restoring. Required for a clean import from prod.
-#             Without this flag the dump is applied on top of existing data.
+#   --drop              Terminate all active connections, drop, and recreate the
+#                       target database before restoring. Required for a clean
+#                       import from prod. Without this flag the dump is applied
+#                       on top of existing data.
+#   --env-file <path>   Path to the .env file (default: ./docker/.env).
 #
 # Notes:
 #   - The dump is streamed directly into the container — no temp files on disk.
@@ -38,21 +41,28 @@ info() { echo "[db-restore] $*"; }
 # ---------------------------------------------------------------------------
 DROP_FIRST=false
 DUMP_FILE=""
+ENV_FILE=../docker/.env
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --drop) DROP_FIRST=true; shift ;;
-    -*)     die "Unknown option: '$1'. Usage: $0 [--drop] <dump.sql>" ;;
-    *)      [[ -z "$DUMP_FILE" ]] || die "Unexpected argument: '$1'"
-            DUMP_FILE="$1"; shift ;;
+    --drop)     DROP_FIRST=true; shift ;;
+    --env-file) [[ -n "${2:-}" ]] || die "--env-file requires a path argument"
+                ENV_FILE="$2"; shift 2 ;;
+    -*)         die "Unknown option: '$1'. Usage: $0 [--drop] [--env-file <path>] <dump.sql>" ;;
+    *)          [[ -z "$DUMP_FILE" ]] || die "Unexpected argument: '$1'"
+                DUMP_FILE="$1"; shift ;;
   esac
 done
 
-[[ -n "$DUMP_FILE" ]] || die "Usage: $0 [--drop] <dump.sql>"
+[[ -n "$DUMP_FILE" ]] || die "Usage: $0 [--drop] [--env-file <path>] <dump.sql>"
 
 # Resolve dump path before we cd away.
 DUMP_ABS="$(cd "$(dirname "$DUMP_FILE")" && pwd)/$(basename "$DUMP_FILE")"
 [[ -f "$DUMP_ABS" ]] || die "Dump file not found: $DUMP_FILE"
+
+# Resolve ENV_FILE to an absolute path before we cd away.
+ENV_FILE_ABS="$(cd "$(dirname "$ENV_FILE")" && pwd)/$(basename "$ENV_FILE")"
+[[ -f "$ENV_FILE_ABS" ]] || die "Env file not found: $ENV_FILE"
 
 # ---------------------------------------------------------------------------
 # Always operate from madrona_portal/ regardless of where the script is called
@@ -63,18 +73,16 @@ cd "$SCRIPT_DIR/.."
 # ---------------------------------------------------------------------------
 # Load .env for DB credentials
 # ---------------------------------------------------------------------------
-[[ -f .env ]] || die ".env not found in $(pwd). Copy .env.example and fill in values."
-
 set -a
 # shellcheck source=/dev/null
-source .env
+source "$ENV_FILE_ABS"
 set +a
 
 DB_NAME="${DB_NAME:-wcoa_docker_db}"
 DB_USER="${DB_USER:-postgres}"
 DB_PASSWORD="${DB_PASSWORD:?DB_PASSWORD must be set in .env}"
 
-COMPOSE="docker compose -f docker/docker-compose.yml --env-file .env"
+COMPOSE="docker compose -f docker/docker-compose.yml --env-file $ENV_FILE_ABS"
 PSQL="$COMPOSE exec -T -e PGPASSWORD=$DB_PASSWORD db psql -U $DB_USER"
 
 # ---------------------------------------------------------------------------

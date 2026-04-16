@@ -16,6 +16,7 @@ vagrant
 .sass-cache
 node_modules
 
+docker/media/
 docker/entrypoint.sh
 docker/docker-requirements.txt
 

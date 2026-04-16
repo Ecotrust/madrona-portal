@@ -97,15 +97,15 @@ CELERY_BROKER_URL = redis://tasks:6379/0
 Run this from the **workspace root** (`madrona-portal/`), not from
 inside `madrona-portal/`. The build context must include both repos.
 
+If running this build from a MAC, add `--builder desktop-linux` to the `buildx build` command. 
+
 ```bash
 cd ../docker
-
-docker compose build
 
 docker buildx build --load -f ./Dockerfile ../../
 ```
 
-When building a tagged image for deployment (use `builder desktop-linux` if on Mac):
+When building a tagged image for deployment, add `-t madrona-portal-app:latest`:
 ```
 docker buildx build \
     --builder desktop-linux \
@@ -192,6 +192,8 @@ The `--drop` flag was used to ensure a clean import. The script:
 3. Enabled the `postgis` extension
 4. Streamed the sql dump into the container via `psql`
 
+There is an optional `--env-file <path_to_your_env_file>` if you place your `.env` file in a non-standard location.
+
 **Expected warnings (non-fatal):**
 - `ERROR: relation "..." does not exist` — pg_dump tries to drop constraints before creating them; safe to ignore on a fresh DB
 - `ERROR: role "wcoa_user" does not exist` — prod uses a dedicated app role; dev uses `postgres` which has full access
@@ -203,46 +205,15 @@ The `--drop` flag was used to ensure a clean import. The script:
 docker compose exec app python marco/manage.py migrate
 ```
 
-*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump (PostgreSQL 12) up to date with the current codebase (PostgreSQL 16).
+*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump up to date with the current codebase, largely driven by migrating from Wagtail v2 to v7, adding mp-layers, and adding the WCOA OHI indicators (for WCOA installs).
 
 #### Step 7.4 - Migration to mp-layers
+
+*If migrating from a server that has not migrated to mp-layers from mp-data-manager*:
 
 ```bash
 docker compose exec app python marco/manage.py migration_to_layers
 ```
-
-```bash
-docker exec -it <container_id> bash
-```
-
-Then inside the container:
-
-```bash
-python marco/manage.py shell
-```
-
-```python
-from layers.models import Theme
-from data_manager.models import Theme as Dm_theme
-
-
-for theme in Dm_theme.all_objects.all():
- 	try:
-         	new_theme = Theme.all_objects.get(pk=theme.pk)
-         	if new_theme.parent == None and new_theme.name != 'companion':
-                 	new_theme.is_top_theme = True
-                 	new_theme.save()
- 	except Exception:
-         	pass
-```
-
-exit the shell
-
-```bash
-python marco/manage.py collectstatic
-python marco/manage.py compress
-```
-
 
 ---  
 
@@ -257,7 +228,7 @@ python marco/manage.py compress
 #### Step 8.1 - Copy the media files into Docker
 From `madrona-portal/docker`:
 ```bash
-cp -r {your_media_dir}/* ../media/
+cp -r {your_media_dir}/* ./media/
 ```
 
 #### Step 8.2 — Verify media access
