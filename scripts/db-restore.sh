@@ -60,6 +60,10 @@ done
 DUMP_ABS="$(cd "$(dirname "$DUMP_FILE")" && pwd)/$(basename "$DUMP_FILE")"
 [[ -f "$DUMP_ABS" ]] || die "Dump file not found: $DUMP_FILE"
 
+# Expand a leading ~ in ENV_FILE before resolving it to an absolute path.
+if [[ "$ENV_FILE" == ~* ]]; then
+  ENV_FILE="${ENV_FILE/#\~/$HOME}"
+fi
 # Resolve ENV_FILE to an absolute path before we cd away.
 ENV_FILE_ABS="$(cd "$(dirname "$ENV_FILE")" && pwd)/$(basename "$ENV_FILE")"
 [[ -f "$ENV_FILE_ABS" ]] || die "Env file not found: $ENV_FILE"
