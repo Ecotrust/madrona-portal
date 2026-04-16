@@ -303,7 +303,7 @@ else:
     )
 
 DATABASES = {'default': default_db}
-DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona_portal')
+DB_CHANNEL = db_cfg.get('DB_CHANNEL', 'madrona-portal')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

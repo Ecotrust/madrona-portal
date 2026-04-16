@@ -7,12 +7,12 @@
 #   ./scripts/db-restore.sh --drop <dump.sql>          # drop & recreate DB first
 #   ./scripts/db-restore.sh --env-file <path> <dump.sql>
 #
-# Run from anywhere — this script always operates relative to madrona_portal/.
+# Run from anywhere — this script always operates relative to madrona-portal/.
 #
 # Prerequisites:
 #   1. Docker Compose stack is running from madrona-portal/docker:
 #        docker compose up
-#   2. madrona_portal/docker/.env exists and contains DB_NAME, DB_USER, DB_PASSWORD.
+#   2. madrona-portal/docker/.env exists and contains DB_NAME, DB_USER, DB_PASSWORD.
 #
 # Options:
 #   --drop              Terminate all active connections, drop, and recreate the
@@ -65,7 +65,7 @@ ENV_FILE_ABS="$(cd "$(dirname "$ENV_FILE")" && pwd)/$(basename "$ENV_FILE")"
 [[ -f "$ENV_FILE_ABS" ]] || die "Env file not found: $ENV_FILE"
 
 # ---------------------------------------------------------------------------
-# Always operate from madrona_portal/ regardless of where the script is called
+# Always operate from madrona-portal/ regardless of where the script is called
 # ---------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."

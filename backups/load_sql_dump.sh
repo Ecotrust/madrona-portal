@@ -1,7 +1,7 @@
 #!/bin/bash
 # Import a PostgreSQL SQL dump into the running Docker database service.
 #
-# Usage (run from madrona_portal/):
+# Usage (run from madrona-portal/):
 #   ./backups/load_sql_dump.sh /path/to/your_dump.sql
 #
 # The db container must already be running:
