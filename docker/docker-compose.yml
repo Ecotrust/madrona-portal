@@ -49,7 +49,6 @@ services:
       # Defaults to 0 (skip) to protect existing databases.
       - DB_INIT=${DB_INIT:-0}
 
-      - DEBUG=True
       # Config file selection — override specific values via env vars below.
       - MP_PROJECT_CONFIG=${MP_PROJECT_CONFIG:-config.wcoa.docker.ini}
 
