@@ -586,4 +586,4 @@ docker compose -f docker/docker-compose.yml --env-file .env --profile full down 
 
 > After go-live, update your security group inbound rules to remove public
 > access to ports 5432, 6379, 9200, and 9300. These are only needed
-> internally between containers on `djangonetwork`.
+> internally between containers on `madronanetwork`.
