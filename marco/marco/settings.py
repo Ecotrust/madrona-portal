@@ -571,8 +571,8 @@ CELERY_TASK_RATE_LIMITS_DISABLED = celery_cfg.getboolean('CELERY_DISABLE_RATE_LI
 # ReCAPTCHA
 # ---------------------------------------------------------------------------
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = app_cfg.get('RECAPTCHA_PUBLIC_KEY', '')
-RECAPTCHA_PRIVATE_KEY = app_cfg.get('RECAPTCHA_PRIVATE_KEY', '')
+RECAPTCHA_PUBLIC_KEY = _env('RECAPTCHA_PUBLIC_KEY', app_cfg, 'RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = _env('RECAPTCHA_PRIVATE_KEY', app_cfg, 'RECAPTCHA_PRIVATE_KEY', '')
 
 # ---------------------------------------------------------------------------
 # Analytics
