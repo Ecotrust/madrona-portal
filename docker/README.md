@@ -104,7 +104,9 @@ If running this build from a MAC, add `--builder desktop-linux` to the `buildx b
 
 ```bash
 cd ../docker
-
+# MAC OS
+docker buildx build --builder desktop-linux --load -f ./Dockerfile ../../
+# LINUX
 docker buildx build --load -f ./Dockerfile ../../
 ```
 
