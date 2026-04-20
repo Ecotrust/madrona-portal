@@ -247,7 +247,7 @@ cp -r {your_media_dir}/* ./media/
 docker buildx build \
     --builder desktop-linux \
     --load \
-    -f madrona-portal/Dockerfile \
+    -f madrona-portal/docker/Dockerfile \
     -t madrona-portal-app:latest \
     .
 ```
