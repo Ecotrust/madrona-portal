@@ -198,16 +198,16 @@ print("true" if settings.DEBUG else "false")
 PY
 )
 
-# if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
-#     echo "Starting gunicorn (production mode)..."
-#     exec gunicorn marco.wsgi:application \
-#         --bind 0.0.0.0:8008 \
-#         --workers "${GUNICORN_WORKERS:-3}" \
-#         --timeout "${GUNICORN_TIMEOUT:-120}" \
-#         --chdir marco \
-#         --access-logfile - \
-#         --error-logfile -
-# else
-echo "Starting Django development server..."
-exec python marco/manage.py runserver 0.0.0.0:8000
-# fi
+if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
+    echo "Starting gunicorn (production mode)..."
+    exec gunicorn marco.wsgi:application \
+        --bind 0.0.0.0:8008 \
+        --workers "${GUNICORN_WORKERS:-3}" \
+        --timeout "${GUNICORN_TIMEOUT:-120}" \
+        --chdir marco \
+        --access-logfile - \
+        --error-logfile -
+else
+    echo "Starting Django development server..."
+    exec python marco/manage.py runserver 0.0.0.0:8000
+fi
