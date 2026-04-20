@@ -15,8 +15,7 @@ MEDIA_ROOT = /usr/local/apps/madrona-portal/media
 MEDIA_URL = /media/
 TIME_ZONE = UTC
 GA_ACCOUNT = 
-RECAPTCHA_PUBLIC_KEY = 
-RECAPTCHA_PRIVATE_KEY = 
+# ReCAPTCHA keys are loaded from env vars: RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY
 STATIC_ROOT = /vol/web/static
 EMAIL_SUBJECT_PREFIX = [WCOA]
 MAP_LIBRARY = ol8
@@ -34,12 +33,12 @@ MAP = ocean
 
 [CACHES]
 BACKEND = django_redis.cache.RedisCache
-LOCATION = redis://:sOmE_sEcUrE_pAsS@tasks:6379/1
+LOCATION = redis://tasks:6379/1
 CLIENT_CLASS = django_redis.client.DefaultClient
 
 [CELERY]
-CELERY_RESULT_BACKEND = redis://:sOmE_sEcUrE_pAsS@tasks:6379/1
-CELERY_BROKER_URL = redis://:sOmE_sEcUrE_pAsS@tasks:6379
+CELERY_RESULT_BACKEND = redis://tasks:6379/1
+CELERY_BROKER_URL = redis://tasks:6379
 CELERY_ALWAYS_EAGER = False
 CELERY_DISABLE_RATE_LIMITS = True
 
@@ -49,29 +48,23 @@ NAME = wcoa_docker_db
 HOST = db
 PORT = 5432
 USER = postgres
+# DB password is loaded from environment variable: DB_PASSWORD
 
 [EMAIL]
 HOST = localhost
 PORT = 25
-HOST_USER =
-HOST_PASSWORD =
+# SMTP credentials are loaded from env vars: EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 DEFAULT_FROM_EMAIL = WCOA Portal <support@wcoa.example.com>
 SERVER_EMAIL = WCOA Site Errors <errors@wcoa.example.com>
 
 [AWS]
-AWS_ACCESS_KEY_ID =
-AWS_SECRET_ACCESS_KEY =
+# AWS credentials are loaded from env vars: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 AWS_SES_REGION_NAME = us-east-1
 AWS_SES_REGION_ENDPOINT = email.us-east-1.amazonaws.com
 
 [SOCIAL_AUTH]
-# Supply these via env vars: FACEBOOK_KEY, FACEBOOK_SECRET, etc.
-FACEBOOK_KEY =
-FACEBOOK_SECRET =
-TWITTER_KEY =
-TWITTER_SECRET =
-GOOGLE_KEY =
-GOOGLE_SECRET =
+# Social OAuth credentials are loaded from env vars:
+# FACEBOOK_KEY, FACEBOOK_SECRET, TWITTER_KEY, TWITTER_SECRET, GOOGLE_KEY, GOOGLE_SECRET
 
 
 [CATALOG]

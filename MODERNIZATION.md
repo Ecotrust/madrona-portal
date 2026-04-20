@@ -39,6 +39,8 @@ These changes have been applied to the codebase.
 - Removed trailing `/?` optional slashes on most routes (ambiguous in Django URL routing).
 - Replaced `re_path(r'^django-admin/?', ...)` with `re_path(r'^django-admin/', ...)` — `admin.site.urls` already handles trailing slash.
 - Added `warnings.warn` instead of silent `except Exception: pass` when `PROJECT_APP` URL import fails.
+- Added API URL auto-discovery: for each entry in `INSTALLED_APPS`, if `<app>.urls` exists and defines `api_urlpatterns`, those routes are automatically mounted under `/api/`.
+- New convention for sub-apps: define REST endpoints in `<app>/api.py`, expose them from `<app>/urls.py` as `api_urlpatterns`, and avoid hard-coding app-specific API imports in the project URLConf.
 
 ### Migrations
 

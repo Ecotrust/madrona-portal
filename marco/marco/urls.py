@@ -3,6 +3,10 @@ URL configuration for the Madrona Portal project.
 
 Requires: Django 4.2+, Wagtail 7.0+
 """
+import warnings
+from importlib import import_module
+from importlib.util import find_spec
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -20,9 +24,6 @@ import mapgroups.urls
 import accounts.urls
 import explore.urls
 
-from visualize.urls import api_urlpatterns as visualize_api_urlpatterns
-from drawing.urls import api_urlpatterns as drawing_api_urlpatterns
-from mapgroups.urls import api_urlpatterns as mapgroups_api_urlpatterns
 from marco.rpc_compat import rpc_view
 
 from portal.base import views as base_views
@@ -32,6 +33,32 @@ from marco_site import views as marco_site_views
 admin.autodiscover()
 wagtailsearch_register_signal_handlers()
 
+
+def _iter_discovered_api_includes():
+    """Yield include() patterns for apps exposing urls.api_urlpatterns."""
+    for installed_app in settings.INSTALLED_APPS:
+        app_module = installed_app.split('.apps.', 1)[0]
+        urls_module_name = f"{app_module}.urls"
+
+        try:
+            if find_spec(urls_module_name) is None:
+                continue
+        except (ImportError, ValueError, AttributeError):
+            continue
+
+        try:
+            app_urls = import_module(urls_module_name)
+        except Exception as exc:  # pragma: no cover - defensive runtime warning
+            warnings.warn(f"Could not import '{urls_module_name}' for api_urlpatterns: {exc}")
+            continue
+
+        app_api_urlpatterns = getattr(app_urls, 'api_urlpatterns', None)
+        if app_api_urlpatterns:
+            yield re_path(r'^api/', include(app_api_urlpatterns))
+
+
+api_url_includes = list(_iter_discovered_api_includes())
+
 # ---------------------------------------------------------------------------
 # Project-specific URL patterns
 # Optional: a portal variant (wcoa, mida, etc.) can prepend its own patterns.
@@ -40,11 +67,9 @@ urlpatterns: list = []
 
 if settings.PROJECT_APP:
     try:
-        from importlib import import_module
         portal_app_urls = import_module(f"{settings.PROJECT_APP}.urls")
         urlpatterns = list(getattr(portal_app_urls, 'urlpatterns', []))
     except (ImportError, AttributeError) as e:
-        import warnings
         warnings.warn(f"Could not load URL patterns from PROJECT_APP '{settings.PROJECT_APP}': {e}")
 
 # ---------------------------------------------------------------------------
@@ -58,10 +83,12 @@ urlpatterns += [
 
     # /rpc — JSON-RPC 2.0 compat shim for legacy frontend JS (see rpc_compat.py)
     re_path(r'^rpc/', rpc_view),
-    # DRF REST replacements from each sub-app's api.py
-    re_path(r'^api/', include(visualize_api_urlpatterns)),
-    re_path(r'^api/', include(drawing_api_urlpatterns)),
-    re_path(r'^api/', include(mapgroups_api_urlpatterns)),
+]
+
+urlpatterns += api_url_includes
+
+urlpatterns += [
+    # DRF REST replacements discovered from each sub-app's urls.py api_urlpatterns
 
     re_path(r'^auth/', include('social_django.urls', namespace='social')),
     re_path(r'^account/', include('accounts.urls'), name='account'),
