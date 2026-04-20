@@ -58,12 +58,12 @@ Vagrant.configure("2") do |config|
         # Automatically detect the SMB host IP
         smb_host_ip = get_host_ip
         
-        config.vm.synced_folder "./", "/usr/local/apps/madrona_portal",
+        config.vm.synced_folder "./", "/usr/local/apps/madrona-portal",
         type: "smb",
         smb_host: smb_host_ip,
         mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
 
-        config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona_portal/apps",
+        config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona-portal/apps",
         type: "smb",
         smb_host: smb_host_ip,
         mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
@@ -109,8 +109,8 @@ Vagrant.configure("2") do |config|
         # an identifier, the second is the path on the guest to mount the
         # folder, and the third is the path on the host to the actual folder.
         # config.vm.share_folder "project", "/home/vagrant/marco_portal2", "."
-        config.vm.synced_folder "./", "/usr/local/apps/madrona_portal"
-        config.vm.synced_folder "../madrona-apps/", "/usr/local/apps/madrona_portal/apps"
+        config.vm.synced_folder "./", "/usr/local/apps/madrona-portal"
+        config.vm.synced_folder "../madrona-apps/", "/usr/local/apps/madrona-portal/apps"
 
         # Enable provisioning with a shell script.
         # config.vm.provision :shell, :path => "scripts/vagrant_provision.sh", :args => "'marco_portal2' 'marco' 'marco_portal'", :privileged => false
@@ -131,12 +131,12 @@ Vagrant.configure("2") do |config|
         # Default synced folder setup for Windows
         smb_host_ip = "192.168.1.1" # Fallback IP for Windows
 
-        config.vm.synced_folder "./", "/usr/local/apps/madrona_portal",
+        config.vm.synced_folder "./", "/usr/local/apps/madrona-portal",
         type: "smb",
         smb_host: smb_host_ip,
         mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]
 
-        config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona_portal/apps",
+        config.vm.synced_folder "../madrona-apps", "/usr/local/apps/madrona-portal/apps",
         type: "smb",
         smb_host: smb_host_ip,
         mount_options: ["sec=ntlmssp", "nounix", "noperm", "vers=3.0"]

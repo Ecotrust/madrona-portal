@@ -11,16 +11,44 @@
 services:
 
   app:
-    image: madrona_portal-app:latest
+    # image: madrona-portal-app:latest
     build:
       context: ../../
-      dockerfile: madrona_portal/Dockerfile
+      dockerfile: madrona-portal/docker/Dockerfile
     volumes:
       - static_data:/vol/web
-      - media_data:/vol/web
+      - ./media:/usr/local/apps/madrona-portal/media
+      # Mount the main Django project tree from the host.
+      # Changes to Python, templates, and config files are live immediately.
+      - ../marco:/usr/local/apps/madrona-portal/marco
+
+      # Mount the WCOA app package from the host.
+      - ../../madrona-apps/wcoa:/usr/local/apps/madrona-portal/apps/wcoa
+
+      # Mount other madrona-apps packages you are actively developing.
+      # Comment out any you are NOT changing — using the baked image copy
+      # for those packages is faster and avoids unnecessary inotify watches.
+      - ../../madrona-apps/mp-data-manager:/usr/local/apps/madrona-portal/apps/mp-data-manager
+      - ../../madrona-apps/mp-layers:/usr/local/apps/madrona-portal/apps/mp-layers
+      - ../../madrona-apps/mp-accounts:/usr/local/apps/madrona-portal/apps/mp-accounts
+      - ../../madrona-apps/mp-drawing:/usr/local/apps/madrona-portal/apps/mp-drawing
+      - ../../madrona-apps/mp-visualize:/usr/local/apps/madrona-portal/apps/mp-visualize
+      - ../../madrona-apps/madrona-features:/usr/local/apps/madrona-portal/apps/madrona-features
+      - ../../madrona-apps/madrona-manipulators:/usr/local/apps/madrona-portal/apps/madrona-manipulators
+      - ../../madrona-apps/madrona-scenarios:/usr/local/apps/madrona-portal/apps/madrona-scenarios
+      - ../../madrona-apps/mp-map-groups:/usr/local/apps/madrona-portal/apps/mp-map-groups
+      - ../../madrona-apps/mp-explore:/usr/local/apps/madrona-portal/apps/mp-explore
+      - ../../madrona-apps/mp-proxy:/usr/local/apps/madrona-portal/apps/mp-proxy
+      - ../../madrona-apps/p97-nursery:/usr/local/apps/madrona-portal/apps/p97-nursery
+      - ../../madrona-apps/django_url_shortener:/usr/local/apps/madrona-portal/apps/django_url_shortener
+      - ../../madrona-apps/madrona-analysistools:/usr/local/apps/madrona-portal/apps/madrona-analysistools
     env_file:
-      - ../.env            # load all secrets from the project-root .env file
+      - ./.env            # load all secrets from the docker/.env file
     environment:
+      # DB_INIT=1 runs migrations, fixtures, and superuser creation on startup.
+      # Defaults to 0 (skip) to protect existing databases.
+      - DB_INIT=${DB_INIT:-0}
+
       # Config file selection — override specific values via env vars below.
       - MP_PROJECT_CONFIG=${MP_PROJECT_CONFIG:-config.wcoa.docker.ini}
 
@@ -59,9 +87,7 @@ services:
     ports:
       - "${APP_PORT:-8000}:8000"
     networks:
-      - djangonetwork
-    profiles:
-      - full
+      - madronanetwork
     restart: unless-stopped
 
   db:
@@ -75,7 +101,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     networks:
-      - djangonetwork
+      - madronanetwork
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-wcoa_docker_db}"]
       interval: 10s
@@ -93,7 +119,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - djangonetwork
+      - madronanetwork
     healthcheck:
       # -a flag is only passed when a password is configured.
       test: ["CMD-SHELL", "redis-cli ${REDIS_PASSWORD:+-a ${REDIS_PASSWORD}} ping"]
@@ -102,12 +128,59 @@ services:
       retries: 5
     restart: unless-stopped
 
+  geoportal:
+    image: tomcat:9-jdk11
+    ports:
+      - 8080:8080
+    volumes:
+      - gp-volume:/usr/local/tomcat/webapps/
+      - ${gpt_catalog_war}:/usr/local/tomcat/webapps/geoportal.war
+      - ${gpt_harvester_war}:/usr/local/tomcat/webapps/harvester.war
+      # Configuration override setup
+      - ./templates:/templates:ro
+      - ./geoportal-entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    networks:
+      - madronanetwork
+    restart: always
+    env_file:
+      - ./.env
+    depends_on:
+      elastic:
+        condition: service_healthy
+
+  elastic:
+    image: elasticsearch:8.19.12
+    volumes:
+      - es-volume:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=${CLUSTER_NAME}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - reindex.remote.whitelist=${ES_REINDEX_REMOTE_WHITELIST}
+      - xpack.security.enabled=false
+
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - madronanetwork
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?wait_for_status=yellow"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    restart: always
+
 volumes:
   static_data:
-  media_data:
   postgis_data:
   redis_data:
+  gp-volume:
+  es-volume:
 
 networks:
-  djangonetwork:
+  madronanetwork:
     driver: bridge

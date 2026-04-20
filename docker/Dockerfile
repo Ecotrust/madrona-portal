@@ -41,13 +41,13 @@ RUN python3 -m venv /opt/venv
 # ---------------------------------------------------------------------------
 # Copy application source
 # ---------------------------------------------------------------------------
-COPY madrona_portal/marco          ./marco
-COPY madrona_portal/apps/__init__.py ./apps/__init__.py
-COPY madrona_portal/assets         ./assets
-COPY madrona_portal/bower_components ./bower_components
-COPY madrona_portal/docker/entrypoint.sh /entrypoint.sh
-COPY madrona_portal/docker/docker-requirements.txt /requirements.txt
-COPY madrona_portal/backups        ./backups
+COPY madrona-portal/marco          ./marco
+COPY madrona-portal/apps/__init__.py ./apps/__init__.py
+COPY madrona-portal/assets         ./assets
+COPY madrona-portal/bower_components ./bower_components
+COPY madrona-portal/docker/entrypoint.sh /entrypoint.sh
+COPY madrona-portal/docker/docker-requirements.txt /requirements.txt
+COPY madrona-portal/backups        ./backups
 
 COPY madrona-apps/django_url_shortener   ./apps/django_url_shortener
 COPY madrona-apps/madrona-analysistools  ./apps/madrona-analysistools
@@ -90,5 +90,6 @@ RUN chmod 755 /entrypoint.sh && \
 USER madrona_user
 
 EXPOSE 8000
+EXPOSE 8008
 
 CMD ["/entrypoint.sh"]

@@ -4,7 +4,7 @@
 # Python's editable installs follow .pth files to the mounted directories, so
 # any file saved on the host is immediately visible inside the container.
 #
-# Usage (from madrona_portal/):
+# Usage (from madrona-portal/):
 #   docker compose \
 #     -f docker/docker-compose.yml \
 #     -f docker/docker-compose.dev.yml \

@@ -17,7 +17,7 @@ cd portals
 ### Step 2 — Clone madrona-portal
 
 ```bash
-git clone -b docker https://github.com/Ecotrust/madrona-portal.git madrona_portal
+git clone -b docker https://github.com/Ecotrust/madrona-portal.git madrona-portal
 ```
 
 ### Step 3 — Clone the sub-app packages
@@ -51,7 +51,7 @@ Your workspace should now look like:
 
 ```
 portals/
-├── madrona_portal/     ← cloned from Ecotrust/madrona-portal, branch: docker
+├── madrona-portal/     ← cloned from Ecotrust/madrona-portal, branch: docker
 └── madrona-apps/
     ├── wcoa/           ← branch: vagrant2docker
     ├── mp-layers/
@@ -60,10 +60,10 @@ portals/
 
 ### Step 4 — Configure environment
 
-From `madrona_portal/`:
+From `madrona-portal/`:
 
 ```bash
-cd madrona_portal
+cd madrona-portal/docker
 cp .env.example .env
 ```
 
@@ -80,7 +80,7 @@ Everything else has working defaults for local development.
 ### Step 4.1 - Create ini file 
 
 ```bash
-cd marco
+cd ../marco
 cp config.docker.ini.template config.wcoa.docker.ini
 ```
 
@@ -94,18 +94,28 @@ CELERY_BROKER_URL = redis://tasks:6379/0
 
 ### Step 5 — Build the image
 
-Run this from the **workspace root** (`madrona_portal/`), not from
-inside `madrona_portal/`. The build context must include both repos.
+Run this command from `madrona-portal/docker` (the previous step leaves
+you in `madrona-portal/marco`, so `cd ../docker` gets you there). The
+Docker build context for this command is `../../`, which resolves to the
+parent workspace directory `portals/` that contains both
+`madrona-portal/` and `madrona-apps/`.
+
+If running this build from a MAC, add `--builder desktop-linux` to the `buildx build` command. 
 
 ```bash
-cd ../../   # back to portals/
+cd ../docker
 
+docker buildx build --load -f ./Dockerfile ../../
+```
+
+When building a tagged image for deployment, add `-t madrona-portal-app:latest`:
+```
 docker buildx build \
     --builder desktop-linux \
     --load \
-    -f madrona_portal/Dockerfile \
-    -t madrona_portal-app:latest \
-    .
+    -f ./Dockerfile \
+    -t madrona-portal-app:latest \
+    ../../
 ```
 
 This takes several minutes on a first build (compiling GDAL, installing
@@ -116,21 +126,16 @@ Python packages). Subsequent builds are fast thanks to layer caching.
 > inside the build context, BuildKit reads files from the git object store
 > (committed versions) rather than the filesystem. If you forget to commit
 > a change, the old version is silently baked into the image. The same
-> restriction applies — always commit changes to `madrona_portal/` or
+> restriction applies — always commit changes to `madrona-portal/` or
 > `madrona-apps/` before rebuilding.
 
-### Step 6 — Start the full stack
+### Step 6 — Start the full stack; Populate testing DB
 
-From `madrona_portal/`:
+From `madrona-portal/docker`:
 
 ```bash
-cd madrona_portal
-
-docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d
+DB_INIT=1 docker compose up
 ```
-
-The `--profile full` flag is required to start the `app` container.
-Without it only `db` (PostGIS) and `tasks` (Redis) start.
 
 On first boot the entrypoint automatically:
 
@@ -143,16 +148,22 @@ On first boot the entrypoint automatically:
 
 Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 
+Once you have a populated DB (either dummy or with migrated data) omit the `DB_INIT=1`:
+```bash
+docker compose up
+```
+
+
 ### Step 7 - Importing a Production SQL Dump into the Dockerized Database
 
 #### Prerequisites
-- Docker Compose stack is running — `docker compose -f docker/docker-compose.yml --env-file .env --profile full up -d`
-- `madrona_portal/.env` exists with `DB_NAME`, `DB_USER`, and `DB_PASSWORD` set
+- Docker Compose stack is running — `docker compose up`
+- `madrona-portal/docker/.env` exists with `DB_NAME`, `DB_USER`, and `DB_PASSWORD` set
 
 
 #### Step 7.1 — Ensure you have the db-restore script
 
-`madrona_portal/scripts/db-restore.sh` has the following behaviour:
+`madrona-portal/scripts/db-restore.sh` has the following behaviour:
 - Loads DB credentials from `.env`
 - Verifies the `db` container is healthy before proceeding
 - With `--drop`: terminates active connections, drops and recreates the database, and enables the PostGIS extension
@@ -160,20 +171,22 @@ Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
 - Prints next-step instructions on completion
 
 Made sure it is executable:
+
+From `madrona-portal/docker`:
 ```bash
-chmod +x madrona_portal/scripts/db-restore.sh
+chmod +x ../scripts/db-restore.sh
 ```
 
 
 #### Step 7.2 — Run the restore
 
-From `madrona_portal/`:
+From `madrona-portal/docker`:
 ```bash
-./scripts/db-restore.sh --drop <path_to_your_sql>
+../scripts/db-restore.sh --drop <path_to_your_sql>
 ```
 *example:*
 ```bash
-./scripts/db-restore.sh --drop ../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
+../scripts/db-restore.sh --drop ../../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
 ```
 
 The `--drop` flag was used to ensure a clean import. The script:
@@ -181,6 +194,8 @@ The `--drop` flag was used to ensure a clean import. The script:
 2. Dropped and recreated the database
 3. Enabled the `postgis` extension
 4. Streamed the sql dump into the container via `psql`
+
+There is an optional `--env-file <path_to_your_env_file>` if you place your `.env` file in a non-standard location.
 
 **Expected warnings (non-fatal):**
 - `ERROR: relation "..." does not exist` — pg_dump tries to drop constraints before creating them; safe to ignore on a fresh DB
@@ -190,95 +205,33 @@ The `--drop` flag was used to ensure a clean import. The script:
 #### Step 7.3 — Apply migrations
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full exec app python marco/manage.py migrate
+docker compose exec app python marco/manage.py migrate
 ```
 
-*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump (PostgreSQL 12) up to date with the current codebase (PostgreSQL 16).
+*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump up to date with the current codebase, largely driven by migrating from Wagtail v2 to v7, adding mp-layers, and adding the WCOA OHI indicators (for WCOA installs).
 
 #### Step 7.4 - Migration to mp-layers
 
-```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full exec app python marco/manage.py migrate migration_to_layers
-```
+*If migrating from a server that has not migrated to mp-layers from mp-data-manager*:
 
 ```bash
-docker exec -it <container_id> bash
+docker compose exec app python marco/manage.py migration_to_layers
 ```
-
-Then inside the container:
-
-```bash
-python marco/manage.py shell
-```
-
-```python
-from layers.models import Theme
-from data_manager.models import Theme as Dm_theme
-
-
-for theme in Dm_theme.all_objects.all():
- 	try:
-         	new_theme = Theme.all_objects.get(pk=theme.pk)
-         	if new_theme.parent == None and new_theme.name != 'companion':
-                 	new_theme.is_top_theme = True
-                 	new_theme.save()
- 	except Exception:
-         	pass
-```
-
-exit the shell
-
-```bash
-python marco/manage.py collectstatic
-python marco/manage.py compress
-```
-
 
 ---  
 
 ### Step 8 — Importing production media files into the Dockerized Application
 
 #### Prerequisites
-- `madrona_portal/.env` exists with `MEDIA_ROOT` set to a valid directory
+- `madrona-portal/marco/marco/config.wcoa.docker.ini` exists with `MEDIA_ROOT` set to a valid directory
+- That valid directory should match the volume location is docker-compose.yml
+   - `portals/madrona-portal/media`
 - Production media files are available
 
-#### Step 8.1a - Copy the media files into Docker
-
-Get your docker container name or ID for the `app` service:
+#### Step 8.1 - Copy the media files into Docker
+From `madrona-portal/docker`:
 ```bash
-docker ps
-```
-
-Then use `docker cp` to copy media files from the production location to the local directory specified by `MEDIA_ROOT` in `.env`.
-```bash
-docker cp <path_to_prod_media>/. <container_name_or_id>:/vol/web/media/
-```
-
-Example `docker cp` command:
-```bash
-docker cp madrona-apps/wcoa/media/. docker-app-1:/vol/web/media/
-```
-
-#### Step 8.1b — Sync media files
-Use `rsync` or a similar tool to copy media files from the production location to the local directory specified by `MEDIA_ROOT` in `.env`.
-Using `rsync` command:
-```bash
-rsync -avz <user>@<host>:/path/to/remote/media/ <local_media_directory>/
-```
-
-Then use `docker cp` to copy media files from the local directory to the Docker container:
-```bash
-docker cp <local_media_directory>/. <container_name_or_id>:/vol/web/media/
-```
-
-Make sure to include the trailing slashes to sync the contents correctly.
-`-avz` flags preserve permissions, show progress, and compress data during transfer.
-
-#### Step 8.2 — Verify media access
-
-```bash
-docker exec <container_name_or_id> du -sh /vol/web/media/
-docker exec <container_name_or_id> ls /vol/web/media/
+cp -r {your_media_dir}/* ./media/
 ```
 
 ---  
@@ -294,14 +247,14 @@ docker exec <container_name_or_id> ls /vol/web/media/
 docker buildx build \
     --builder desktop-linux \
     --load \
-    -f madrona_portal/Dockerfile \
-    -t madrona_portal-app:latest \
+    -f madrona-portal/docker/Dockerfile \
+    -t madrona-portal-app:latest \
     .
 ```
 
 ### Redeploying after code changes
 
-Then from `madrona_portal/`:
+Then from `madrona-portal/`:
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file .env --profile full \
@@ -315,7 +268,7 @@ Add `--no-cache` to the buildx command to force a full dependency reinstall
 
 ## Everyday usage
 
-All `docker compose` commands below are run from **`madrona_portal/`**.
+All `docker compose` commands below are run from **`madrona-portal/`**.
 
 ### View logs
 
@@ -359,7 +312,7 @@ To run Django locally against Docker-managed PostGIS and Redis (no app container
 # Start only db and tasks (omit --profile full)
 docker compose -f docker/docker-compose.yml --env-file .env up -d
 
-# Then in a separate terminal, from madrona_portal/:
+# Then in a separate terminal, from madrona-portal/:
 cd marco
 python manage.py runserver
 ```
@@ -377,12 +330,12 @@ From the **workspace root** (`portals/`):
 docker buildx build \
     --builder desktop-linux \
     --load \
-    -f madrona_portal/Dockerfile \
-    -t madrona_portal-app:latest \
+    -f madrona-portal/Dockerfile \
+    -t madrona-portal-app:latest \
     .
 ```
 
-Then from `madrona_portal/`:
+Then from `madrona-portal/`:
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file .env --profile full \
@@ -397,7 +350,7 @@ Add `--no-cache` to the buildx command to force a full dependency reinstall
 ## Reset to a clean state
 
 ```bash
-# From madrona_portal/
+# From madrona-portal/
 docker compose -f docker/docker-compose.yml --env-file .env --profile full down -v
 ```
 
@@ -410,7 +363,7 @@ migrations and reload fixtures from scratch.
 
 | Service | Image | Default host port | Override via |
 |---|---|---|---|
-| `app` | `madrona_portal-app:latest` | `8000` | `APP_PORT` in `.env` |
+| `app` | `madrona-portal-app:latest` | `8000` | `APP_PORT` in `.env` |
 | `db` | `postgis/postgis:16-3.4` | `5432` | `DB_PORT` in `.env` |
 | `tasks` | `redis:7-alpine` | `6379` | `REDIS_PORT` in `.env` |
 
