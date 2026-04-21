@@ -238,73 +238,15 @@ cp -r {your_media_dir}/* ./media/
 
 ---  
 
+# Deploy to fully containerized production environment
+
+## AWS EC2
+
+See [AWS_DEPLOY.md](AWS_DEPLOY.md)
+
+---  
+
 # Untested instructions below this line — will update after testing
-
-## Deploy to fully containerized live instance
-
-1. Set up your `.env`
-2. Build and run (from `portals/`):
-
-```bash
-docker buildx build \
-    --builder desktop-linux \
-    --load \
-    -f madrona-portal/docker/Dockerfile \
-    -t madrona-portal-app:latest \
-    .
-```
-
-### Redeploying after code changes
-
-Then from `madrona-portal/`:
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    up -d --force-recreate app
-```
-
-Add `--no-cache` to the buildx command to force a full dependency reinstall
-(needed when `docker-requirements.txt` changes).
-
----
-
-## Everyday usage
-
-All `docker compose` commands below are run from **`madrona-portal/`**.
-
-### View logs
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full logs -f app
-```
-
-### Run a management command
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    run --rm app python marco/manage.py <command>
-```
-
-Examples:
-
-```bash
-# Django shell
-... run --rm app python marco/manage.py shell
-
-# Create superuser manually
-... run --rm app python marco/manage.py createsuperuser
-
-# Load a fixture
-... run --rm app python marco/manage.py loaddata /path/to/fixture.json
-```
-
-### Open a database shell
-
-```bash
-docker exec -it docker-db-1 psql -U postgres wcoa_docker_db
-```
-
----
 
 ## Dev infrastructure only (local Django server)
 
