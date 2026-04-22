@@ -252,18 +252,6 @@ scp ubuntu@<OLD_SERVER_IP>:/path/to/harvester.war \
     ubuntu@<ELASTIC_IP>:/tmp/harvester.war
 ```
 
-**On the new EC2 instance**, move them into the expected location:
-
-```bash
-mkdir -p ~/portals/madrona-portal/docker/wars
-mv /tmp/geoportal.war ~/portals/madrona-portal/docker/wars/
-mv /tmp/harvester.war ~/portals/madrona-portal/docker/wars/
-```
-
-The `.env.example` defaults point to `./wars/geoportal.war` and
-`./wars/harvester.war` (relative to the `docker/` directory), so these paths
-will work without any further changes.
-
 ---
 
 ## Phase 4 — Clone the Portal Configuration
@@ -309,6 +297,19 @@ Verify:
 ls ~/portals/
 # madrona-portal/
 ```
+
+### 4.3 Move the WAR files into place
+
+**On the new EC2 instance**, move them into the expected location:
+
+```bash
+mv /tmp/geoportal.war ~/portals/madrona-portal/docker/wars/
+mv /tmp/harvester.war ~/portals/madrona-portal/docker/wars/
+```
+
+The `.env.example` defaults point to `./wars/geoportal.war` and
+`./wars/harvester.war` (relative to the `docker/` directory), so these paths
+will work without any further changes.
 
 ---
 
@@ -479,7 +480,7 @@ server {
     server_name portal.westcoastoceans.org;
 
     location / {
-        proxy_pass         http://127.0.0.1:8000;
+        proxy_pass         http://127.0.0.1:8008;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
         proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
