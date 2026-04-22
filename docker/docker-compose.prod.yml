@@ -53,7 +53,7 @@ services:
       tasks:
         condition: service_healthy
     ports:
-      - "${APP_PORT:-8000}:8000"
+      - "${APP_PORT:-8008}:8008"
     networks:
       - madronanetwork
     restart: unless-stopped
