@@ -431,7 +431,7 @@ Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
 ### 6.4 Smoke test
 
 ```bash
-curl -I http://localhost:8008/
+curl -I http://localhost:8000
 # Expected: HTTP/1.1 200 OK  (or 301/302 redirect)
 ```
 
