@@ -725,6 +725,12 @@ EMAIL_USE_TLS=true
 DEFAULT_FROM_EMAIL=noreply@prod.mail.ecotrust.org
 ```
 
+### Create custom mail from domain
+1. In SES Console → Domains → click on your domain → Create mail from domain
+2. Enter a subdomain (e.g., `mail`) → Create
+3. Add the provided DNS records to your DNS provider
+4. Wait for AWS to verify the mail from domain
+
 ### Request SES production access
 Submit a production access request in SES Console → Account dashboard → Request production access. Takes 24hrs typically.
 
@@ -777,7 +783,13 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 ---  
 
-
+## Add Google Analytics Key
+1. Get the GA tracking ID (e.g., `G-XXXXXXXXXX`)
+2. SSH into the server and edit the `.env` file
+3. Edit or add the following line in the `.env` file:
+```bash
+GA_ACCOUNT=G-XXXXXXXXXX
+```
 
 ---
 
