@@ -512,6 +512,9 @@ server {
     listen 80;
     server_name <portal.westcoastoceans.org> or <ELASTIC_IP>;
 
+    access_log /var/log/nginx/wcoa.access.log;
+    error_log /var/log/nginx/wcoa.error.log;
+
     location / {
         proxy_pass         http://127.0.0.1:8000;
         proxy_set_header   Host              $host;
@@ -520,6 +523,69 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
         proxy_read_timeout 120s;
         client_max_body_size 50M;
+    }
+
+    location /geospatial/ {
+        alias /var/www/html/geospatial/;
+        autoindex on;
+    }
+
+    location /munin/static/ {
+        alias /etc/munin/static/;
+    }
+
+    location /munin {
+        alias /var/cache/munin/www;
+    }
+
+    # Shared CORS policy for these proxied endpoints
+    # (if you only want specific origins, replace "*" with your domain)
+    set $cors_allow_origin "*";
+
+    location ~ ^/(?:_search/|_doc/|metadata).*$ {
+        proxy_pass http://<ELASTIC_IP>:9200;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 60s;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        add_header Access-Control-Allow-Origin $cors_allow_origin always;
+        add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range" always;
+        add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
+
+        if ($request_method = OPTIONS) {
+            add_header Access-Control-Max-Age 1728000 always;
+            add_header Content-Type "text/plain; charset=utf-8" always;
+            add_header Content-Length 0 always;
+            return 204;
+        }
+    }
+
+    location ~ ^/(?:manager|host-manager|semantix|solr|gc|geoportal|harvester).*$ {
+        proxy_pass http://<ELASTIC_IP>:8080;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 60s;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        add_header Access-Control-Allow-Origin $cors_allow_origin always;
+        add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range" always;
+        add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
+
+        if ($request_method = OPTIONS) {
+            add_header Access-Control-Max-Age 1728000 always;
+            add_header Content-Type "text/plain; charset=utf-8" always;
+            add_header Content-Length 0 always;
+            return 204;
+        }
     }
 }
 ```
@@ -564,6 +630,13 @@ docker compose -f docker/docker-compose.prod.yml --profile full up -d --force-re
 #### Copy the media files
 ```bash
 scp -r {your_media_dir} ubuntu@<your_server_ip>:/home/ubuntu/portals/madrona-portal/docker/media/
+```
+
+## Migrate existing GeoPortal records
+
+Once the stack is running, you can migrate existing GeoPortal records with the following command (replace the source host, username, and password with your old GeoPortal's Elasticsearch credentials):
+```bash
+time curl -X POST "http://52.33.200.130:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "query": {"match_all": {} }, "size": 100 }, "dest": { "index": "metadata" } }''
 ```
 
 ---
@@ -622,10 +695,97 @@ docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profil
 
 ---
 
+## AWS Email (SES) Setup
+
+### Verify your domain in AWS SES (Simple Email Service)
+
+1. Go to SES Console → us-west-2 → Create identity → choose Domain → enter:
+`portal.westcoastoceans.org`
+2. Leave defaults
+3. Click "Create identity"
+
+### Add the provided DNS records to your DNS provider
+1. In the SES Console, click on your new identity → DNS records tab
+2. Add the provided records to your DNS provider (e.g., Hover)
+3. Wait for AWS to verify the domain (minute to hours)
+
+### Create SMTP Credentials
+1. In SES Console → SMTP Settings → Create SMTP credentials → note the username and password (only shown once).
+
+### Update the portal configuration
+1. SSH into the server
+2. Open the `.env` file
+3. Add the following values (replace with your SMTP credentials):
+```
+EMAIL_HOST=email-smtp.us-west-2.amazonaws.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=<smtp username from step 4>
+EMAIL_HOST_PASSWORD=<smtp password from step 4>
+EMAIL_USE_TLS=true
+DEFAULT_FROM_EMAIL=noreply@prod.mail.ecotrust.org
+```
+
+### Request SES production access
+Submit a production access request in SES Console → Account dashboard → Request production access. Takes 24hrs typically.
+
+---  
+
+## Automatic Security Updates
+
+Install unattended-upgrades and update-notifier-common to automatically apply security updates to the server OS:
+```bash
+sudo apt-get install unattended-upgrades update-notifier-common -y
+```
+
+Enable automatic updates:
+```bash
+sudo dpkg-reconfigure --priority=low unattended-upgrades
+```
+
+Edit the configuration to allow automatic reboots and set the time for reboots to occur:
+```bash
+// Open the config file
+sudo vim /etc/apt/apt.conf.d/50unattended-upgrades
+
+// Find, uncomment, and set "true" the line that contains "Unattended-Upgrade::Automatic-Reboot"
+Unattended-Upgrade::Automatic-Reboot "true";
+
+// Find and uncomment the line that contains "Unattended-Upgrade::Automatic-Reboot-Time"
+Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+```
+
+---  
+
+## Install Munin
+
+```bash
+sudo apt-get install munin -y
+```
+
+---
+
+## Set Up Swap Space
+
+```bash
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo cp /etc/fstab /etc/fstab.bak
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+---  
+
+
+
+---
+
 ## Deploying a New Release
 
 When code changes are merged to the `docker` branch, GitHub Actions
 automatically builds and pushes a new image to GHCR. To deploy it:
+
 
 ### On the server
 
