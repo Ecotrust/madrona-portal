@@ -397,17 +397,13 @@ From `~/portals/madrona-portal/`:
 ```bash
 cd ~/portals/madrona-portal
 
-docker compose -f docker/docker-compose.prod.yml \
-    --env-file docker/.env \
-    --profile full \
-    up -d
+docker compose -f docker/docker-compose.prod.yml --profile full up -d
 ```
 
 ### 6.3 Watch the startup logs
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    logs -f app
+docker compose -f docker/docker-compose.prod.yml --profile full logs -f app
 ```
 
 On first boot the entrypoint automatically:
@@ -422,16 +418,53 @@ Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
 
 > For a fresh database, run with `DB_INIT=1` the first time:
 > ```bash
-> DB_INIT=1 docker compose -f docker/docker-compose.prod.yml --env-file docker/.env \
->     --profile full up -d
+> DB_INIT=1 docker compose -f docker/docker-compose.prod.yml --profile full up -d
 > ```
 > On subsequent starts, leave `DB_INIT` at its default (`0`) to skip the
 > fixture and superuser steps.
 
-### 6.4 Smoke test
+### Apply migrations (if needed)
 
 ```bash
-curl -I http://localhost:8000
+docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migrate
+```
+
+### Import database
+
+From `madrona-portal/docker`:
+```bash
+../scripts/db-restore.sh --drop <path_to_your_sql>
+```
+*example:*
+```bash
+../scripts/db-restore.sh --drop ../../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
+```
+
+### Apply migrations again (if needed)
+
+```bash
+docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migrate
+```
+
+### Migration to Layers
+
+```bash
+docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migration_to_layers
+```
+
+
+
+### Collect static and compress assets (if needed)
+
+```bash
+docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py collectstatic --noinput
+docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py compress
+```
+
+### Smoke test
+
+```bash
+curl -I http://localhost:8000/
 # Expected: HTTP/1.1 200 OK  (or 301/302 redirect)
 ```
 
@@ -477,10 +510,10 @@ Paste:
 ```nginx
 server {
     listen 80;
-    server_name portal.westcoastoceans.org;
+    server_name <portal.westcoastoceans.org> or <ELASTIC_IP>;
 
     location / {
-        proxy_pass         http://127.0.0.1:8008;
+        proxy_pass         http://127.0.0.1:8000;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
         proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
@@ -521,8 +554,16 @@ Restart the app container to pick up the change:
 
 ```bash
 cd ~/portals/madrona-portal
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    up -d --force-recreate app
+docker compose -f docker/docker-compose.prod.yml --profile full up -d --force-recreate app
+```
+
+---
+
+## Import media
+
+#### Copy the media files
+```bash
+scp -r {your_media_dir} ubuntu@<your_server_ip>:/home/ubuntu/portals/madrona-portal/docker/media/
 ```
 
 ---
