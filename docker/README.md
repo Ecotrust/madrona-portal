@@ -303,16 +303,6 @@ migrations and reload fixtures from scratch.
 
 ---
 
-## Services and ports
-
-| Service | Image | Default host port | Override via |
-|---|---|---|---|
-| `app` | `madrona-portal-app:latest` | `8000` | `APP_PORT` in `.env` |
-| `db` | `postgis/postgis:16-3.4` | `5432` | `DB_PORT` in `.env` |
-| `tasks` | `redis:7-alpine` | `6379` | `REDIS_PORT` in `.env` |
-
----
-
 ## Disk space
 
 Docker's build cache can grow large over time:
