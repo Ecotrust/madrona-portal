@@ -634,9 +634,27 @@ scp -r {your_media_dir} ubuntu@<your_server_ip>:/home/ubuntu/portals/madrona-por
 
 ## Migrate existing GeoPortal records
 
-Once the stack is running, you can migrate existing GeoPortal records with the following command (replace the source host, username, and password with your old GeoPortal's Elasticsearch credentials):
+1. Update .env with the reindex remote whitelist and port. You can find this info by looking at the old server's configuration or by asking the previous admin.
+
+2. Edit the hosts file to allow the server to resolve the old Elastic IP of the GeoPortal instance to the new internal Docker network:
+
 ```bash
-time curl -X POST "http://52.33.200.130:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "query": {"match_all": {} }, "size": 100 }, "dest": { "index": "metadata" } }''
+sudo vim /etc/hosts
+# Add the following line, replacing <OLD_ELASTIC_IP> and <ES_REINDEX_REMOTE_WHITELIST from .env>:
+<OLD_IP> <ES_REINDEX_REMOTE_WHITELIST from .env>
+```
+
+3. Ensure the app is running, you can migrate existing GeoPortal records with the following command (replace the username and password):
+
+```bash
+time curl -X POST "http://localhost:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "size": 100 }, "dest": { "index": "metadata" } }'
+```
+
+4. Do a down, including volumes, and up for the elasticsearch container and geoportal to pick up the new records:
+
+```bash
+docker compose -f docker/docker-compose.prod.yml down elasticsearch geoportal -v
+docker compose -f docker/docker-compose.prod.yml up -d elasticsearch geoportal
 ```
 
 ---
