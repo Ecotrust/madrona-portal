@@ -92,6 +92,7 @@ djangorestframework>=3.14,<4.0
 -e /usr/local/apps/madrona-portal/apps/mp-map-groups
 -e /usr/local/apps/madrona-portal/apps/p97-nursery
 -e /usr/local/apps/madrona-portal/apps/mp-proxy
+-e /usr/local/apps/madrona-portal/apps/mp-survey
 
 # ---------------------------------------------------------------------------
 # Portal variant — choose one:

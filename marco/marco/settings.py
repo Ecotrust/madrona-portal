@@ -218,6 +218,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsAppConfig',
     'django_social_share',
     'mapgroups',
+    'survey',
 ]
 
 # Optional apps — installed when available

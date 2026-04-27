@@ -127,6 +127,13 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           path: madrona-apps/mp-proxy
 
+      - name: Checkout mp-survey
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-survey
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-survey
+
       - name: Checkout mp-visualize
         uses: actions/checkout@v5
         with:

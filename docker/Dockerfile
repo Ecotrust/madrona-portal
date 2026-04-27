@@ -61,6 +61,7 @@ COPY madrona-apps/mp-explore             ./apps/mp-explore
 COPY madrona-apps/mp-layers              ./apps/mp-layers
 COPY madrona-apps/mp-map-groups          ./apps/mp-map-groups
 COPY madrona-apps/mp-proxy               ./apps/mp-proxy
+COPY madrona-apps/mp-survey              ./apps/mp-survey
 COPY madrona-apps/mp-visualize           ./apps/mp-visualize
 COPY madrona-apps/p97-nursery            ./apps/p97-nursery
 COPY madrona-apps/wcoa                   ./apps/wcoa

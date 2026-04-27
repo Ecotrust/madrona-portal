@@ -40,6 +40,7 @@ git clone https://github.com/Ecotrust/mp-explore.git
 git clone https://github.com/Ecotrust/mp-layers.git
 git clone https://github.com/Ecotrust/mp-map-groups.git
 git clone https://github.com/Ecotrust/mp-proxy.git
+git clone https://github.com/Ecotrust/mp-survey.git
 git clone https://github.com/Ecotrust/mp-visualize.git
 git clone https://github.com/Ecotrust/p97-nursery.git
 git clone -b vagrant2docker https://github.com/Ecotrust/wcoa.git
@@ -110,7 +111,7 @@ docker buildx build --builder desktop-linux --load -f ./Dockerfile ../../
 docker buildx build --load -f ./Dockerfile ../../
 ```
 
-When building a tagged image for deployment, add `-t madrona-portal-app:latest`:
+If you want to build a tagged image, add `-t madrona-portal-app:latest`:
 ```
 docker buildx build \
     --builder desktop-linux \
