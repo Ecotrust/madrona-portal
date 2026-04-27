@@ -50,3 +50,4 @@ services:
       - ../../madrona-apps/p97-nursery:/usr/local/apps/madrona-portal/apps/p97-nursery
       - ../../madrona-apps/django_url_shortener:/usr/local/apps/madrona-portal/apps/django_url_shortener
       - ../../madrona-apps/madrona-analysistools:/usr/local/apps/madrona-portal/apps/madrona-analysistools
+      - ../../madrona-apps/mp-survey:/usr/local/apps/madrona-portal/apps/mp-survey
