@@ -235,15 +235,13 @@ See [AWS_DEPLOY.md](AWS_DEPLOY.md)
 
 ---  
 
-# Untested instructions below this line — will update after testing
-
 ## Dev infrastructure only (local Django server)
 
 To run Django locally against Docker-managed PostGIS and Redis (no app container):
 
 ```bash
-# Start only db and tasks (omit --profile full)
-docker compose -f docker/docker-compose.yml --env-file .env up -d
+# Start only db and tasks
+docker compose up -d db tasks
 
 # Then in a separate terminal, from madrona-portal/:
 cd marco
@@ -254,13 +252,10 @@ python manage.py runserver
 
 ## Rebuilding after code changes
 
-> **Commit first.** BuildKit reads from the git object store — uncommitted
-> changes are invisible to the build.
-
 From the docker directory (`madrona-portal/docker`):
 
 ```bash
-docker buildx build --builder desktop-linux --no-cache --load -f ./Dockerfile ../../
+docker compose build --no-cache app
 ```
 
 | Note on `--no-cache`: Use it when dependencies have changed; without it, Docker reuses the cached pip install layer (needed when `docker-requirements.txt` changes).
