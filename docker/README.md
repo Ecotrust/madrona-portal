@@ -97,8 +97,7 @@ CELERY_BROKER_URL = redis://tasks:6379/0
 
 Run this command from `madrona-portal/docker` (the previous step leaves
 you in `madrona-portal/marco`, so `cd ../docker` gets you there). The
-Docker build context for this command is `../../`, which resolves to the
-parent workspace directory `portals/` that contains both
+Docker build context for this command is `../../`, which resolves to the parent workspace directory `portals/` that contains both
 `madrona-portal/` and `madrona-apps/`.
 
 If running this build from a MAC, add `--builder desktop-linux` to the `buildx build` command. 
@@ -106,23 +105,12 @@ If running this build from a MAC, add `--builder desktop-linux` to the `buildx b
 ```bash
 cd ../docker
 # MAC OS
-docker buildx build --builder desktop-linux --load -f ./Dockerfile ../../
+docker compose build --no-cache app
 # LINUX
-docker buildx build --load -f ./Dockerfile ../../
+docker compose build --no-cache app
 ```
 
-If you want to build a tagged image, add `-t madrona-portal-app:latest`:
-```
-docker buildx build \
-    --builder desktop-linux \
-    --load \
-    -f ./Dockerfile \
-    -t madrona-portal-app:latest \
-    ../../
-```
-
-This takes several minutes on a first build (compiling GDAL, installing
-Python packages). Subsequent builds are fast thanks to layer caching.
+Previously we recommended `docker buildx build --builder desktop-linux --no-cache --load -f ./Dockerfile ../../` for all platforms, but BuildKit caching on Linux does not appear to have the same git object store issue as on Mac, so the simpler `docker compose build --no-cache app` is sufficient on Linux.
 
 > **Why `docker buildx build` and not `docker compose build`?**
 > `docker compose build` has a caching bug: when a `.git` directory exists
@@ -269,26 +257,19 @@ python manage.py runserver
 > **Commit first.** BuildKit reads from the git object store — uncommitted
 > changes are invisible to the build.
 
-From the **workspace root** (`portals/`):
+From the docker directory (`madrona-portal/docker`):
 
 ```bash
-docker buildx build \
-    --builder desktop-linux \
-    --load \
-    -f madrona-portal/Dockerfile \
-    -t madrona-portal-app:latest \
-    .
+docker buildx build --builder desktop-linux --no-cache --load -f ./Dockerfile ../../
 ```
 
-Then from `madrona-portal/`:
+| Note on `--no-cache`: Use it when dependencies have changed; without it, Docker reuses the cached pip install layer (needed when `docker-requirements.txt` changes).
+
+Then bring the stack up:
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file .env --profile full \
-    up -d --force-recreate app
+docker compose up --force-recreate
 ```
-
-Add `--no-cache` to the buildx command to force a full dependency reinstall
-(needed when `docker-requirements.txt` changes).
 
 ---
 
