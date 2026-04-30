@@ -227,6 +227,40 @@ cp -r {your_media_dir}/* ./media/
 
 ---  
 
+## Migrate existing GeoPortal records
+
+1. Update .env with the reindex remote whitelist and port. You can find this info by looking at the old server's configuration or by asking the previous admin.
+
+2. Edit the hosts file to allow the server to resolve the old Elastic IP of the GeoPortal instance to the new internal Docker network:
+
+```bash
+sudo vim /etc/hosts
+# Add the following line, replacing <OLD_ELASTIC_IP> and <ES_REINDEX_REMOTE_WHITELIST from .env>:
+<OLD_IP> <ES_REINDEX_REMOTE_WHITELIST from .env>
+```
+
+3. Restart the elastic container to apply the .env and hosts file change:
+
+```bash
+docker compose down -v elastic
+docker compose up -d elastic
+```
+
+4. Ensure the app is running, you can migrate existing GeoPortal records with the following command (replace the username and password):
+
+```bash
+time curl -X POST "http://localhost:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "size": 100 }, "dest": { "index": "metadata" } }'
+```
+
+1. Do a down, including volumes, and up for the geoportal container to pick up the new records:
+
+```bash
+docker compose down -v geoportal
+docker compose up -d geoportal
+```
+
+---
+
 # Deploy to fully containerized production environment
 
 ## AWS EC2
