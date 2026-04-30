@@ -581,6 +581,11 @@ RECAPTCHA_PRIVATE_KEY = _env('RECAPTCHA_PRIVATE_KEY', app_cfg, 'RECAPTCHA_PRIVAT
 GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 
 # ---------------------------------------------------------------------------
+# NATIVE LANDS API KEY
+# ---------------------------------------------------------------------------
+NATIVE_LAND_API_KEY = _env('NATIVE_LAND_API_KEY', app_cfg, 'NATIVE_LAND_API_KEY', '')
+
+# ---------------------------------------------------------------------------
 # Project-level settings overrides
 # (Optional app + settings file specified in config.ini)
 # ---------------------------------------------------------------------------
