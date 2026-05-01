@@ -7,7 +7,6 @@
 # Usage:
 #   docker compose -f docker/docker-compose.prod.yml \
 #       --env-file .env \
-#       --profile full \
 #       up -d
 #
 # To pull the latest image before starting:
