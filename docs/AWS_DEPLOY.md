@@ -201,6 +201,15 @@ sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
+*Verify Docker is running:*
+
+```bash
+sudo systemctl status docker
+
+# if not running, start the service
+sudo systemctl start docker
+```
+
 ### 2.4 Allow your user to run Docker without sudo
 
 ```bash
@@ -337,11 +346,13 @@ nano docker/.env
 Set these values at minimum:
 
 ```ini
+# Environment
+DJANGO_ENV=production
+
 # Django
 SECRET_KEY=<paste generated key here>
 ALLOWED_HOSTS=<ELASTIC_IP>,localhost
 DEBUG=False
-DJANGO_ENV=production
 
 # Database
 DB_PASSWORD=<strong random password>
