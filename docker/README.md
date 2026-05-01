@@ -168,13 +168,13 @@ From `madrona-portal/docker`:
 chmod +x ../scripts/db-restore.sh
 ```
 
-
 #### Step 7.2 — Run the restore
 
 From `madrona-portal/docker`:
 ```bash
 ../scripts/db-restore.sh --drop <path_to_your_sql>
 ```
+
 *example:*
 ```bash
 ../scripts/db-restore.sh --drop ../../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
@@ -199,8 +199,6 @@ There is an optional `--env-file <path_to_your_env_file>` if you place your `.en
 docker compose exec app python marco/manage.py migrate
 ```
 
-*Please note:* on 4/10/2026 a 130+ migrations were applied to bring the schema from the prod dump up to date with the current codebase, largely driven by migrating from Wagtail v2 to v7, adding mp-layers, and adding the WCOA OHI indicators (for WCOA installs).
-
 #### Step 7.4 - Migration to mp-layers
 
 *If migrating from a server that has not migrated to mp-layers from mp-data-manager*:
@@ -217,11 +215,20 @@ docker compose exec app python marco/manage.py migration_to_layers
 - `madrona-portal/marco/marco/config.wcoa.docker.ini` exists with `MEDIA_ROOT` set to a valid directory
 - That valid directory should match the volume location is docker-compose.yml
    - `portals/madrona-portal/media`
-- Production media files are available
+- Production media files are available 
 
 #### Step 8.1 - Copy the media files into Docker
-From `madrona-portal/docker`:
+
+If media files need to be copied to the server, you can use `scp`:
+
 ```bash
+scp -r /path/to/your_media_dir ubuntu@<ELASTIC_IP>:/home/ubuntu/portals/madrona-portal/media
+```
+
+If media files are somewhere on EC2:
+
+```bash
+cd ~/portals/madrona-portal/docker
 cp -r {your_media_dir}/* ./media/
 ```
 

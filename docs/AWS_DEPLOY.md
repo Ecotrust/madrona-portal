@@ -349,6 +349,13 @@ Set these values at minimum:
 # Environment
 DJANGO_ENV=production
 
+# Gunicorn workers (2× vCPU count; t3.large has 2 vCPUs → 4 workers)
+GUNICORN_WORKERS=4
+
+# GHCR — the read-only PAT from Phase 0.2 (documents what token was used to
+# log in; docker login stores credentials in ~/.docker/config.json)
+GHCR_PAT=<your-ec2-read-only-pat>
+
 # Django
 SECRET_KEY=<paste generated key here>
 ALLOWED_HOSTS=<ELASTIC_IP>,localhost
@@ -364,17 +371,37 @@ REDIS_PASSWORD=<strong random password>
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=your@email.com
 DJANGO_SUPERUSER_PASSWORD=<strong password>
+```
 
-# Gunicorn workers (2× vCPU count; t3.large has 2 vCPUs → 4 workers)
-GUNICORN_WORKERS=4
+Can be added now or later:  
 
-# GHCR — the read-only PAT from Phase 0.2 (documents what token was used to
-# log in; docker login stores credentials in ~/.docker/config.json)
-GHCR_PAT=<your-ec2-read-only-pat>
+```ini
+# Password for the 'elastic' user
+ELASTIC_PASSWORD=<see 1password>
 
-# Geoportal WAR paths (defaults match Phase 3 location — no change needed)
-gpt_catalog_war=./wars/geoportal.war
-gpt_harvester_war=./wars/harvester.war
+# Password for the 'kibana_system' user
+KIBANA_PASSWORD=<see 1password>
+
+# Admin User (Full Access)
+gpt_admin_username=<see 1password>
+gpt_admin_password=<see 1password>
+
+# Publisher User (Can publish metadata)
+gpt_publisher_username=<see 1password>
+gpt_publisher_password=<see 1password>  
+
+# Regular User (Read-only access)
+gpt_user_username=<see 1password>
+gpt_user_password=<see 1password>
+
+gpt_wcoa_username=<see 1password>
+gpt_wcoa_password=<see 1password>
+
+gpt_esri_username=<see 1password>
+gpt_esri_password=<see 1password>
+
+gpt_frame_options=DENY
+gpt_allowed_origin="localhost localhost:* <ELASTIC_IP> <portal URLs>"
 ```
 
 Leave everything else at its default for now. You can add email, OAuth, and
@@ -403,18 +430,26 @@ docker pull ghcr.io/ecotrust/madrona-portal:latest
 
 ### 6.2 Start the stack
 
-From `~/portals/madrona-portal/`:
+:warning: For a fresh database, run with `DB_INIT=1` the first time to load initial fixtures and create the superuser:**
+```bash
+cd ~/portals/madrona-portal/docker
+
+DB_INIT=1 docker compose up -d
+```
+*On subsequent starts, leave `DB_INIT` at its default (`0`) to skip the fixture and superuser steps.*
+
+For an existing database:
 
 ```bash
-cd ~/portals/madrona-portal
+cd ~/portals/madrona-portal/docker
 
-docker compose -f docker/docker-compose.prod.yml --profile full up -d
+docker compose up -d
 ```
 
 ### 6.3 Watch the startup logs
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --profile full logs -f app
+docker compose logs -f app
 ```
 
 On first boot the entrypoint automatically:
@@ -437,10 +472,16 @@ Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
 ### Apply migrations (if needed)
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migrate
+docker compose exec app python marco/manage.py migrate
 ```
 
 ### Import database
+
+Copy your SQL dump to the server (e.g., using `scp`):
+
+```bash
+scp /path/to/your_dump.sql ubuntu@<ELASTIC_IP>:/home/ubuntu/your_dump.sql
+```
 
 From `madrona-portal/docker`:
 ```bash
@@ -468,7 +509,7 @@ docker compose -f docker/docker-compose.prod.yml --profile full exec app python 
 ### Collect static and compress assets (if needed)
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py collectstatic --noinput
+docker compose --profile full exec app python marco/manage.py collectstatic --noinput
 docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py compress
 ```
 
@@ -492,7 +533,7 @@ termination, compression, and static file serving.
 ### 7.1 Install Nginx and Certbot
 
 ```bash
-sudo apt-get install -y nginx certbot python3-certbot-nginx
+sudo apt install -y nginx certbot python3-certbot-nginx
 ```
 
 ### 7.2 Create a DNS A record
