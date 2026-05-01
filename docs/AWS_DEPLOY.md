@@ -170,7 +170,7 @@ ssh -i ~/.ssh/madrona-portal.pem ubuntu@<ELASTIC_IP>
 ### 2.2 Update the system
 
 ```bash
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt update && sudo apt upgrade -y
 ```
 
 ### 2.3 Install Docker Engine
@@ -179,26 +179,26 @@ AWS's Ubuntu AMI does not include Docker. Install the official Docker Engine
 (not the snap package — it has permission issues with volumes).
 
 ```bash
-# Install prerequisites
-sudo apt-get install -y ca-certificates curl gnupg
-
 # Add Docker's official GPG key
+sudo apt install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-    | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the Docker apt repository
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add the repository to Apt sources:
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
 
 # Install Docker Engine + Compose plugin + BuildKit
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io \
-    docker-buildx-plugin docker-compose-plugin
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 ### 2.4 Allow your user to run Docker without sudo
