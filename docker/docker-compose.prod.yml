@@ -57,7 +57,6 @@ services:
     networks:
       - madronanetwork
     restart: unless-stopped
-    profiles: [full]
 
   db:
     image: postgis/postgis:16-3.4
@@ -113,7 +112,6 @@ services:
     depends_on:
       elastic:
         condition: service_healthy
-    profiles: [full]
 
   elastic:
     image: elasticsearch:8.19.12
@@ -138,7 +136,6 @@ services:
       timeout: 10s
       retries: 10
     restart: always
-    profiles: [full]
 
 volumes:
   static_data:
