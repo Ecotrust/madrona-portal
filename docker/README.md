@@ -222,7 +222,7 @@ docker compose exec app python marco/manage.py migration_to_layers
 If media files need to be copied to the server, you can use `scp`:
 
 ```bash
-scp -r /path/to/your_media_dir ubuntu@<ELASTIC_IP>:/home/ubuntu/portals/madrona-portal/media
+scp -r /path/to/your_media_dir ubuntu@<ELASTIC_IP>:/home/ubuntu/portals/madrona-portal/docker/media
 ```
 
 If media files are somewhere on EC2:
