@@ -434,7 +434,7 @@ docker pull ghcr.io/ecotrust/madrona-portal:latest
 ```bash
 cd ~/portals/madrona-portal/docker
 
-DB_INIT=1 docker compose up -d
+DB_INIT=1 docker compose -f docker-compose.prod.yml up -d
 ```
 *On subsequent starts, leave `DB_INIT` at its default (`0`) to skip the fixture and superuser steps.*
 
@@ -443,13 +443,13 @@ For an existing database:
 ```bash
 cd ~/portals/madrona-portal/docker
 
-docker compose up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### 6.3 Watch the startup logs
 
 ```bash
-docker compose logs -f app
+docker compose -f docker-compose.prod.yml logs -f app
 ```
 
 On first boot the entrypoint automatically:
@@ -464,7 +464,7 @@ Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
 
 > For a fresh database, run with `DB_INIT=1` the first time:
 > ```bash
-> DB_INIT=1 docker compose -f docker/docker-compose.prod.yml --profile full up -d
+> DB_INIT=1 docker compose -f docker/docker-compose.prod.yml up -d
 > ```
 > On subsequent starts, leave `DB_INIT` at its default (`0`) to skip the
 > fixture and superuser steps.
@@ -472,7 +472,7 @@ Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
 ### Apply migrations (if needed)
 
 ```bash
-docker compose exec app python marco/manage.py migrate
+docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py migrate
 ```
 
 ### Import database
@@ -495,13 +495,13 @@ From `madrona-portal/docker`:
 ### Apply migrations again (if needed)
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migrate
+docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py migrate
 ```
 
 ### Migration to Layers
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py migration_to_layers
+docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py migration_to_layers
 ```
 
 
@@ -509,8 +509,8 @@ docker compose -f docker/docker-compose.prod.yml --profile full exec app python 
 ### Collect static and compress assets (if needed)
 
 ```bash
-docker compose --profile full exec app python marco/manage.py collectstatic --noinput
-docker compose -f docker/docker-compose.prod.yml --profile full exec app python marco/manage.py compress
+docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py collectstatic --noinput
+docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py compress
 ```
 
 ### Smoke test
@@ -527,8 +527,7 @@ and try again.
 
 ## Phase 7 — Nginx + SSL (Production Hardening)
 
-Gunicorn should not be exposed directly to the internet. Nginx handles SSL
-termination, compression, and static file serving.
+Gunicorn should not be exposed directly to the internet. Nginx handles SSL termination, compression, and static file serving.
 
 ### 7.1 Install Nginx and Certbot
 
@@ -590,12 +589,21 @@ server {
         alias /var/cache/munin/www;
     }
 
+    location /nativeland {
+        proxy_pass https://native-land.ca/;
+        resolver 8.8.8.8;
+        resolver_timeout 10s;
+        proxy_redirect off;
+        proxy_pass_request_headers on;
+        proxy_ssl_server_name on;
+    }
+
     # Shared CORS policy for these proxied endpoints
     # (if you only want specific origins, replace "*" with your domain)
     set $cors_allow_origin "*";
 
     location ~ ^/(?:_search/|_doc/|metadata).*$ {
-        proxy_pass http://<ELASTIC_IP>:9200;
+        proxy_pass http://127.0.0.1:9200;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_read_timeout 60s;
@@ -654,7 +662,7 @@ sudo systemctl restart nginx
 ### 7.4 Obtain an SSL certificate
 
 ```bash
-sudo certbot --nginx -d portal.westcoastoceans.org
+sudo certbot --nginx -d <URL>
 ```
 
 Certbot edits your Nginx config automatically to add SSL and redirect HTTP
@@ -672,7 +680,7 @@ Restart the app container to pick up the change:
 
 ```bash
 cd ~/portals/madrona-portal
-docker compose -f docker/docker-compose.prod.yml --profile full up -d --force-recreate app
+docker compose -f docker/docker-compose.prod.yml up -d --force-recreate app
 ```
 
 ---
@@ -734,12 +742,10 @@ WorkingDirectory=/home/ubuntu/portals/madrona-portal
 ExecStart=/usr/bin/docker compose \
     -f docker/docker-compose.prod.yml \
     --env-file docker/.env \
-    --profile full \
     up -d
 ExecStop=/usr/bin/docker compose \
     -f docker/docker-compose.prod.yml \
     --env-file docker/.env \
-    --profile full \
     down
 TimeoutStartSec=300
 
@@ -759,8 +765,7 @@ sudo systemctl enable madrona-portal
 ```bash
 sudo systemctl stop madrona-portal
 sudo systemctl start madrona-portal
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    ps    # all services should show "running"
+docker compose -f docker/docker-compose.prod.yml ps    # all services should show "running"
 ```
 
 ---
@@ -810,7 +815,7 @@ Submit a production access request in SES Console → Account dashboard → Requ
 
 Install unattended-upgrades and update-notifier-common to automatically apply security updates to the server OS:
 ```bash
-sudo apt-get install unattended-upgrades update-notifier-common -y
+sudo apt install unattended-upgrades update-notifier-common -y
 ```
 
 Enable automatic updates:
@@ -835,7 +840,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "02:00";
 ## Install Munin
 
 ```bash
-sudo apt-get install munin -y
+sudo apt install munin -y
 ```
 
 ---
@@ -878,8 +883,7 @@ cd ~/portals/madrona-portal
 docker pull ghcr.io/ecotrust/madrona-portal:latest
 
 # Recreate only the app container — db, Redis, and Elasticsearch are untouched
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    up -d --force-recreate app
+docker compose -f docker/docker-compose.prod.yml up -d --force-recreate app
 ```
 
 Downtime is limited to the container restart (~5–10 seconds).
@@ -895,19 +899,16 @@ docker pull ghcr.io/ecotrust/madrona-portal:<previous-sha>
 
 # Update IMAGE_TAG in docker/.env, then recreate:
 # IMAGE_TAG=<previous-sha> in docker/.env
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    up -d --force-recreate app
+docker compose -f docker/docker-compose.prod.yml up -d --force-recreate app
 ```
 
 ### If portal configuration changes (config.wcoa.docker.ini)
 
-The ini file is bind-mounted into the container (read-only), so changes take
-effect immediately on the next container restart — no image rebuild needed:
+The ini file is bind-mounted into the container (read-only), so changes take effect immediately on the next container restart — no image rebuild needed:
 
 ```bash
 nano ~/portals/madrona-portal/marco/config.wcoa.docker.ini
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    up -d --force-recreate app
+docker compose -f docker/docker-compose.prod.yml up -d --force-recreate app
 ```
 
 ---
@@ -918,16 +919,13 @@ All `docker compose` commands run from `~/portals/madrona-portal/`.
 
 ```bash
 # Tail app logs
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    logs -f app
+docker compose -f docker/docker-compose.prod.yml logs -f app
 
 # Run a Django management command
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    run --rm app python marco/manage.py <command>
+docker compose -f docker/docker-compose.prod.yml --env-file docker/.env run --rm app python marco/manage.py <command>
 
 # Open a Django shell
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full \
-    run --rm app python marco/manage.py shell
+docker compose -f docker/docker-compose.prod.yml --env-file docker/.env run --rm app python marco/manage.py shell
 
 # Open a database shell
 docker exec -it \
@@ -942,10 +940,10 @@ docker system df
 docker image prune -f
 
 # Stop the stack (data preserved in named volumes)
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full down
+docker compose -f docker/docker-compose.prod.yml --env-file docker/.env down
 
 # Full reset — DESTROYS ALL DATA
-docker compose -f docker/docker-compose.prod.yml --env-file docker/.env --profile full down -v
+docker compose -f docker/docker-compose.prod.yml --env-file docker/.env down -v
 ```
 
 ---
