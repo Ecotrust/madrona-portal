@@ -19,6 +19,8 @@ import configparser
 from os.path import abspath, dirname
 from typing import Any
 
+from .config_helpers import env_bool, env_int, env_str
+
 # ---------------------------------------------------------------------------
 # Path helpers
 # ---------------------------------------------------------------------------
@@ -53,28 +55,16 @@ social_cfg = cfg['SOCIAL_AUTH']
 region_cfg = cfg['REGION']
 
 # ---------------------------------------------------------------------------
-# Secret resolution helper
-# ---------------------------------------------------------------------------
-def _env(env_key: str, cfg_section: configparser.SectionProxy, cfg_key: str,
-         default: Any = '') -> str:
-    """Return a setting value, checking the environment first.
-
-    Priority: env var > config.ini > default.
-    This allows Docker / CI to override secrets without touching config files.
-    """
-    return os.environ.get(env_key) or cfg_section.get(cfg_key, default)
-
-# ---------------------------------------------------------------------------
 # Core settings
 # ---------------------------------------------------------------------------
-DEBUG = app_cfg.getboolean('DEBUG', False)
+DEBUG = env_bool('DEBUG', app_cfg, 'DEBUG', False)
 
-APP_NAME = app_cfg.get('APP_NAME', 'Marine Planner')
-APP_URL = app_cfg.get('APP_URL', '')
-APP_TEAM_NAME = app_cfg.get('APP_TEAM_NAME', f"{APP_NAME} Team")
+APP_NAME = env_str('APP_NAME', app_cfg, 'APP_NAME', 'Marine Planner')
+APP_URL = env_str('APP_URL', app_cfg, 'APP_URL', '')
+APP_TEAM_NAME = env_str('APP_TEAM_NAME', app_cfg, 'APP_TEAM_NAME', f"{APP_NAME} Team")
 
 # env var takes priority so Docker / CI can inject secrets without touching config.ini
-SECRET_KEY = _env('SECRET_KEY', app_cfg, 'SECRET_KEY', '')
+SECRET_KEY = env_str('SECRET_KEY', app_cfg, 'SECRET_KEY', '')
 _placeholder_phrases = ('forgot', 'change me', 'changeme', 'placeholder', 'you forgot')
 if not SECRET_KEY or any(p in SECRET_KEY.lower() for p in _placeholder_phrases):
     raise RuntimeError(
@@ -101,7 +91,7 @@ def _parse_hosts(raw: str | None) -> list[str]:
         return [h.strip() for h in raw.split(',') if h.strip()]
     return [raw]
 
-_raw_hosts = os.environ.get('ALLOWED_HOSTS', app_cfg.get('ALLOWED_HOSTS', ''))
+_raw_hosts = env_str('ALLOWED_HOSTS', app_cfg, 'ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = _parse_hosts(_raw_hosts)
 
 # Normalise bracketed IPv6 forms like [::1] → ::1 for Django host checks
@@ -344,12 +334,12 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [('en', "English")]
 # ---------------------------------------------------------------------------
 # Static & media files
 # ---------------------------------------------------------------------------
-STATIC_ROOT = _env('STATIC_ROOT', app_cfg, 'STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
-STATIC_URL = _env('STATIC_URL', app_cfg, 'STATIC_URL', '/static/')
+STATIC_ROOT = env_str('STATIC_ROOT', app_cfg, 'STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
+STATIC_URL = env_str('STATIC_URL', app_cfg, 'STATIC_URL', '/static/')
 STATIC_CORE = app_cfg.get('STATIC_CORE', '')
 
-MEDIA_ROOT = _env('MEDIA_ROOT', app_cfg, 'MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
-MEDIA_URL = _env('MEDIA_URL', app_cfg, 'MEDIA_URL', '/media/')
+MEDIA_ROOT = env_str('MEDIA_ROOT', app_cfg, 'MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+MEDIA_URL = env_str('MEDIA_URL', app_cfg, 'MEDIA_URL', '/media/')
 
 _static_root_abs = os.path.abspath(STATIC_ROOT)
 _staticfiles_dirs: list[str] = []
@@ -491,15 +481,15 @@ SOCIAL_AUTH_GOOGLE_LOGIN_REDIRECT_URL = '/account/?login=google'
 
 # Env var overrides: FACEBOOK_KEY, FACEBOOK_SECRET, TWITTER_KEY,
 #                    TWITTER_SECRET, GOOGLE_KEY, GOOGLE_SECRET
-SOCIAL_AUTH_FACEBOOK_KEY = _env('FACEBOOK_KEY', social_cfg, 'FACEBOOK_KEY', '')
-SOCIAL_AUTH_FACEBOOK_SECRET = _env('FACEBOOK_SECRET', social_cfg, 'FACEBOOK_SECRET', '')
+SOCIAL_AUTH_FACEBOOK_KEY = env_str('FACEBOOK_KEY', social_cfg, 'FACEBOOK_KEY', '')
+SOCIAL_AUTH_FACEBOOK_SECRET = env_str('FACEBOOK_SECRET', social_cfg, 'FACEBOOK_SECRET', '')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile,email']
 
-SOCIAL_AUTH_TWITTER_KEY = _env('TWITTER_KEY', social_cfg, 'TWITTER_KEY', '')
-SOCIAL_AUTH_TWITTER_SECRET = _env('TWITTER_SECRET', social_cfg, 'TWITTER_SECRET', '')
+SOCIAL_AUTH_TWITTER_KEY = env_str('TWITTER_KEY', social_cfg, 'TWITTER_KEY', '')
+SOCIAL_AUTH_TWITTER_SECRET = env_str('TWITTER_SECRET', social_cfg, 'TWITTER_SECRET', '')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = _env('GOOGLE_KEY', social_cfg, 'GOOGLE_KEY', '')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = _env('GOOGLE_SECRET', social_cfg, 'GOOGLE_SECRET', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env_str('GOOGLE_KEY', social_cfg, 'GOOGLE_KEY', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env_str('GOOGLE_SECRET', social_cfg, 'GOOGLE_SECRET', '')
 
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
@@ -529,14 +519,14 @@ SOCIAL_AUTH_PIPELINE = (
 # Env var overrides: EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER,
 #                    EMAIL_HOST_PASSWORD, EMAIL_USE_TLS
 # ---------------------------------------------------------------------------
-EMAIL_HOST = _env('EMAIL_HOST', email_cfg, 'HOST', 'localhost')
-EMAIL_PORT = int(_env('EMAIL_PORT', email_cfg, 'PORT', '25'))
-EMAIL_HOST_USER = _env('EMAIL_HOST_USER', email_cfg, 'HOST_USER', '')
-EMAIL_HOST_PASSWORD = _env('EMAIL_HOST_PASSWORD', email_cfg, 'HOST_PASSWORD', '')
+EMAIL_HOST = env_str('EMAIL_HOST', email_cfg, 'HOST', 'localhost')
+EMAIL_PORT = env_int('EMAIL_PORT', email_cfg, 'PORT', 25)
+EMAIL_HOST_USER = env_str('EMAIL_HOST_USER', email_cfg, 'HOST_USER', '')
+EMAIL_HOST_PASSWORD = env_str('EMAIL_HOST_PASSWORD', email_cfg, 'HOST_PASSWORD', '')
 EMAIL_BACKEND = email_cfg.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 DEFAULT_FROM_EMAIL = email_cfg.get('DEFAULT_FROM_EMAIL', "MARCO Portal Team <portal@midatlanticocean.org>")
 SERVER_EMAIL = email_cfg.get('SERVER_EMAIL', "MARCO Site Errors <ksdev@ecotrust.org>")
-EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS', email_cfg.get('EMAIL_USE_TLS', 'false')).lower() in ('1', 'true', 'yes'))
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', email_cfg, 'EMAIL_USE_TLS', False)
 EMAIL_SUBJECT_PREFIX = app_cfg.get('EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
 
 ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
@@ -546,10 +536,10 @@ ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
 # Env var overrides: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
 #                    AWS_SES_REGION_NAME, AWS_SES_REGION_ENDPOINT
 # ---------------------------------------------------------------------------
-AWS_ACCESS_KEY_ID = _env('AWS_ACCESS_KEY_ID', aws_cfg, 'AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = _env('AWS_SECRET_ACCESS_KEY', aws_cfg, 'AWS_SECRET_ACCESS_KEY', '')
-AWS_SES_REGION_NAME = _env('AWS_SES_REGION_NAME', aws_cfg, 'AWS_SES_REGION_NAME', 'us-east-1')
-AWS_SES_REGION_ENDPOINT = _env('AWS_SES_REGION_ENDPOINT', aws_cfg, 'AWS_SES_REGION_ENDPOINT', 'email.us-east-1.amazonaws.com')
+AWS_ACCESS_KEY_ID = env_str('AWS_ACCESS_KEY_ID', aws_cfg, 'AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = env_str('AWS_SECRET_ACCESS_KEY', aws_cfg, 'AWS_SECRET_ACCESS_KEY', '')
+AWS_SES_REGION_NAME = env_str('AWS_SES_REGION_NAME', aws_cfg, 'AWS_SES_REGION_NAME', 'us-east-1')
+AWS_SES_REGION_ENDPOINT = env_str('AWS_SES_REGION_ENDPOINT', aws_cfg, 'AWS_SES_REGION_ENDPOINT', 'email.us-east-1.amazonaws.com')
 
 # ---------------------------------------------------------------------------
 # Celery (Celery 5+ settings)
@@ -572,8 +562,8 @@ CELERY_TASK_RATE_LIMITS_DISABLED = celery_cfg.getboolean('CELERY_DISABLE_RATE_LI
 # ReCAPTCHA
 # ---------------------------------------------------------------------------
 NOCAPTCHA = True
-RECAPTCHA_PUBLIC_KEY = _env('RECAPTCHA_PUBLIC_KEY', app_cfg, 'RECAPTCHA_PUBLIC_KEY', '')
-RECAPTCHA_PRIVATE_KEY = _env('RECAPTCHA_PRIVATE_KEY', app_cfg, 'RECAPTCHA_PRIVATE_KEY', '')
+RECAPTCHA_PUBLIC_KEY = env_str('RECAPTCHA_PUBLIC_KEY', app_cfg, 'RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = env_str('RECAPTCHA_PRIVATE_KEY', app_cfg, 'RECAPTCHA_PRIVATE_KEY', '')
 
 # ---------------------------------------------------------------------------
 # Analytics
@@ -583,7 +573,7 @@ GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
 # ---------------------------------------------------------------------------
 # NATIVE LANDS API KEY
 # ---------------------------------------------------------------------------
-NATIVE_LAND_API_KEY = _env('NATIVE_LAND_API_KEY', app_cfg, 'NATIVE_LAND_API_KEY', '')
+NATIVE_LAND_API_KEY = env_str('NATIVE_LAND_API_KEY', app_cfg, 'NATIVE_LAND_API_KEY', '')
 
 # ---------------------------------------------------------------------------
 # Project-level settings overrides
