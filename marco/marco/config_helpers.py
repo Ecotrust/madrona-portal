@@ -13,7 +13,13 @@ def env_str(
     default: str = "",
 ) -> str:
     """Resolve a string setting using env > config.ini > default precedence."""
-    return os.environ.get(env_key) or cfg_section.get(cfg_key, default)
+    raw = os.environ.get(env_key)
+    if raw is not None:
+        return raw
+    raw = cfg_section.get(cfg_key)
+    if raw is not None:
+        return raw
+    return default
 
 
 def parse_bool(value: object, *, setting_name: str = "setting") -> bool:
@@ -43,11 +49,12 @@ def env_bool(
 ) -> bool:
     """Resolve and parse a bool setting using env > config.ini > default."""
     raw = os.environ.get(env_key)
-    if raw is None:
-        raw = cfg_section.get(cfg_key)
-    if raw is None:
-        return default
-    return parse_bool(raw, setting_name=env_key)
+    if raw is not None:
+        return parse_bool(raw, setting_name=env_key)
+    raw = cfg_section.get(cfg_key)
+    if raw is not None:
+        return parse_bool(raw, setting_name=cfg_key)
+    return default
 
 
 def env_int(
@@ -58,8 +65,9 @@ def env_int(
 ) -> int:
     """Resolve and parse an int setting using env > config.ini > default."""
     raw = os.environ.get(env_key)
-    if raw is None:
-        raw = cfg_section.get(cfg_key)
-    if raw is None:
-        return default
-    return int(str(raw).strip())
+    if raw is not None:
+        return int(str(raw).strip())
+    raw = cfg_section.get(cfg_key)
+    if raw is not None:
+        return int(str(raw).strip())
+    return default
