@@ -672,6 +672,18 @@ sudo nginx -t          # verify config
 sudo systemctl restart nginx
 ```
 
+> **Static file permissions:** Nginx runs as `www-data`, which must be able to
+> traverse every directory in the path to `docker/static/`. Ubuntu home
+> directories default to `750` (group-only execute), which blocks `www-data`.
+> Fix it once after cloning:
+>
+> ```bash
+> chmod o+x /home/ubuntu
+> ```
+>
+> Verify with `namei -l /home/ubuntu/portals/madrona-portal/docker/static/` —
+> every component in the path needs at least `o+x`.
+
 ### 7.4 Obtain an SSL certificate
 
 ```bash
