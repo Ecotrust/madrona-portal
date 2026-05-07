@@ -83,10 +83,10 @@ RUN pip install "GDAL==$(gdal-config --version)" --no-cache-dir
 # Runtime setup
 # ---------------------------------------------------------------------------
 RUN chmod 755 /entrypoint.sh && \
-    mkdir -p /vol/web/media /vol/web/static && \
+    mkdir -p /vol/web/static && \
     useradd --create-home --shell /bin/sh madrona_user && \
     chown -R madrona_user:madrona_user /vol /usr/local/apps/madrona-portal && \
-    chmod -R 755 /vol/web
+    chmod -R 775 /vol/web
 
 USER madrona_user
 
