@@ -16,7 +16,7 @@ services:
       context: ../../
       dockerfile: madrona-portal/docker/Dockerfile
     volumes:
-      - static_data:/vol/web
+      - ./static:/vol/web/static
       - ./media:/usr/local/apps/madrona-portal/media
       # Mount the main Django project tree from the host.
       # Changes to Python, templates, and config files are live immediately.
@@ -176,7 +176,6 @@ services:
     restart: always
 
 volumes:
-  static_data:
   postgis_data:
   redis_data:
   gp-volume:

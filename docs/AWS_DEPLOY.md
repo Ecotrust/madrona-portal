@@ -454,10 +454,10 @@ docker compose -f docker-compose.prod.yml logs -f app
 
 On first boot the entrypoint automatically:
 1. Waits for PostgreSQL to be healthy
-2. Runs `migrate`
-3. Runs `collectstatic` and `compress`
-4. Detects fresh database → loads initial fixtures
-5. Creates the superuser from `.env` (if `DB_INIT=1`)
+2. Runs `collectstatic` and `compress` (always)
+3. Runs `migrate` (only when `DB_INIT=1`)
+4. Detects fresh database → loads initial fixtures (only when `DB_INIT=1`)
+5. Creates the superuser from `.env` (only when `DB_INIT=1`)
 6. Starts Gunicorn
 
 Startup takes 2–5 minutes. Look for `Booting worker` lines from Gunicorn.
@@ -506,7 +506,10 @@ docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py
 
 
 
-### Collect static and compress assets (if needed)
+### Collect static and compress assets
+
+Static files are collected automatically on every container startup. To force
+a manual re-run without restarting the container:
 
 ```bash
 docker compose -f docker/docker-compose.prod.yml exec app python marco/manage.py collectstatic --noinput
@@ -565,6 +568,16 @@ server {
 
     access_log /var/log/nginx/wcoa.access.log;
     error_log /var/log/nginx/wcoa.error.log;
+
+    location /static/ {
+        alias /home/ubuntu/portals/madrona-portal/docker/static/;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    location /media/ {
+        alias /home/ubuntu/portals/madrona-portal/docker/media/;
+    }
 
     location / {
         proxy_pass         http://127.0.0.1:8000;

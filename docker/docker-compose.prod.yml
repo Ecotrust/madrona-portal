@@ -20,7 +20,7 @@ services:
   app:
     image: ghcr.io/ecotrust/madrona-portal:${IMAGE_TAG:-latest}
     volumes:
-      - static_data:/vol/web
+      - ./static:/vol/web/static
       # User-uploaded media files — persisted on the host across deploys.
       - ./media:/usr/local/apps/madrona-portal/media
       # Config file — lets you update portal settings without rebuilding the image.
@@ -137,7 +137,6 @@ services:
     restart: always
 
 volumes:
-  static_data:
   postgis_data:
   redis_data:
   gp-volume:

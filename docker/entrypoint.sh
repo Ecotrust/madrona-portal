@@ -2,8 +2,8 @@
 # Madrona Portal — Docker entrypoint
 # Waits for the database, then starts the application server.
 #
-# By default only step 1 (DB wait) and step 5 (server start) run.
-# Set DB_INIT=1 to also run steps 2-4 (migrate, seed fixtures, create superuser).
+# By default steps 1 (DB wait), 2 (collectstatic + compress), and 6 (server
+# start) run. Set DB_INIT=1 to also run steps 3-5 (migrate, fixtures, superuser).
 # This is intentionally opt-in to protect existing databases.
 
 set -e
@@ -34,21 +34,27 @@ print("Database is up.", flush=True)
 PY
 
 # ---------------------------------------------------------------------------
-# 2-4. Database initialisation (opt-in via DB_INIT=1)
+# 2. Collect static files and compress assets (always runs)
+# ---------------------------------------------------------------------------
+echo "Collecting static files..."
+python marco/manage.py collectstatic --noinput
+echo "Compressing assets..."
+python marco/manage.py compress --force
+
+# ---------------------------------------------------------------------------
+# 3-5. Database initialisation (opt-in via DB_INIT=1)
 # ---------------------------------------------------------------------------
 if [ "${DB_INIT:-0}" != "1" ]; then
     echo "DB_INIT not set — skipping migrations, fixtures, and superuser creation."
 else
 
 # ---------------------------------------------------------------------------
-# 2. Migrate and collect static files
+# 3. Migrate
 # ---------------------------------------------------------------------------
 python marco/manage.py migrate --noinput
-python marco/manage.py collectstatic --noinput
-python marco/manage.py compress --force
 
 # ---------------------------------------------------------------------------
-# 3. Seed a fresh database with initial fixture data
+# 4. Seed a fresh database with initial fixture data
 #
 # A brand-new PostGIS install contains exactly one Wagtail Page row (the
 # Wagtail root page, depth=1).  We count pages at depth > 1 — if none exist,
@@ -154,7 +160,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Create superuser (only when DJANGO_SUPERUSER_PASSWORD is set and the
+# 5. Create superuser (only when DJANGO_SUPERUSER_PASSWORD is set and the
 #    username does not already exist — safe to run on every restart)
 # ---------------------------------------------------------------------------
 if [ -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]; then
