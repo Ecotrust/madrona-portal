@@ -63,6 +63,13 @@ APP_NAME = env_str('APP_NAME', app_cfg, 'APP_NAME', 'Marine Planner')
 APP_URL = env_str('APP_URL', app_cfg, 'APP_URL', '')
 APP_TEAM_NAME = env_str('APP_TEAM_NAME', app_cfg, 'APP_TEAM_NAME', f"{APP_NAME} Team")
 
+# CSRF trusted origins: accepts a comma-separated string, a JSON array string, or a plain string.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS_ENV = env_str('CSRF_TRUSTED_ORIGINS', app_cfg, 'CSRF_TRUSTED_ORIGINS', '')
+if CSRF_TRUSTED_ORIGINS_ENV:
+    CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS_ENV.split(",")
+
+
 # env var takes priority so Docker / CI can inject secrets without touching config.ini
 SECRET_KEY = env_str('SECRET_KEY', app_cfg, 'SECRET_KEY', '')
 _placeholder_phrases = ('forgot', 'change me', 'changeme', 'placeholder', 'you forgot')
