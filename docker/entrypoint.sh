@@ -36,10 +36,14 @@ PY
 # ---------------------------------------------------------------------------
 # 2. Collect static files and compress assets (always runs)
 # ---------------------------------------------------------------------------
+# Ensure the bind-mounted static dir is writable by madrona_user regardless
+# of how Docker created it on the host (often root:root on Linux).
+chown madrona_user:madrona_user /vol/web/static 2>/dev/null || true
+
 echo "Collecting static files..."
-python marco/manage.py collectstatic --noinput
+gosu madrona_user python marco/manage.py collectstatic --noinput
 echo "Compressing assets..."
-python marco/manage.py compress --force
+gosu madrona_user python marco/manage.py compress --force
 
 # ---------------------------------------------------------------------------
 # 3-5. Database initialisation (opt-in via DB_INIT=1)
@@ -206,7 +210,7 @@ PY
 
 if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
     echo "Starting gunicorn (production mode)..."
-    exec gunicorn marco.wsgi:application \
+    exec gosu madrona_user gunicorn marco.wsgi:application \
         --bind 0.0.0.0:8008 \
         --workers "${GUNICORN_WORKERS:-3}" \
         --timeout "${GUNICORN_TIMEOUT:-120}" \
@@ -215,5 +219,5 @@ if [ "${DJANGO_ENV:-}" = "production" ] || [ "${DJANGO_DEBUG}" = "false" ]; then
         --error-logfile -
 else
     echo "Starting Django development server..."
-    exec python marco/manage.py runserver 0.0.0.0:8000
+    exec gosu madrona_user python marco/manage.py runserver 0.0.0.0:8000
 fi

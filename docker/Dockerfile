@@ -31,6 +31,7 @@ RUN apt-get update && apt-get upgrade -y && \
       perl libxml2-dev \
       libproj-dev proj-bin \
       libffi-dev openssl \
+      gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------------------------------
@@ -87,8 +88,6 @@ RUN chmod 755 /entrypoint.sh && \
     useradd --create-home --shell /bin/sh madrona_user && \
     chown -R madrona_user:madrona_user /vol /usr/local/apps/madrona-portal && \
     chmod -R 775 /vol/web
-
-USER madrona_user
 
 EXPOSE 8000
 EXPOSE 8008
