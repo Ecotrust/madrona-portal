@@ -332,7 +332,7 @@ CACHES = {
 # Internationalisation
 # ---------------------------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = app_cfg.get('TIME_ZONE', 'UTC')
+TIME_ZONE = env_str('TIME_ZONE', app_cfg, 'TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_TZ = True
 WAGTAIL_I18N_ENABLED = False
@@ -343,7 +343,7 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [('en', "English")]
 # ---------------------------------------------------------------------------
 STATIC_ROOT = env_str('STATIC_ROOT', app_cfg, 'STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 STATIC_URL = env_str('STATIC_URL', app_cfg, 'STATIC_URL', '/static/')
-STATIC_CORE = app_cfg.get('STATIC_CORE', '')
+STATIC_CORE = env_str('STATIC_CORE', app_cfg, 'STATIC_CORE', '')
 
 MEDIA_ROOT = env_str('MEDIA_ROOT', app_cfg, 'MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = env_str('MEDIA_URL', app_cfg, 'MEDIA_URL', '/media/')
@@ -371,7 +371,7 @@ STATICFILES_FINDERS = (
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-COMPRESS_ENABLED = app_cfg.getboolean('COMPRESS_ENABLED', True)
+COMPRESS_ENABLED = env_bool('COMPRESS_ENABLED', app_cfg, 'COMPRESS_ENABLED', True)
 COMPRESS_OFFLINE = True
 
 # ---------------------------------------------------------------------------
@@ -407,7 +407,7 @@ WAGTAILIMAGES_IMAGE_MODEL = 'base.PortalImage'
 # ---------------------------------------------------------------------------
 # Map / Geospatial
 # ---------------------------------------------------------------------------
-MAP_LIBRARY = app_cfg.get('MAP_LIBRARY', 'ol6')
+MAP_LIBRARY = env_str('MAP_LIBRARY', app_cfg, 'MAP_LIBRARY', 'ol6')
 GEOMETRY_DB_SRID = 3857
 GEOMETRY_CLIENT_SRID = 3857
 GEOJSON_SRID = 3857
@@ -530,11 +530,11 @@ EMAIL_HOST = env_str('EMAIL_HOST', email_cfg, 'HOST', 'localhost')
 EMAIL_PORT = env_int('EMAIL_PORT', email_cfg, 'PORT', 25)
 EMAIL_HOST_USER = env_str('EMAIL_HOST_USER', email_cfg, 'HOST_USER', '')
 EMAIL_HOST_PASSWORD = env_str('EMAIL_HOST_PASSWORD', email_cfg, 'HOST_PASSWORD', '')
-EMAIL_BACKEND = email_cfg.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-DEFAULT_FROM_EMAIL = email_cfg.get('DEFAULT_FROM_EMAIL', "MARCO Portal Team <portal@midatlanticocean.org>")
-SERVER_EMAIL = email_cfg.get('SERVER_EMAIL', "MARCO Site Errors <ksdev@ecotrust.org>")
+EMAIL_BACKEND = env_str('EMAIL_BACKEND', email_cfg, 'EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+DEFAULT_FROM_EMAIL = env_str('DEFAULT_FROM_EMAIL', email_cfg, 'DEFAULT_FROM_EMAIL', "MARCO Portal Team <portal@midatlanticocean.org>")
+SERVER_EMAIL = env_str('SERVER_EMAIL', email_cfg, 'SERVER_EMAIL', "MARCO Site Errors <ksdev@ecotrust.org>")
 EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', email_cfg, 'EMAIL_USE_TLS', False)
-EMAIL_SUBJECT_PREFIX = app_cfg.get('EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
+EMAIL_SUBJECT_PREFIX = env_str('EMAIL_SUBJECT_PREFIX', app_cfg, 'EMAIL_SUBJECT_PREFIX', '[MARCO]') + ' '
 
 ADMINS = (('KSDev', 'ksdev@ecotrust.org'),)
 
@@ -575,7 +575,7 @@ RECAPTCHA_PRIVATE_KEY = env_str('RECAPTCHA_PRIVATE_KEY', app_cfg, 'RECAPTCHA_PRI
 # ---------------------------------------------------------------------------
 # Analytics
 # ---------------------------------------------------------------------------
-GA_ACCOUNT = app_cfg.get('GA_ACCOUNT', '')
+GA_ACCOUNT = env_str('GA_ACCOUNT', app_cfg, 'GA_ACCOUNT', '')
 
 # ---------------------------------------------------------------------------
 # NATIVE LANDS API KEY
@@ -586,7 +586,7 @@ NATIVE_LAND_API_KEY = env_str('NATIVE_LAND_API_KEY', app_cfg, 'NATIVE_LAND_API_K
 # Project-level settings overrides
 # (Optional app + settings file specified in config.ini)
 # ---------------------------------------------------------------------------
-PROJECT_APP = app_cfg.get('PROJECT_APP', '')
+PROJECT_APP = env_str('PROJECT_APP', app_cfg, 'PROJECT_APP', '')
 if PROJECT_APP:
     INSTALLED_APPS.append(PROJECT_APP)
 
@@ -595,7 +595,7 @@ if 'visualize' in INSTALLED_APPS:
 if 'data_manager' in INSTALLED_APPS:
     from data_manager.settings import *  # noqa: F401, F403
 
-PROJECT_SETTINGS_FILE = app_cfg.get('PROJECT_SETTINGS_FILE', '')
+PROJECT_SETTINGS_FILE = env_bool('PROJECT_SETTINGS_FILE', app_cfg, 'PROJECT_SETTINGS_FILE', '')
 if PROJECT_SETTINGS_FILE:
     try:
         from importlib import import_module
