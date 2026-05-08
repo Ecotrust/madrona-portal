@@ -153,8 +153,6 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: Ecotrust/wcoa
-          # TODO: change to main branch once Docker-specific config is merged there
-          ref: vagrant2docker
           token: ${{ secrets.GH_PAT }}
           path: madrona-apps/wcoa
       

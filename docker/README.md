@@ -43,7 +43,7 @@ git clone https://github.com/Ecotrust/mp-proxy.git
 git clone https://github.com/Ecotrust/mp-survey.git
 git clone https://github.com/Ecotrust/mp-visualize.git
 git clone https://github.com/Ecotrust/p97-nursery.git
-git clone -b vagrant2docker https://github.com/Ecotrust/wcoa.git
+git clone https://github.com/Ecotrust/wcoa.git
 
 cd ..
 ```
