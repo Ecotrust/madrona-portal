@@ -732,14 +732,14 @@ sudo vim /etc/hosts
 3. Ensure the app is running, you can migrate existing GeoPortal records with the following command (replace the username and password):
 
 ```bash
-time curl -X POST "http://localhost:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "size": 100 }, "dest": { "index": "metadata" } }'
+time curl -X POST "http://localhost:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://[ES_REINDEX_REMOTE_WHITELIST]:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "size": 100 }, "dest": { "index": "metadata" } }'
 ```
 
 4. Do a down, including volumes, and up for the elasticsearch container and geoportal to pick up the new records:
 
 ```bash
-docker compose -f docker/docker-compose.prod.yml down elasticsearch geoportal -v
-docker compose -f docker/docker-compose.prod.yml up -d elasticsearch geoportal
+docker compose -f docker/docker-compose.prod.yml down elastic geoportal -v
+docker compose -f docker/docker-compose.prod.yml up -d elastic geoportal
 ```
 
 ---
