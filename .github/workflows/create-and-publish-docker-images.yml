@@ -7,6 +7,8 @@ name: Create and publish West Coast Ocean Data Portal (WCODP) Docker image
 # Image: ghcr.io/ecotrust/madrona-portal:<sha>  (and :latest)
 
 on:
+  release:
+    types: [published]
   push:
     branches: ['docker']
       # TODO: switch to main branch once we're ready to build from there
