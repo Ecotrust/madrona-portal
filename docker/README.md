@@ -272,7 +272,7 @@ docker compose up -d geoportal
 
 ## AWS EC2
 
-See [AWS_DEPLOY.md](AWS_DEPLOY.md)
+See [AWS_DEPLOY.md](../docs/AWS_DEPLOY.md)
 
 ---  
 
