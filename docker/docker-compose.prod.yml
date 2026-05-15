@@ -116,6 +116,7 @@ services:
     image: elasticsearch:8.19.12
     volumes:
       - es-volume:/usr/share/elasticsearch/data
+      - ./backups/elasticsearch:/usr/share/elasticsearch/backups
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -123,18 +124,53 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
       - reindex.remote.whitelist=${ES_REINDEX_REMOTE_WHITELIST}
-      - xpack.security.enabled=false
+      # Disable security so that GeoPortal can write to Elasticsearch.
+      # DO NOT EXPOSE ELASTIC TO THE INTERNET until we solve for this and enable xpack.security.
+      - xpack.security.enabled=false 
+      - path.repo=/usr/share/elasticsearch/backups
     ports:
       - 9200:9200
       - 9300:9300
     networks:
       - madronanetwork
+    group_add:
+      - "0"  # Add the elasticsearch user to the root group to allow backup permissions
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?wait_for_status=yellow"]
       interval: 30s
       timeout: 10s
       retries: 10
     restart: always
+
+  kibana:
+    image: kibana:8.19.12
+    profiles: ["dev"]  # Only start Kibana in dev profile
+    ports:
+      - 127.0.0.1:5601:5601
+    environment:
+      ELASTICSEARCH_HOSTS: http://elastic:9200
+    networks:
+      - madronanetwork
+    depends_on:
+      elastic:
+        condition: service_healthy
+    restart: no
+
+  nginx:
+    image: nginx:alpine
+    profiles: ["dev"]  # Only start nginx in dev profile
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./static:/vol/web/static:ro
+      - ./media:/usr/local/apps/madrona-portal/media:ro
+    networks:
+      - madronanetwork
+    depends_on:
+      - app
+      - geoportal
+    restart: no
 
 volumes:
   postgis_data:
