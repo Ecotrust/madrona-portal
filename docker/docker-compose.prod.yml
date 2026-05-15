@@ -152,7 +152,7 @@ services:
     depends_on:
       elastic:
         condition: service_healthy
-    restart: always
+    restart: no
 
   nginx:
     image: nginx:alpine
@@ -168,7 +168,7 @@ services:
     depends_on:
       - app
       - geoportal
-    restart: unless-stopped
+    restart: no
 
 volumes:
   postgis_data:
