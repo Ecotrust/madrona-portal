@@ -162,7 +162,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx-dev.conf:/etc/nginx/conf.d/default.conf:ro
       - ./static:/vol/web/static:ro
       - ./media:/usr/local/apps/madrona-portal/media:ro
     networks:
