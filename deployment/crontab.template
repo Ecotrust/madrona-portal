@@ -1,0 +1,32 @@
+ Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# NOTE: EBS Backup is scheduled for XX:XX every XXX
+#
+# m h  dom mon dow   command
+# 02:15 daily (18:15 PST) - Dump PostgreSQL DB to dumpfile
+15 2 * * * cd /home/ubuntu/portals/madrona-portal && /bin/bash -lc './backups/db_dump.sh -d ./backups/sql && find ./backups/sql -type f -n>
+# 03:15 daily (19:15 PST) - Snapshot Elasticsearch to FS
+15 3 * * * /usr/bin/curl -X PUT "localhost:9200/_snapshot/gp_es_stage_snap/snapshot_$(date +'%Y%m%d_%H%M')" -H 'Content-Type: application/json' -d '{"indices": "metadata_v1", "ignore_unavailable": true, "include_global_state": false}'
+# 05:31 daily (21:31 PST) - Refresh NativeLand JSON layers
+31 5 * * * cd /home/ubuntu/portals/madrona-portal/docker && docker compose exec app marco/manage.py import_nativeland
+
