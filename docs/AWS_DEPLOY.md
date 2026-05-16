@@ -904,7 +904,7 @@ or wget (they should be public-readable).
 
 ---
 
-## Backups and Snaptshots
+## Backups and Snapshots
 
 AWS Lifecycle Management allows you to easily create snapshots of your EBS volumes.
 This is great for data stored as files (media, staticfiles, WAFs, etc...) but is
@@ -970,7 +970,7 @@ Uses the built-in `db_dump.sh` script to dump the database to a local SQL file
 ```
 * REPO_NAME
    * You should have set this in the section on Elasticsearch Snapshot Repositories above
-   
+
 You can review the name of your snapshot(s) with:
 ```
 curl -X GET "localhost:9200/_cat/snapshots?v"
