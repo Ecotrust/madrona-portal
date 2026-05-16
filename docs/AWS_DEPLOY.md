@@ -960,21 +960,17 @@ list of recommended jobs with examples of how to implement them.
 
 ### PostgreSQL/Django dump
 ```
-cd /home/ubuntu/portals/madrona-portal && /bin/bash -lc './backups/db_dump.sh -d ./backups/sql && find ./backups/sql -type f -n>
+cd /home/ubuntu/portals/madrona-portal && /bin/bash -lc './backups/db_dump.sh -d ./backups/sql && find ./backups/sql -type f -name "*.sql" -mtime +10 -delete' >> /home/ubuntu/portals/madrona-portal/backups/db_dump.log  2>&1
 ```
 Uses the built-in `db_dump.sh` script to dump the database to a local SQL file
 
 ### Elasticsearch/GeoPortal snapshot
 ```
-/usr/bin/curl -X PUT "localhost:9200/_snapshot/{REPO_NAME}/snapshot_$(date +'%Y%m%d_%H%M')" -H 'Content-Type: application/json' -d '{"indices": "{INDEX_NAME}", "ignore_unavailable": true, "include_global_state": false}'
+/usr/bin/bash /home/ubuntu/portals/madrona-portal/backups/create_elastic_snapshot.sh -r {REPO_NAME}
 ```
 * REPO_NAME
    * You should have set this in the section on Elasticsearch Snapshot Repositories above
-* INDEX_NAME
-   * This will most likely be `metadata_v1`
-   * You can get a list of index names from the Elasticsearch API:
-      * `curl -X GET "localhost:9200/_cat/indices?v"`
-
+   
 You can review the name of your snapshot(s) with:
 ```
 curl -X GET "localhost:9200/_cat/snapshots?v"
