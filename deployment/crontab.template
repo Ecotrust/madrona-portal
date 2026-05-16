@@ -26,7 +26,7 @@
 # 02:15 daily (18:15 PST) - Dump PostgreSQL DB to dumpfile
 15 2 * * * cd /home/ubuntu/portals/madrona-portal && /bin/bash -lc './backups/db_dump.sh -d ./backups/sql && find ./backups/sql -type f -n>
 # 03:15 daily (19:15 PST) - Snapshot Elasticsearch to FS
-15 3 * * * /usr/bin/curl -X PUT "localhost:9200/_snapshot/gp_es_stage_snap/snapshot_$(date +'%Y%m%d_%H%M')" -H 'Content-Type: application/json' -d '{"indices": "metadata_v1", "ignore_unavailable": true, "include_global_state": false}'
+15 3 * * * /usr/bin/bash /home/ubuntu/portals/madrona-portal/backups/create_elastic_snapshot.sh -r gp_es_snap
 # 05:31 daily (21:31 PST) - Refresh NativeLand JSON layers
 31 5 * * * cd /home/ubuntu/portals/madrona-portal/docker && docker compose exec app marco/manage.py import_nativeland
 
