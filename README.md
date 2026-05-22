@@ -31,6 +31,8 @@ The following is the **_recommended_** folder structure for the **entire** MARCO
   git clone https://github.com/Ecotrust/mp-data-manager.git
   git clone https://github.com/Ecotrust/mp-drawing.git
   git clone https://github.com/Ecotrust/mp-explore.git
+  git clone https://github.com/Ecotrust/mp-layers.git
+  git clone https://github.com/Ecotrust/mp-map-groups.git
   git clone https://github.com/Ecotrust/mp-proxy.git
   git clone https://github.com/Ecotrust/mp-visualize.git
   git clone https://github.com/Ecotrust/p97-nursery.git
