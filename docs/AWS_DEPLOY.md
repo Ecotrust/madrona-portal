@@ -826,7 +826,7 @@ DEFAULT_FROM_EMAIL=noreply@prod.mail.ecotrust.org
 ```
 
 ### Create custom mail from domain
-1. In SES Console → Domains → click on your domain → Create mail from domain
+1. In SES Console → Identities → click on your domain → Create mail from domain
 2. Enter a subdomain (e.g., `mail`) → Create
 3. Add the provided DNS records to your DNS provider
 4. Wait for AWS to verify the mail from domain
