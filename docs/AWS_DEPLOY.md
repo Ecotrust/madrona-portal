@@ -717,6 +717,11 @@ docker compose -f docker/docker-compose.prod.yml up -d --force-recreate app
 scp -r {your_media_dir} ubuntu@<your_server_ip>:/home/ubuntu/portals/madrona-portal/docker/media/
 ```
 
+#### Create a directory for data_manager
+```bash
+mkdir ~/portals/madrona-portal/docker/data_manager
+```
+
 ## Migrate existing GeoPortal records
 
 1. Update .env with the reindex remote whitelist and port. You can find this info by looking at the old server's configuration or by asking the previous admin.
