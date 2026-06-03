@@ -94,7 +94,7 @@ services:
   db:
     image: postgis/postgis:16-3.4
     volumes:
-      - postgis_data:/var/lib/postgresql
+      - postgis_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
