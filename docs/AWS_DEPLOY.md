@@ -238,17 +238,15 @@ reboots. You only need to re-run this if the PAT expires.
 
 ---
 
-## Phase 3 — Transfer Geoportal WAR Files
+## Phase 3 — Locate/Create and upload Geoportal WAR Files
 
 The Geoportal service requires two Java WAR files that are not in any Git
-repository. Copy them from the old production server.
-
-**On the old server**, find the WAR files:
-
-```bash
-# Common locations on the old server:
-find / -name "geoportal.war" -o -name "harvester.war" 2>/dev/null
-```
+repository. Since these files include passwords (even if encrypted) 
+Ecotrust keeps custom, private builds in our shared drive. If you do
+not have access to those, you can build your own using Maven (beyond the
+scope of this document) on the repos cloned from:
+* https://github.com/Ecotrust/geoportal-server-catalog (to create `geoportal.war`)
+* https://github.com/Ecotrust/geoportal-server-harvester (to create `harvester.war`)
 
 **On your local machine**, SCP them to the new EC2 instance:
 
@@ -895,6 +893,113 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ```bash
 GA_ACCOUNT=G-XXXXXXXXXX
 ```
+
+---
+
+## Create local metadata Web Accessible Folder
+You may have noticed we created a `/geospatial` location in the Nginx config.
+This is used to serve metadata records used by input brokers in the GeoPortal
+Harvester as well as referenced by layers stored in mp-layers' Layers records.
+
+Referring to the Nginx config, you'll see it refers to /var/www/html/geospatial.
+All you need to do is create this folder, ensure www-data has read privileges,
+and the endpoint will work (it will be empty). If migrating from an existing 
+server, you can copy those folders and existing metadata records over using scp 
+or wget (they should be public-readable).
+
+---
+
+## Backups and Snapshots
+
+AWS Lifecycle Management allows you to easily create snapshots of your EBS volumes.
+This is great for data stored as files (media, staticfiles, WAFs, etc...) but is
+not sufficient for capturing data in databases as the snapshot is not atomic, and
+we have not scheduled our databases to stop for these snapshots. Instead, it's 
+important to use each database's built-in tools to create file-system-level 
+backups that will be accurately represented in any EBS volume snapshot.
+
+Those dumps are best managed by Cron jobs (covered below) but in some cases, some 
+prep work is required.
+
+### Elasticsearch Snapshot Repository
+
+Elasticsearch uses a built-in API-based tool called 'Snapshot' to create file-system
+level backups that are appropriate for restoring your database to prior states or
+populating from scratch. Before you can create a snapshot, you must first create a
+Snapshot Repository.
+
+Below: 
+* REPO_NAME - the name you wish to use for your repository.
+   * This will need to be recorded and set again in your cron job that creates the snapshots
+* /usr/share/elasticsearch/backups 
+   * This is the assumed location of the backups folder from the perspective of the elasticsearch container
+   * This value should be correct if you did not edit docker-compose.prod.yml
+   * Docker maps this folder to your local `~/portals/madrona-portal/docker/backups/elasticsearch`
+   * This way the files representing your snapshots are exposed during the EBS backup
+
+```
+curl -X PUT "localhost:9200/_snapshot/{REPO_NAME}" -H "Content-Type: application/json" -d '{"type": "fs", "settings": {"location": "/usr/share/elasticsearch/backups", "compress": true}}'
+
+```
+
+You can confirm the creation/existence of this repository
+```
+curl -X GET "localhost:9200/_cat/repositories?v"
+```
+
+### EBS Snapshots (lifecycle)
+
+Be sure to set up regularly recurring snapshots of your EBS volume(s) so that
+data may be recovered in a disaster. This is easily managed in the EC2 dashboard.
+
+---
+
+## Cron Jobs
+There are several tasks that should run regularly to ensure your server is
+serving up-to-date data and keeping file-system-level backup dumps to
+ensure AWS Lifecycle snapshots can capture accurate representations of the
+database contents/state.
+
+Please see [crontab.template](../deployment/crontab.template) for an up-to-date
+list of recommended jobs with examples of how to implement them.
+
+### PostgreSQL/Django dump
+```
+cd /home/ubuntu/portals/madrona-portal && /bin/bash -lc './backups/db_dump.sh -d ./backups/sql && find ./backups/sql -type f -name "*.sql" -mtime +10 -delete' >> /home/ubuntu/portals/madrona-portal/backups/db_dump.log  2>&1
+```
+Uses the built-in `db_dump.sh` script to dump the database to a local SQL file
+
+### Elasticsearch/GeoPortal snapshot
+```
+/usr/bin/bash /home/ubuntu/portals/madrona-portal/backups/create_elastic_snapshot.sh -r {REPO_NAME}
+```
+* REPO_NAME
+   * You should have set this in the section on Elasticsearch Snapshot Repositories above
+
+You can review the name of your snapshot(s) with:
+```
+curl -X GET "localhost:9200/_cat/snapshots?v"
+```
+
+You can review the status of your snapshot(s) with:
+```
+curl -X GET "localhost:9200/_snapshot/{REPO_NAME}/{SNAPSHOT_NAME}"
+```
+* SNAPSHOT_NAME
+   * You should get this from the previous `_cat/snapshots` query
+
+
+### NativeLands Digital JSON files
+```
+cd /home/ubuntu/portals/madrona-portal/docker && docker compose exec app marco/manage.py import_nativeland
+```
+
+Assuming you have an API key for https://native-land.ca/ and configured your .env correctly, this management
+command should pull 3 layers in locally as GeoJSONs to be served statically for vector layers in the Portal:
+* Languages
+* Historic Territories
+* Treaties
+
 
 ---
 
