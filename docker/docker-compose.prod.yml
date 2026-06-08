@@ -98,6 +98,7 @@ services:
       - 8080:8080
     volumes:
       - gp-volume:/usr/local/tomcat/webapps/
+      - harvester_data:/root
       - ${gpt_catalog_war}:/usr/local/tomcat/webapps/geoportal.war
       - ${gpt_harvester_war}:/usr/local/tomcat/webapps/harvester.war
       - ./templates:/templates:ro
@@ -177,6 +178,7 @@ volumes:
   redis_data:
   gp-volume:
   es-volume:
+  harvester_data:
 
 networks:
   madronanetwork:
