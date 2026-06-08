@@ -159,25 +159,22 @@ else
     echo "✗ app-security.xml missing"
 fi
 
-# Stop background Tomcat
+# Stop background Tomcat gracefully so H2 can flush and release its lock
 echo "Stopping background Tomcat (PID: $TOMCAT_PID)..."
 
-# Check if the process is still running
 if kill -0 $TOMCAT_PID 2>/dev/null; then
-    echo "Sending TERM signal to Tomcat..."
-    kill $TOMCAT_PID
-    
-    # Wait for graceful shutdown (up to 10 seconds)
-    for i in {1..10}; do
+    echo "Requesting graceful Tomcat shutdown via catalina.sh stop..."
+    catalina.sh stop 30 -force
+    # Wait for the background process to exit
+    for i in {1..35}; do
         if ! kill -0 $TOMCAT_PID 2>/dev/null; then
             echo "Tomcat stopped gracefully"
             break
         fi
-        echo "Waiting for shutdown... ${i}/10"
+        echo "Waiting for shutdown... ${i}/35"
         sleep 1
     done
-    
-    # Force kill if still running
+    # Final safety net
     if kill -0 $TOMCAT_PID 2>/dev/null; then
         echo "Force stopping Tomcat..."
         kill -9 $TOMCAT_PID
@@ -188,6 +185,11 @@ else
 fi
 
 echo "Tomcat stopped successfully"
+
+# Remove any stale H2 lock/trace files left by the background Tomcat run.
+# These persist in the named volume and prevent the DB from opening on restart.
+echo "Cleaning up stale H2 artifacts in /root..."
+rm -f /root/harvester.lock.db /root/harvester.trace.db
 
 # Start Tomcat in foreground
 echo "Starting Tomcat with updated configuration..."
