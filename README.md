@@ -1,169 +1,337 @@
-# MARCO Portal Redesign
+# Docker Development Guide — Madrona Portal (WCOA)
 
-### This is the top level project for the Mid-Atlantic Ocean Data Portal
+## Quick start
 
-### ~Development Installation
+These steps take a fresh machine from nothing to a running portal.
 
-##### Initial Setup using Vagrant:
-The following is the **_recommended_** folder structure for the **entire** MARCO project and the customized provisioning script is inherently dependent on it. Altering the folder and naming structure will require modifications to the provisioning script, so please be aware! The provisioning script is designed to be a **one-step** install after initial setup.
+### Step 1 — Create the workspace directory
 
-```
-  -- madrona-portal
-    -- apps (all remaining repositories within Madrona Portal)
-      -- mardona-analysistools
-      -- madrona-features
-      -- etc.
-```
+All repos live inside a single parent directory. The Dockerfile build
+context is the parent, so the layout is not optional.
 
-1. Download the required code and dependencies:
-```
-  git clone https://github.com/Ecotrust/madrona-portal.git
-  mv madrona-portal madrona-portal
-  cd madrona-portal
-  mkdir apps
-  cd apps
-  git clone https://github.com/Ecotrust/madrona-analysistools.git
-  git clone https://github.com/Ecotrust/madrona-features.git
-  git clone https://github.com/Ecotrust/madrona-manipulators.git
-  git clone https://github.com/Ecotrust/madrona-scenarios.git
-  git clone https://github.com/Ecotrust/mp-map-groups.git
-  git clone https://github.com/Ecotrust/mp-accounts.git
-  git clone https://github.com/Ecotrust/mp-data-manager.git
-  git clone https://github.com/Ecotrust/mp-drawing.git
-  git clone https://github.com/Ecotrust/mp-explore.git
-  git clone https://github.com/Ecotrust/mp-layers.git
-  git clone https://github.com/Ecotrust/mp-map-groups.git
-  git clone https://github.com/Ecotrust/mp-proxy.git
-  git clone https://github.com/Ecotrust/mp-visualize.git
-  git clone https://github.com/Ecotrust/p97-nursery.git
+```bash
+mkdir portals
+cd portals
 ```
 
-2.  Once your folder structure is set up, create a `config.ini` file by making a copy of the `config.ini.template` located at `madrona-portal/marco` and modify the following
-      * **SECRET_KEY** = [Punch in some random gibberish]
-      * **MEDIA_ROOT** = /home/vagrant/marco_portal2/media
-      * **STATIC_ROOT** = /home/vagrant/marco_portal2/static
-      * **LOCATION** = /var/run/redis/redis.sock
-      * **RESULT_BACKEND** = redis+socket:///var/run/redis/redis.sock
-      * **BROKER_URL** = redis+socket:///var/run/redis/redis.sock
+### Step 2 — Clone madrona-portal
 
-3. Create a `/static/` directory at the root level and move the `/bower_components/` directory (also found at the root level) within it
-
-4. Create a `/media/` directory at the root level and retrieve the live server's media folder via ssh/sftp located at `/webapps/marco_portal_media/` and add it to the `/media/` path. Refer to your team's technical documentation for server login (username and password) credentials
-    * Of note - you may want to exclude the `data_manager` folder within the media directory - unless you're interested in several GBs of utfgrid layers.
-```
-mkdir media
-scp -r user@live_server:~/webapps/marco_portal_media/documents ./media/         #11s -- RDH 7/27/2017
-scp -r user@live_server:~/webapps/marco_portal_media/group_images ./media/      #11s
-scp -r user@live_server:~/webapps/marco_portal_media/images ./media/            #3m19s
-scp -r user@live_server:~/webapps/marco_portal_media/original_images ./media/   #3m57s
-scp user@live_server:~/webapps/marco_portal_media/index.html ./media/           #12s
+```bash
+git clone -b docker https://github.com/Ecotrust/madrona-portal.git madrona-portal
 ```
 
-5. Retrieve the data & content fixture from `~/fixtures/dev_fixture.json` via ssh/sftp and place it at the root level of `madrona-portal`
+### Step 3 — Clone the sub-app packages
+
+The Dockerfile copies all of these at build time. Clone them into a
+`madrona-apps/` sibling directory:
+
+```bash
+mkdir madrona-apps && cd madrona-apps
+
+git clone https://github.com/Ecotrust/django_url_shortener.git
+git clone https://github.com/Ecotrust/madrona-analysistools.git
+git clone https://github.com/Ecotrust/madrona-features.git
+git clone https://github.com/Ecotrust/madrona-manipulators.git
+git clone https://github.com/Ecotrust/madrona-scenarios.git
+git clone https://github.com/Ecotrust/mp-accounts.git
+git clone https://github.com/Ecotrust/mp-data-manager.git
+git clone https://github.com/Ecotrust/mp-drawing.git
+git clone https://github.com/Ecotrust/mp-explore.git
+git clone https://github.com/Ecotrust/mp-layers.git
+git clone https://github.com/Ecotrust/mp-map-groups.git
+git clone https://github.com/Ecotrust/mp-proxy.git
+git clone https://github.com/Ecotrust/mp-survey.git
+git clone https://github.com/Ecotrust/mp-visualize.git
+git clone https://github.com/Ecotrust/p97-nursery.git
+git clone https://github.com/Ecotrust/wcoa.git
+
+cd ..
 ```
-cd [working dir]/madrona-portal
-scp user@live_server:~/fixtures/dev_fixture.json ./                              #25s
+
+Your workspace should now look like:
+
+```
+portals/
+├── madrona-portal/     ← cloned from Ecotrust/madrona-portal, branch: docker
+└── madrona-apps/
+    ├── wcoa/           ← branch: vagrant2docker
+    ├── mp-layers/
+    └── ...             ← all others on main
 ```
 
-6. Download and install [vagrant](https://www.vagrantup.com/downloads.html) and [virtual box](https://www.virtualbox.org/wiki/Downloads) (if you haven't already done so already)
+### Step 4 — Configure environment
 
-7. At the root of `madrona-portal`, run `vagrant up` and let it install ALL of dependencies MARCO relies upon
+From `madrona-portal/`:
 
-8. At this point, you should be completely setup!
-  * Note: At this point, there still seem to be issues with Wagtail Pages, and therefore Ocean Stories.
-  * This is due to needing to configure for Redis to run on a socket, and Celery to point to that socket.
-  * This is likely not the only way, but it's what I have working and how it runs on production. --RDH
+```bash
+cd madrona-portal/docker
+cp .env.example .env
+```
 
-9. You probably want to create a superuser once you're in your VM, so that you have access to both the Django and Wagtail backend
+Edit `.env` and set at minimum:
 
-##### Using Vagrant
-* Access your VM by running `vagrant ssh`. This will automatically log you into your virtual machine with your virtual environment activated at the project root level.
+```ini
+SECRET_KEY=<long random string>
+DB_PASSWORD=<postgres password>
+DJANGO_SUPERUSER_PASSWORD=<your dev admin password>
+```
 
+Everything else has working defaults for local development.
 
-* **Shortcuts**
-  * To use `/manage.py` with normal django administrative tasks , use the keyword `dj`
+### Step 4.1 - Create ini file 
 
-      ```
-      dj makemigrations
-      dj migrate
-      dj createsuperuser
-      dj dumpdata
-      etc.
-      ```
+```bash
+cd ../marco
+cp config.docker.ini.template config.wcoa.docker.ini
+```
 
-  * Typing `djrun` will run your dev server - remember to add your sample data first (see #5):
+Edit `config.wcoa.docker.ini` :
 
+```ini
+LOCATION = redis://tasks:6379/1
+CELERY_RESULT_BACKEND = redis://tasks:6379/1
+CELERY_BROKER_URL = redis://tasks:6379/0
+```
 
-*  **NOTE:** The provisioning script is designed for a fresh install and will completely wipe the database and any associated content - IF you decide to shutdown your VM! Outside of halting your vagrant machine, running `vagrant up` or `vagrant provision` will cause the provisioning script to re-run. Adding the flag `--no-provision` to `vagrant up` will ignore the script.
+### Step 5 — Build the image
 
-#### **** OPTIONAL ***
-If you decide to use pgAdmin3 for database management rather than using the command line, you'll need to allow/enable access to your virtual machine.
-*  Enter into `postgres.conf` and change `listen_addresses`:
-  ```
-  sudo nano /etc/postgresql/9.3/main/postgresql.conf
-  listen_addresses = '*'
-  ```
+Run this command from `madrona-portal/docker` (the previous step leaves
+you in `madrona-portal/marco`, so `cd ../docker` gets you there). The
+Docker build context for this command is `../../`, which resolves to the parent workspace directory `portals/` that contains both
+`madrona-portal/` and `madrona-apps/`.
 
-* Enter into `pg_hba.conf` and add the `host` line:
-  ```
-   sudo nano /etc/postgresql/9.3/main/pg_hba.conf
-   host    all    all    10.0.0.0/16     md5
-  ```
+If running this build from a MAC, add `--builder desktop-linux` to the `buildx build` command. 
 
-* Restart postgresql
-  ```
-  sudo /etc/init.d/postgresql restart
-  ```
+```bash
+cd ../docker
+# MAC OS
+docker compose build --no-cache app
+# LINUX
+docker compose build --no-cache app
+```
 
-* Within pgAdmin3, modify your settings:
-     *  **Name:** marco_portal
-     *  **Host:** localhost
-     *  **Port:** 65432
-     *  **Username:** vagrant
+Previously we recommended `docker buildx build --builder desktop-linux --no-cache --load -f ./Dockerfile ../../` for all platforms, but BuildKit caching on Linux does not appear to have the same git object store issue as on Mac, so the simpler `docker compose build --no-cache app` is sufficient on Linux.
 
+> **Why `docker buildx build` and not `docker compose build`?**
+> `docker compose build` has a caching bug: when a `.git` directory exists
+> inside the build context, BuildKit reads files from the git object store
+> (committed versions) rather than the filesystem. If you forget to commit
+> a change, the old version is silently baked into the image. The same
+> restriction applies — always commit changes to `madrona-portal/` or
+> `madrona-apps/` before rebuilding.
 
-### ~Code Deployment
-Since this project is modularized, changes to a submodule only requires server updates to that specific submodule - rather than the entire code base.
+### Step 6 — Start the full stack; Populate testing DB
 
-1.  SSH into the server
-2.  Activate your virtual env - `source ~/env/marco_portal2/bin/activate`
-3.  Navigate to the submodule that you're updating. Submodules are located at:
-    *  **Sandbox** - `cd /home/midatlantic/env/marco_portal2/src/[THE-NAME-OF-YOUR-SUBMODULE]`
-    *  **Production** - `cd ~/webapps/marco_portal/marco/src/`  
-4.  Once you're at that path - `git fetch && git reset -q --hard origin/master`
-    *  `origin/master` pertains to the main master branch - you can change that to whatever your branch you'd like
-    *  Of note, the master *madrona-portal* branch runs as `origin/prototype`
-5.  Navigate to `cd ~/webapps/marco_portal/marco`
-6.  Run `python manage.py collectstatic` to collect all the neccessary static (js/css) files
-    * you can use the -i flag to ignore utfgrids in the rare chance that those files seems to be "collecting"
-    * `python manage.py collectstatic -i utfgrid`
-7.  Run `python manage.py compress` to compress
-8.  Restart the server - `~/webapps/marco_portal/apache2/bin/restart`
+From `madrona-portal/docker`:
 
-### ~Adding a new module to the apps directory and deployment
-Adding a new module to marco requires a few additional steps for both local/development setup and deployment.
+```bash
+DB_INIT=1 docker compose up
+```
 
-**Local/Development setup**:  
+On first boot the entrypoint automatically:
 
-1. create directory within `madrona-portal/apps`
-    * Use `git clone` for exisiting module or create a new direcotry and use `git init` to set up your new repository.
-        * If this is a new git repository create a new remote origin repo within the [MidAtlanticPortal](https://github.com/MidAtlanticPortal) orgainization. *Next steps assume your new module is ready to use.*
-2. open `madrona-portal/requirements.txt` and add the newly created git remote repository (*e.g.* `-e git+https://github.com/MidAtlanticPortal/your_new_repo.git@master#egg=an_alias`). *the `@master#egg=` assigns an alias (simple name) for your module*
-3. open `madrona-portal/marco/marco/settings.py` and add your new module's alias as an `INSTALLED_APPS`. (*e.g.*, `INSTALLED_APPS = [ 'an_alias']`)
-4. run `vagrant provision`
+1. Waits for PostgreSQL to accept connections
+2. Runs `migrate`
+3. Runs `collectstatic` and `compress`
+4. Detects a fresh database and loads initial fixtures (1,782 + 22 objects)
+5. Creates the superuser defined in `.env` (if `DJANGO_SUPERUSER_PASSWORD` is set)
+6. Starts the application server
+
+Open: http://localhost:8000/ (or whatever `APP_PORT` is set to in `.env`)
+
+Once you have a populated DB (either dummy or with migrated data) omit the `DB_INIT=1`:
+```bash
+docker compose up
+```
 
 
-**Deployment**:  
+### Step 7 - Importing a Production SQL Dump into the Dockerized Database
 
-1. ssh into the server (sandbox or production)
-2. activate your virtual env - `source ~/env/marco_portal2/bin/activate`
-3. navigate to the submodule directory `cd /home/midatlantic/env/marco_portal2/src/`
-4. `git clone` your new module repository
-5. navigate to the marco-portal repo `cd ~/code/marco_portal2/prototype/`
-6. run `git fetch && git reset -q --hard origin/prototype`
-7. open the `requirements.txt` file and copy the line you added for your repo (*e.g.*, `-e git+https://github.com/MidAtlanticPortal/new_repo.git@master#egg=an_alias`)
-8. enter `pip install` and paste (*e.g.*,`pip install -e git+https://github.com/MidAtlanticPortal/new_repo.git@master#egg=an_alias` ) and run
-9. navigate to `cd ~/webapps/marco_portal/marco`
-10. run `python manage.py collectstatic -i utfgrid`
-11. run `python manage.py compress`
-12. restart the server - `~/webapps/marco_portal/apache2/bin/restart`  
+#### Prerequisites
+- Docker Compose stack is running — `docker compose up`
+- `madrona-portal/docker/.env` exists with `DB_NAME`, `DB_USER`, and `DB_PASSWORD` set
+
+
+#### Step 7.1 — Ensure you have the db-restore script
+
+`madrona-portal/scripts/db-restore.sh` has the following behaviour:
+- Loads DB credentials from `.env`
+- Verifies the `db` container is healthy before proceeding
+- With `--drop`: terminates active connections, drops and recreates the database, and enables the PostGIS extension
+- Streams the dump file directly into the container via `docker compose exec` (no temp files)
+- Prints next-step instructions on completion
+
+Made sure it is executable:
+
+From `madrona-portal/docker`:
+```bash
+chmod +x ../scripts/db-restore.sh
+```
+
+#### Step 7.2 — Run the restore
+
+From `madrona-portal/docker`:
+```bash
+../scripts/db-restore.sh --drop <path_to_your_sql>
+```
+
+*example:*
+```bash
+../scripts/db-restore.sh --drop ../../madrona-apps/wcoa/wcodp_prod_dump_20260320.sql
+```
+
+The `--drop` flag was used to ensure a clean import. The script:
+1. Terminated all active connections to `wcoa_docker_db`
+2. Dropped and recreated the database
+3. Enabled the `postgis` extension
+4. Streamed the sql dump into the container via `psql`
+
+There is an optional `--env-file <path_to_your_env_file>` if you place your `.env` file in a non-standard location.
+
+**Expected warnings (non-fatal):**
+- `ERROR: relation "..." does not exist` — pg_dump tries to drop constraints before creating them; safe to ignore on a fresh DB
+- `ERROR: role "wcoa_user" does not exist` — prod uses a dedicated app role; dev uses `postgres` which has full access
+
+
+#### Step 7.3 — Apply migrations
+
+```bash
+docker compose exec app python marco/manage.py migrate
+```
+
+#### Step 7.4 - Migration to mp-layers
+
+*If migrating from a server that has not migrated to mp-layers from mp-data-manager*:
+
+```bash
+docker compose exec app python marco/manage.py migration_to_layers
+```
+
+---  
+
+### Step 8 — Importing production media files into the Dockerized Application
+
+#### Prerequisites
+- `madrona-portal/marco/marco/config.wcoa.docker.ini` exists with `MEDIA_ROOT` set to a valid directory
+- That valid directory should match the volume location is docker-compose.yml
+   - `portals/madrona-portal/media`
+- Production media files are available 
+
+#### Step 8.1 - Copy the media files into Docker
+
+If media files need to be copied to the server, you can use `scp`:
+
+```bash
+scp -r /path/to/your_media_dir ubuntu@<ELASTIC_IP>:/home/ubuntu/portals/madrona-portal/docker/media
+```
+
+If media files are somewhere on EC2:
+
+```bash
+cd ~/portals/madrona-portal/docker
+cp -r {your_media_dir}/* ./media/
+```
+
+#### Create a directory for data_manager
+```bash
+mkdir ~/portals/madrona-portal/docker/data_manager
+```
+
+---  
+
+## Migrate existing GeoPortal records
+
+1. Update .env with the reindex remote whitelist and port. You can find this info by looking at the old server's configuration or by asking the previous admin.
+
+2. Edit the hosts file to allow the server to resolve the old Elastic IP of the GeoPortal instance to the new internal Docker network:
+
+```bash
+sudo vim /etc/hosts
+# Add the following line, replacing <OLD_ELASTIC_IP> and <ES_REINDEX_REMOTE_WHITELIST from .env>:
+<OLD_IP> <ES_REINDEX_REMOTE_WHITELIST from .env>
+```
+
+3. Restart the elastic container to apply the .env and hosts file change:
+
+```bash
+docker compose down -v elastic
+docker compose up -d elastic
+```
+
+4. Ensure the app is running, you can migrate existing GeoPortal records with the following command (replace the username and password):
+
+```bash
+time curl -X POST "http://localhost:9200/_reindex"  -H 'Content-Type: application/json' -d'{"conflicts": "proceed", "max_docs": 51000, "source": {"remote": { "host":"http://elastic.prod.wcoa.ecotrust.org:80/geoportal/elastic/", "username": "[[USERNAME]]", "password": "[[PASSWORD]]"  }, "index": "metadata", "size": 100 }, "dest": { "index": "metadata" } }'
+```
+
+1. Do a down, including volumes, and up for the geoportal container to pick up the new records:
+
+```bash
+docker compose down -v geoportal
+docker compose up -d geoportal
+```
+
+---
+
+# Deploy to fully containerized production environment
+
+## AWS EC2
+
+See [AWS_DEPLOY.md](../docs/AWS_DEPLOY.md)
+
+---  
+
+## Dev infrastructure only (local Django server)
+
+To run Django locally against Docker-managed PostGIS and Redis (no app container):
+
+```bash
+# Start only db and tasks
+docker compose up -d db tasks
+
+# Then in a separate terminal, from madrona-portal/:
+cd marco
+python manage.py runserver
+```
+
+---
+
+## Rebuilding after code changes
+
+From the docker directory (`madrona-portal/docker`):
+
+```bash
+docker compose build --no-cache app
+```
+
+| Note on `--no-cache`: Use it when dependencies have changed; without it, Docker reuses the cached pip install layer (needed when `docker-requirements.txt` changes).
+
+Then bring the stack up:
+
+```bash
+docker compose up --force-recreate
+```
+
+---
+
+## Reset to a clean state
+
+```bash
+# From madrona-portal/
+docker compose -f docker/docker-compose.yml --env-file .env --profile full down -v
+```
+
+`-v` removes the PostGIS and Redis volumes. The next `up` will re-run
+migrations and reload fixtures from scratch.
+
+---
+
+## Disk space
+
+Docker's build cache can grow large over time:
+
+```bash
+docker system df                  # show usage breakdown
+docker system prune -f            # remove stopped containers, dangling images, unused networks, build cache
+docker volume prune -f            # remove unused volumes — only run when all containers are stopped
+```
