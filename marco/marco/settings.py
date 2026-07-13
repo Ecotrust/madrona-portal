@@ -35,7 +35,14 @@ STYLES_DIR = os.path.realpath(os.path.join(ASSETS_DIR, 'styles'))
 # Configuration file
 # ---------------------------------------------------------------------------
 MP_PROJECT_CONFIG = os.environ.get("MP_PROJECT_CONFIG", "config.ini")
-CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
+
+# Allow MP_PROJECT_CONFIG to be an absolute path. Enabling modularity, 
+# because a config.ini can live outside the madrona portal project directory.
+# Otherwise use the config.ini in madrona portal.
+if os.path.isabs(MP_PROJECT_CONFIG):
+    CONFIG_FILE = MP_PROJECT_CONFIG
+else:
+    CONFIG_FILE = os.path.normpath(os.path.join(BASE_DIR, MP_PROJECT_CONFIG))
 
 cfg = configparser.ConfigParser()
 cfg.read(CONFIG_FILE)
