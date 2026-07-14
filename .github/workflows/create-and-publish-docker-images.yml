@@ -10,7 +10,7 @@ on:
   release:
     types: [published]
   push:
-    branches: ['docker']
+    branches: ['dockerdecouple']
       # TODO: switch to main branch once we're ready to build from there
   workflow_dispatch:
 
