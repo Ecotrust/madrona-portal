@@ -196,7 +196,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
-            ghcr.io/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ env.IMAGE_NAME }}:dockerdecouple
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -204,4 +204,4 @@ jobs:
         run: |
           echo "### Image pushed to GHCR" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ env.IMAGE_NAME }}:dockerdecouple\`" >> $GITHUB_STEP_SUMMARY
