@@ -10,8 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Python & app environment
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/opt/venv/bin:$PATH" \
-    MP_PROJECT_CONFIG=config.wcoa.docker.ini
+    PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /usr/local/apps/madrona-portal
 
@@ -65,7 +64,6 @@ COPY madrona-apps/mp-proxy               ./apps/mp-proxy
 COPY madrona-apps/mp-survey              ./apps/mp-survey
 COPY madrona-apps/mp-visualize           ./apps/mp-visualize
 COPY madrona-apps/p97-nursery            ./apps/p97-nursery
-COPY madrona-apps/wcoa                   ./apps/wcoa
 
 # ---------------------------------------------------------------------------
 # Python dependencies
