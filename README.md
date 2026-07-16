@@ -52,11 +52,11 @@ Your workspace should now look like:
 
 ```
 portals/
-├── madrona-portal/     ← cloned from Ecotrust/madrona-portal, branch: docker
+├── madrona-portal/     
 └── madrona-apps/
-    ├── wcoa/           ← branch: vagrant2docker
+    ├── wcoa/           
     ├── mp-layers/
-    └── ...             ← all others on main
+    └── ...             
 ```
 
 ### Step 4 — Configure environment
@@ -82,10 +82,10 @@ Everything else has working defaults for local development.
 
 ```bash
 cd ../marco
-cp config.docker.ini.template config.wcoa.docker.ini
+cp config.docker.ini.template config.docker.ini
 ```
 
-Edit `config.wcoa.docker.ini` :
+Edit `config.docker.ini` :
 
 ```ini
 LOCATION = redis://tasks:6379/1
