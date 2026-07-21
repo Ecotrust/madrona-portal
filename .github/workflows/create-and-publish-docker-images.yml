@@ -146,9 +146,11 @@ jobs:
 
       - name: Extract short SHA
         id: meta
+        working-directory: madrona-portal
         run: |
-          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
+          SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "${GITHUB_SHA::7}")
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
