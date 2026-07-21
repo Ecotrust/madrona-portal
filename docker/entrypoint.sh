@@ -2,8 +2,7 @@
 # Madrona Portal — Docker entrypoint
 # Waits for the database, then starts the application server.
 #
-# By default steps 1 (DB wait), 2 (collectstatic + compress), and 6 (server
-# start) run. Set DB_INIT=1 to also run steps 3-5 (migrate, fixtures, superuser).
+# By default steps 1 (DB wait), 2 (collectstatic + compress), and 6 (server start) run. Set DB_INIT=1 to also run steps 3-5 (migrate, fixtures, superuser).
 # This is intentionally opt-in to protect existing databases.
 
 set -e
@@ -36,8 +35,7 @@ PY
 # ---------------------------------------------------------------------------
 # 2. Collect static files and compress assets (always runs)
 # ---------------------------------------------------------------------------
-# Ensure the bind-mounted static dir is writable by madrona_user regardless
-# of how Docker created it on the host (often root:root on Linux).
+# Ensure the bind-mounted static dir is writable by madrona_user regardless of how Docker created it on the host (often root:root on Linux).
 chown madrona_user:madrona_user /vol/web/static 2>/dev/null || true
 
 echo "Collecting static files..."
@@ -60,13 +58,9 @@ python marco/manage.py migrate --noinput
 # ---------------------------------------------------------------------------
 # 4. Seed a fresh database with initial fixture data
 #
-# A brand-new PostGIS install contains exactly one Wagtail Page row (the
-# Wagtail root page, depth=1).  We count pages at depth > 1 — if none exist,
-# this is a fresh database and we load the initial fixture.
+# A brand-new PostGIS install contains exactly one Wagtail Page row (the Wagtail root page, depth=1).  We count pages at depth > 1 — if none exist, this is a fresh database and we load the initial fixture.
 #
-# IMPORTANT: We never wipe content on an existing database.  That would
-# destroy real data.  Set FORCE_RELOAD_FIXTURES=1 only in CI or dev reset
-# scenarios where wiping the database is intentional.
+# IMPORTANT: Be careful not to wipe content on an existing database. Set FORCE_RELOAD_FIXTURES=1 only in CI or dev reset scenarios where wiping the database is intentional.
 # ---------------------------------------------------------------------------
 CONTENT_PAGES=$(python - 2>/dev/null <<'PY' || echo "unknown"
 import sys, os
@@ -107,11 +101,7 @@ except Exception:
     pass
 PY
 
-    # Load fixtures in a single Python process so that ContentTypes created
-    # here are guaranteed to be visible when loaddata deserializes FK natural
-    # keys.  Wagtail Page records reference content types by natural key
-    # (e.g. ["wcoa", "ctapage"]); if the ContentType row is absent Django's
-    # deserializer defers the FK and the INSERT fails with a NOT NULL violation.
+    # Load fixtures in a single Python process so ContentTypes created here are guaranteed to be visible when loaddata deserializes FK natural keys.
     python - <<'PY'
 import sys, os
 sys.path.insert(0, 'marco')
@@ -119,8 +109,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marco.settings')
 import django
 django.setup()
 
-# Step 1: ensure every installed app's ContentTypes exist before loading
-# fixture data.  create_contenttypes is idempotent.
+# Step 1: ensure every installed app's ContentTypes exist before loading fixture data.  create_contenttypes is idempotent.
 from django.apps import apps as django_apps
 from django.contrib.contenttypes.management import create_contenttypes
 from django.contrib.contenttypes.models import ContentType
@@ -128,30 +117,10 @@ from django.contrib.contenttypes.models import ContentType
 for app_config in django_apps.get_app_configs():
     create_contenttypes(app_config, verbosity=0)
 
-# Confirm the wcoa types that the fixture depends on are present.
-wcoa_models = [
-    'ctapage', 'connectpage', 'catalogiframepage',
-    'catalogthemegridpage', 'catalogthemegridpagedetail',
-    'ohidashboard', 'wcoaoceanstories', 'wcoaoceanstory',
-]
-missing = []
-for model in wcoa_models:
-    if not ContentType.objects.filter(app_label='wcoa', model=model).exists():
-        # Force-create it so loaddata can resolve the natural key.
-        ContentType.objects.get_or_create(app_label='wcoa', model=model)
-        missing.append(model)
-if missing:
-    print(f'WARNING: had to force-create ContentTypes: {missing}', flush=True)
-else:
-    print('All wcoa ContentTypes verified.', flush=True)
+print('ContentTypes synchronized for all installed apps.', flush=True)
 
 # Step 2: load fixtures — same process, same DB session.
 from django.core.management import call_command
-call_command(
-    'loaddata',
-    'apps/wcoa/wcoa/fixtures/initial_data_prod.json',
-    verbosity=1,
-)
 call_command(
     'loaddata',
     'apps/madrona-scenarios/scenarios/fixtures/initial_data.json',

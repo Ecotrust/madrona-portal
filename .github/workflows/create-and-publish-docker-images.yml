@@ -1,23 +1,13 @@
-# source: https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images#publishing-images-to-docker-hub-and-github-packages
-name: Create and publish West Coast Ocean Data Portal (WCODP) Docker image 
-
-# Builds a single Docker image from the full workspace (madrona-portal +
-# all madrona-apps sub-repos) and pushes it to GitHub Container Registry.
-#
-# Image: ghcr.io/ecotrust/madrona-portal:<sha>  (and :latest)
+name: Build and publish madrona-portal base image
 
 on:
-  release:
-    types: [published]
   push:
-    branches: ['dockerdecouple']
-      # TODO: switch to main branch once we're ready to build from there
+    branches: [main, dockerdecouple]
   workflow_dispatch:
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ghcr.io/ecotrust/madrona-portal
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -31,20 +21,11 @@ jobs:
       id-token: write
 
     steps:
-      # -----------------------------------------------------------------------
-      # Checkout madrona-portal into madrona-portal/ so the Dockerfile's COPY
-      # paths (e.g. COPY madrona-portal/marco ...) resolve correctly.
-      # -----------------------------------------------------------------------
       - name: Checkout madrona-portal
         uses: actions/checkout@v5
         with:
           path: madrona-portal
 
-      # -----------------------------------------------------------------------
-      # Checkout all sub-apps into madrona-apps/<name>/ — mirrors the local
-      # workspace layout the Dockerfile expects.
-      # GH_PAT must have read access to all sub-app repos in the Ecotrust org.
-      # -----------------------------------------------------------------------
       - name: Checkout django_url_shortener
         uses: actions/checkout@v5
         with:
@@ -149,20 +130,6 @@ jobs:
           repository: Ecotrust/p97-nursery
           token: ${{ secrets.GH_PAT }}
           path: madrona-apps/p97-nursery
-
-      # wcoa uses the vagrant2docker branch (contains Docker-specific config)
-      - name: Checkout wcoa
-        uses: actions/checkout@v5
-        with:
-          repository: Ecotrust/wcoa
-          token: ${{ secrets.GH_PAT }}
-          path: madrona-apps/wcoa
-      
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
-      - name: Set lowercase image name
-        run: |
-          IMAGE_NAME=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
       
       # -----------------------------------------------------------------------
       # Docker setup
@@ -180,14 +147,8 @@ jobs:
       - name: Extract short SHA
         id: meta
         run: |
-          cd madrona-portal
           echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      # -----------------------------------------------------------------------
-      # Build from workspace root — matches the layout the Dockerfile expects.
-      # Pushing :sha and :latest together so EC2 can pin a specific build or
-      # always pull the newest with :latest.
-      # -----------------------------------------------------------------------
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -195,13 +156,13 @@ jobs:
           file: madrona-portal/docker/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
-            ghcr.io/${{ env.IMAGE_NAME }}:dockerdecouple
+            ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
+            ${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Image digest summary
         run: |
           echo "### Image pushed to GHCR" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ env.IMAGE_NAME }}:dockerdecouple\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY

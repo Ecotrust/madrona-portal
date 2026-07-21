@@ -1,5 +1,43 @@
 # Docker Development Guide — Madrona Portal (WCOA)
 
+## Docker architecture
+
+The madrona-portal repository is a core project-agnostic platform image:
+
+- `ghcr.io/ecotrust/madrona-portal:{sha,latest}`
+- contains shared Madrona/MP apps and runtime tooling
+- does not include `wcoa` or `mida` project code/configuration
+
+Project overlays now live in each project repository and build from this base image.
+
+### Build and publish core base image
+
+Core CI publishes on merge to `main`:
+
+```bash
+ghcr.io/ecotrust/madrona-portal:<short-sha>
+ghcr.io/ecotrust/madrona-portal:latest
+```
+
+### Dockerizing a new portal checklist
+
+1. Create `<portal-repo>/docker/Dockerfile` that does:
+    - `FROM ghcr.io/ecotrust/madrona-portal:<pinned-base-tag>`
+    - `COPY . ./apps/<portal-app>`
+    - `pip install --no-deps -e ./apps/<portal-app>`
+    - `ENV MP_PROJECT_CONFIG=/usr/local/apps/madrona-portal/apps/<portal-app>/docker/config.<portal-app>.docker.ini`
+2. Add `<portal-repo>/docker/config.<portal-app>.docker.ini`.
+3. Add `<portal-repo>/docker/compose.yml` overlay with project env/ports/volumes/services.
+4. Add `<portal-repo>/docker/.env.example` and local `docker/.env` (gitignored).
+5. Add project CI workflow to build/push:
+    - `ghcr.io/ecotrust/<portal-repo>:<short-sha>`
+    - `ghcr.io/ecotrust/<portal-repo>:latest`
+    - pass a pinned `BASE_TAG` build argument.
+6. Add a quickstart section to the project README.
+
+*Please note:* The first portal to be Dockerized was `wcoa`. You may come across legacy WCOA-coupled Docker notes. Use the project repos for current portal-specific Docker workflows.
+
+
 ## Quick start
 
 These steps take a fresh machine from nothing to a running portal.
@@ -33,6 +71,7 @@ git clone https://github.com/Ecotrust/madrona-analysistools.git
 git clone https://github.com/Ecotrust/madrona-features.git
 git clone https://github.com/Ecotrust/madrona-manipulators.git
 git clone https://github.com/Ecotrust/madrona-scenarios.git
+git clone https://github.com/Ecotrust/mida-portal.git
 git clone https://github.com/Ecotrust/mp-accounts.git
 git clone https://github.com/Ecotrust/mp-data-manager.git
 git clone https://github.com/Ecotrust/mp-drawing.git
@@ -54,9 +93,10 @@ Your workspace should now look like:
 portals/
 ├── madrona-portal/     
 └── madrona-apps/
-    ├── wcoa/           
+    ├── wcoa/    
+    ├── mida-portal/       
     ├── mp-layers/
-    └── ...             
+    └── ...
 ```
 
 ### Step 4 — Configure environment
@@ -212,10 +252,7 @@ docker compose exec app python marco/manage.py migration_to_layers
 ### Step 8 — Importing production media files into the Dockerized Application
 
 #### Prerequisites
-- `madrona-portal/marco/marco/config.wcoa.docker.ini` exists with `MEDIA_ROOT` set to a valid directory
-- That valid directory should match the volume location is docker-compose.yml
    - `portals/madrona-portal/media`
-- Production media files are available 
 
 #### Step 8.1 - Copy the media files into Docker
 
