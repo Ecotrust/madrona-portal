@@ -61,7 +61,7 @@ api_url_includes = list(_iter_discovered_api_includes())
 
 # ---------------------------------------------------------------------------
 # Project-specific URL patterns
-# Optional: a portal variant (wcoa, mida, etc.) can prepend its own patterns.
+# Optional: a project app can prepend its own patterns.
 # ---------------------------------------------------------------------------
 urlpatterns: list = []
 
