@@ -1,4 +1,4 @@
-# Docker Development Guide — Madrona Portal (WCOA)
+# Docker Development Guide — Madrona Portal
 
 ## Docker architecture
 
