@@ -1,16 +1,14 @@
-# Docker Development Guide — Madrona Portal
+# Madrona Portal
+
+The madrona-portal repository builds a **generic base image** that contains the platform and shared apps.
 
 ## Docker architecture
 
-The madrona-portal repository is a core project-agnostic platform image:
+The madrona-portal core base images are published to GitHub Container Registry (GHCR) on merge to `main` using github actions. 
 
-- `ghcr.io/ecotrust/madrona-portal:{sha,latest}`
-- contains shared Madrona/MP apps and runtime tooling
-- does not include `wcoa` or `mida` project code/configuration
-
-Project overlays now live in each project repository and build from this base image.
-
-### Build and publish core base image
+The base image is built from the `docker/Dockerfile` in this repo [view Dockerfile](docker/Dockerfile) and contains:
+    - image on GHCR `ghcr.io/ecotrust/madrona-portal:{sha,latest}`
+    - shared Madrona/MP apps and runtime tooling
 
 Core CI publishes on merge to `main`:
 
@@ -19,24 +17,82 @@ ghcr.io/ecotrust/madrona-portal:<short-sha>
 ghcr.io/ecotrust/madrona-portal:latest
 ```
 
-### Dockerizing a new portal checklist
+### Portal overlays
 
-1. Create `<portal-repo>/docker/Dockerfile` that does:
-    - `FROM ghcr.io/ecotrust/madrona-portal:<pinned-base-tag>`
-    - `COPY . ./apps/<portal-app>`
-    - `pip install --no-deps -e ./apps/<portal-app>`
-    - `ENV MP_PROJECT_CONFIG=/usr/local/apps/madrona-portal/apps/<portal-app>/docker/config.<portal-app>.docker.ini`
-2. Add `<portal-repo>/docker/config.<portal-app>.docker.ini`.
-3. Add `<portal-repo>/docker/compose.yml` overlay with project env/ports/volumes/services.
-4. Add `<portal-repo>/docker/.env.example` and local `docker/.env` (gitignored).
+Each portal overlay builds a thin image on top of the base image, adding its own code, templates, static assets, and settings.
+
+The madrona-portal supports the following portal overlays:
+    - [West Coast Ocean Data Portal (WCOA)](https://github.com/Ecotrust/wcoa)
+    - [Mid-Atlantic Data Portal (MidA)](https://github.com/Ecotrust/mida-portal)
+
+Each overlay is built from its own `docker/Dockerfile` and published to GHCR on merge to `main` using github actions.
+
+> *Please note:* The first portal to be Dockerized was `wcoa`. You may come across legacy WCOA-coupled Docker notes. Use the project repos for current portal-specific Docker workflows.
+
+### Portal overlay structure
+Two-layer image hierarchy, mirroring the code architecture (platform + customization):
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  madrona-portal (base image)                               │
+│  ghcr.io/ecotrust/madrona-portal:<tag>                     │
+│  • Ubuntu, Python venv, GDAL/GEOS/PostGIS libs.            │
+│  • marco/                                                  │
+│  • all shared mp-* & madrona-* apps (pip -e installed)     │
+│  • entrypoint.sh                                           │
+└──────────────┬─────────────────────────┬───────────────────┘
+               │ FROM                    │ FROM
+┌──────────────▼───────────┐ ┌───────────▼──────────────────┐
+│  mida-portal image       │ │  wcoa image                  │
+│  • COPY mida repo        │ │  • COPY wcoa repo            │
+│  • pip -e install mida   │ │  • pip -e install wcoa       │
+│  • config.mida.docker.ini│ │  • config.wcoa.docker.ini    │
+│  • ENV MP_PROJECT_CONFIG │ │  • ENV MP_PROJECT_CONFIG     │
+│                          │ │  + geoportal/elastic compose │
+│                          │ │       overlay                │
+└──────────────────────────┘ └──────────────────────────────┘
+```
+
+### Portal ownership boundaries
+
+| Concern                                                               | Lives in core (`madrona-portal`) | Lives in project repo (`mida-portal`, `wcoa`) |
+| --------------------------------------------------------------------- | -------------------------------- | --------------------------------------------- |
+| System deps (GDAL, PostGIS libs, build toolchain)                     | ✔                                |                                               |
+| Shared Python deps (`docker-requirements.txt`)                        | ✔                                |                                               |
+| Shared mp-* apps                                                      | ✔ (COPY + editable install)      |                                               |
+| Entrypoint (connect to db, collectstatic, compress, DB_INIT, server select) | ✔                                |                                               |
+| Base compose (db, redis, app skeleton)                                | ✔                                |                                               |
+| Project app code + editable install                                   |                                  | ✔                                             |
+| Project `config.<app>.docker.ini`                                     |                                  | ✔                                             |
+| Project-only Python deps                                              |                                  | ✔ (`docker/requirements.txt`)                 |
+| Project-only services (geoportal, elastic)                            |                                  | ✔ (compose overlay)                           |
+| `.env`, ports, DB name, volume names                                  |                                  | ✔                                             |
+| `MP_PROJECT_CONFIG` value                                             |                                  | ✔ (set in project Dockerfile/compose)         |
+
+### Portal architecture guidelines
+- Projects (mida, wcoa) are decoupled from the core platform (madrona-portal) and own their own Docker overlay, config, and compose.
+- Projects reference the core; the core never references a project.
+
+### Steps for adding a new portal
+It is recommended to use an existing portal overlay as a template for creating a new portal overlay. The following steps generalize the process:
+
+1. Create `<portal-repo>/docker/Dockerfile` with the following contents:
+    ```dockerfile
+    FROM ghcr.io/ecotrust/madrona-portal:<pinned-base-tag>
+    COPY . ./apps/<portal-app>
+    pip install --no-deps -e ./apps/<portal-app>
+    ENV MP_PROJECT_CONFIG=/usr/local/apps/madrona-portal/apps/<portal-app>/docker/config.<portal-app>.docker.ini
+    ```
+2. Add `<portal-repo>/docker/config.<portal-app>.docker.ini`
+3. Add `<portal-repo>/docker/compose.yml` overlay with project env/ports/volumes/services
+4. Add `<portal-repo>/docker/.env.example` and local `docker/.env`
 5. Add project CI workflow to build/push:
     - `ghcr.io/ecotrust/<portal-repo>:<short-sha>`
     - `ghcr.io/ecotrust/<portal-repo>:latest`
-    - pass a pinned `BASE_TAG` build argument.
-6. Add a quickstart section to the project README.
 
-*Please note:* The first portal to be Dockerized was `wcoa`. You may come across legacy WCOA-coupled Docker notes. Use the project repos for current portal-specific Docker workflows.
+----  
 
+# :alert: Documentation beyond this point is a work in progress and may be out of date.
 
 ## Quick start
 
@@ -44,8 +100,7 @@ These steps take a fresh machine from nothing to a running portal.
 
 ### Step 1 — Create the workspace directory
 
-All repos live inside a single parent directory. The Dockerfile build
-context is the parent, so the layout is not optional.
+All repos live inside a single parent directory.
 
 ```bash
 mkdir portals
@@ -55,7 +110,7 @@ cd portals
 ### Step 2 — Clone madrona-portal
 
 ```bash
-git clone -b docker https://github.com/Ecotrust/madrona-portal.git madrona-portal
+git clone https://github.com/Ecotrust/madrona-portal.git madrona-portal
 ```
 
 ### Step 3 — Clone the sub-app packages
