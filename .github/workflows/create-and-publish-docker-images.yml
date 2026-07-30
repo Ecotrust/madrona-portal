@@ -2,7 +2,7 @@ name: Build and publish madrona-portal base image
 
 on:
   push:
-    branches: [main]
+    branches: [main, dockerdecouple]
   workflow_dispatch:
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
@@ -157,6 +157,7 @@ jobs:
           context: .
           file: madrona-portal/docker/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
             ${{ env.IMAGE_NAME }}:latest
