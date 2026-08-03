@@ -160,6 +160,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
             ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:4.0.3
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
