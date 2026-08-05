@@ -410,7 +410,7 @@ docker compose up --force-recreate
 
 ```bash
 # From madrona-portal/
-docker compose -f docker/docker-compose.yml --env-file .env --profile full down -v
+docker compose -f docker/compose.base.yml down -v
 ```
 
 `-v` removes the PostGIS and Redis volumes. The next `up` will re-run
