@@ -5,7 +5,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT_DIR="$(cd "$DIR/.." >/dev/null 2>&1 && pwd)"
 
-COMPOSE_FILE="$ROOT_DIR/docker/docker-compose.prod.yml"
+COMPOSE_FILE="$ROOT_DIR/docker/compose.base.yml"
 ENV_FILE="$ROOT_DIR/docker/.env"
 SERVICE_NAME="db"
 
@@ -80,14 +80,19 @@ fi
 
 OUTPATH="$OUTDIR/$OUTFILE"
 
-CONTAINER_ID="$(docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" ps -q "$SERVICE_NAME")"
+compose_cmd=(docker compose -f "$COMPOSE_FILE")
+if [[ -f "$ENV_FILE" ]]; then
+  compose_cmd+=(--env-file "$ENV_FILE")
+fi
+
+CONTAINER_ID="$(${compose_cmd[@]} ps -q "$SERVICE_NAME")"
 
 if [[ -z "$CONTAINER_ID" ]]; then
   echo "Error: Service '$SERVICE_NAME' is not running." >&2
   exit 1
 fi
 
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T \
+${compose_cmd[@]} exec -T \
   -e PGPASSWORD="$DBPASSWORD" \
   "$SERVICE_NAME" \
   pg_dump -b -c -n public -O --quote-all-identifiers --no-acl -w -U "$DBOWNER" -d "$DBNAME" > "$OUTPATH"
