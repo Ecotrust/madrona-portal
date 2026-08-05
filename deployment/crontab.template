@@ -24,9 +24,9 @@
 #
 # m h  dom mon dow   command
 # 02:15 daily (18:15 PST) - Dump PostgreSQL DB to dumpfile
-15 2 * * * cd /home/ubuntu/portals/wcoa && /bin/bash -lc './scripts/db_dump.sh -c ./docker/compose.prod.yml -e ./docker/.env -d ./docker/backups/sql && find ./docker/backups/sql -type f -name "*.sql" -mtime +10 -delete' >> /home/ubuntu/portals/wcoa/docker/backups/db_dump.log  2>&1
+15 2 * * * cd /home/ubuntu/portals/madrona-apps/wcoa && /bin/bash -lc './scripts/db_dump.sh -c ./docker/compose.prod.yml -e ./docker/.env -d ./docker/backups/sql && find ./docker/backups/sql -type f -name "*.sql" -mtime +10 -delete' >> /home/ubuntu/portals/madrona-apps/wcoa/docker/backups/db_dump.log  2>&1
 # 03:15 daily (19:15 PST) - Snapshot Elasticsearch to FS
-15 3 * * * /usr/bin/bash /home/ubuntu/portals/wcoa/scripts/create_elastic_snapshot.sh -r gp_es_snap
+15 3 * * * /usr/bin/bash /home/ubuntu/portals/madrona-apps/wcoa/scripts/create_elastic_snapshot.sh -r gp_es_snap
 # 05:31 daily (21:31 PST) - Refresh NativeLand JSON layers
-31 5 * * * cd /home/ubuntu/portals/wcoa/docker && docker compose -f compose.prod.yml --env-file .env exec app python marco/manage.py import_nativeland
+31 5 * * * cd /home/ubuntu/portals/madrona-apps/wcoa/docker && docker compose -f compose.prod.yml --env-file .env exec app python marco/manage.py import_nativeland
 
