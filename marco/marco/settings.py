@@ -65,6 +65,8 @@ region_cfg = cfg['REGION']
 # Core settings
 # ---------------------------------------------------------------------------
 DEBUG = env_bool('DEBUG', app_cfg, 'DEBUG', False)
+if DEBUG:
+    SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 APP_NAME = env_str('APP_NAME', app_cfg, 'APP_NAME', 'Marine Planner')
 APP_URL = env_str('APP_URL', app_cfg, 'APP_URL', '')
