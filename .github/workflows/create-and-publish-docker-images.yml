@@ -8,6 +8,7 @@ on:
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   IMAGE_NAME: ghcr.io/ecotrust/madrona-portal
+  IMAGE_PLATFORMS: linux/amd64,linux/arm64
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -160,6 +161,7 @@ jobs:
           context: .
           file: madrona-portal/docker/Dockerfile
           push: true
+          platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
             ${{ env.IMAGE_NAME }}:latest
