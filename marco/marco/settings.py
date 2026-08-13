@@ -65,6 +65,7 @@ region_cfg = cfg['REGION']
 # Core settings
 # ---------------------------------------------------------------------------
 DEBUG = env_bool('DEBUG', app_cfg, 'DEBUG', False)
+# Allows recaptcha test keys to be used without raising a system check error when DEBUG=True
 if DEBUG:
     SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
