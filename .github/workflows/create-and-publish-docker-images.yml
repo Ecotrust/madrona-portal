@@ -1,0 +1,176 @@
+name: Build and publish madrona-portal base image
+
+on:
+  push:
+    branches: [main, dockerdecouple]
+  workflow_dispatch:
+
+# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
+env:
+  IMAGE_NAME: ghcr.io/ecotrust/madrona-portal
+  IMAGE_PLATFORMS: linux/amd64,linux/arm64
+
+# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout madrona-portal
+        uses: actions/checkout@v5
+        with:
+          path: madrona-portal
+
+      - name: Checkout django_url_shortener
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/django_url_shortener
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/django_url_shortener
+
+      - name: Checkout madrona-analysistools
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/madrona-analysistools
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/madrona-analysistools
+
+      - name: Checkout madrona-features
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/madrona-features
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/madrona-features
+
+      - name: Checkout madrona-manipulators
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/madrona-manipulators
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/madrona-manipulators
+
+      - name: Checkout madrona-scenarios
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/madrona-scenarios
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/madrona-scenarios
+
+      - name: Checkout mp-accounts
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-accounts
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-accounts
+
+      - name: Checkout mp-data-manager
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-data-manager
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-data-manager
+
+      - name: Checkout mp-drawing
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-drawing
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-drawing
+
+      - name: Checkout mp-explore
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-explore
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-explore
+
+      - name: Checkout mp-layers
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-layers
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-layers
+
+      - name: Checkout mp-map-groups
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-map-groups
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-map-groups
+
+      - name: Checkout mp-proxy
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-proxy
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-proxy
+
+      - name: Checkout mp-survey
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-survey
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-survey
+
+      - name: Checkout mp-visualize
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/mp-visualize
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/mp-visualize
+
+      - name: Checkout p97-nursery
+        uses: actions/checkout@v5
+        with:
+          repository: Ecotrust/p97-nursery
+          token: ${{ secrets.GH_PAT }}
+          path: madrona-apps/p97-nursery
+      
+      # -----------------------------------------------------------------------
+      # Docker setup
+      # -----------------------------------------------------------------------
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract short SHA
+        id: meta
+        working-directory: madrona-portal
+        run: |
+          SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "${GITHUB_SHA::7}")
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: madrona-portal/docker/Dockerfile
+          push: true
+          platforms: ${{ env.IMAGE_PLATFORMS }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:qemu
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image digest summary
+        run: |
+          echo "### Image pushed to GHCR" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
