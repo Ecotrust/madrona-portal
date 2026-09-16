@@ -9,3 +9,6 @@
 * 4.0.2.02
     * < TBD > - 2026-09-01
     * Updates to mp-visualize to ensure 'display_name' from AttributeInfo records overrides the field names when reporting on ArcREST layers
+* 4.0.2.03
+    * <TBD> - 2026-09-16
+    * Add hook to include CARTO API key in .env for displaying CARTO-based basemaps in mp-visualize
