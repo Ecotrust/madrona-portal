@@ -125,7 +125,6 @@ class OceanStorySectionBase(MediaItem):
             layer = Layer.objects.filter(id=layer_id).first()
             if not layer:
                 continue
-            # layer = layer.values('legend', 'show_legend', 'name', 'layer_type', 'url', 'arcgis_layers')
 
             # layer ID must be a string here
             data_layers[layer_id] = {}
@@ -137,7 +136,6 @@ class OceanStorySectionBase(MediaItem):
                 'name': layer.name,
                 'layer_type': layer.layer_type,
                 'url': layer.url,
-                # 'arcgis_layers': layer.arcgis_layers
             }
 
             if layer.layer_type in ('ArcRest', 'ArcFeatureServer'):
