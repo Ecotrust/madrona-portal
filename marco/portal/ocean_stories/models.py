@@ -6,7 +6,7 @@ except Exception as e:
     # Py2 compatibility
     from itertools import izip_longest as zip_longest
 import json
-from data_manager.models import Layer
+from layers.models import Layer
 
 try:
     import urlparse as parse
@@ -122,36 +122,49 @@ class OceanStorySectionBase(MediaItem):
                 # maps, so just continue.
                 continue
 
-            layer = Layer.objects.filter(id=layer_id)
-            layer = layer.values('legend', 'show_legend', 'name', 'layer_type', 'url', 'arcgis_layers')
+            layer = Layer.objects.filter(id=layer_id).first()
+            if not layer:
+                continue
 
             # layer ID must be a string here
             data_layers[layer_id] = {}
             if not layer:
                 continue
-            layer = layer[0]
+            layer_dict = {
+                'legend': layer.legend,
+                'show_legend': layer.show_legend,
+                'name': layer.name,
+                'layer_type': layer.layer_type,
+                'url': layer.url,
+            }
+
+            if layer.layer_type in ('ArcRest', 'ArcFeatureServer'):
+                layer_dict['arcgis_layers'] = layer.specific_instance.arcgis_layers
+            else:
+                layer_dict['arcgis_layers'] = None
 
             data_layers[layer_id]['id'] = layer_id
-            data_layers[layer_id]['name'] = layer['name']
-            if layer['show_legend']:
-                data_layers[layer_id]['legend'] = layer['legend']
+            data_layers[layer_id]['name'] = layer_dict['name']
+            if layer_dict['show_legend']:
+                data_layers[layer_id]['legend'] = layer_dict['legend']
             else:
                 data_layers[layer_id]['legend'] = False
             data_layers[layer_id]['legend_source'] = 'img'
-            data_layers[layer_id]['arcgis_layers'] = layer['arcgis_layers']
-            if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcRest' and '/export' in layer['url']:
+            data_layers[layer_id]['arcgis_layers'] = layer_dict['arcgis_layers']
+            if (layer_dict['show_legend'] and (layer_dict['legend'] == u'' or layer_dict['legend'] == None)) and layer_dict['layer_type'] == 'ArcRest' and '/export' in layer_dict['url']:
                 data_layers[layer_id]['legend_source'] = 'url'
-                data_layers[layer_id]['legend'] = "%s" % layer['url'].split('/export')[0]
-            if (layer['show_legend'] and (layer['legend'] == u'' or layer['legend'] == None)) and layer['layer_type'] == 'ArcFeatureServer' and '/FeatureServer' in layer['url']:
+                data_layers[layer_id]['legend'] = "%s" % layer_dict['url'].split('/export')[0]
+            if (layer_dict['show_legend'] and (layer_dict['legend'] == u'' or layer_dict['legend'] == None)) and layer_dict['layer_type'] == 'ArcFeatureServer' and '/FeatureServer' in layer_dict['url']:
                 data_layers[layer_id]['legend_source'] = 'arc_feature_service'
-                data_layers[layer_id]['legend'] = "%s/%s?f=json" % (layer['url'], layer['arcgis_layers'])
+                data_layers[layer_id]['legend'] = "%s/%s?f=json" % (layer_dict['url'], layer_dict['arcgis_layers'])
 
         # Layers are presented in the URL in stack order (FILO). 
         # Collect the order, then enforce the layers to be stored in reverse order.
         ordered_data_layers = OrderedDict()
         layer_ids.reverse()
         for l_id in layer_ids:
-            ordered_data_layers[l_id] = data_layers[l_id]
+            if l_id in data_layers.keys():
+                ordered_data_layers[l_id] = data_layers[l_id]
 
         s = {
             'view': {
