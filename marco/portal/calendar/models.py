@@ -24,13 +24,13 @@ class Event(DetailPageBase):
     end_date = models.DateField(null=True, blank=True)
     location = models.TextField(null=True, blank=True, max_length=1024)
 
-    search_fields = DetailPageBase.search_fields + (
+    search_fields = DetailPageBase.search_fields + [
         index.SearchField("title"),
         index.AutocompleteField("title"),
         index.SearchField("description"),
         index.AutocompleteField("description"),
         index.FilterField("date"),
-    )
+    ]
     content_panels = DetailPageBase.content_panels + [
         MultiFieldPanel([
             FieldPanel('date'),
@@ -44,7 +44,7 @@ class Calendar(PageBase):
 
     def events(self):
 
-        search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
+        search_fields = PageBase.search_fields + [index.SearchField('description'),index.AutocompleteField('description')]
 
         # Get list of live event pages that are descendants of this page
         events = Event.objects.live().child_of(self)
