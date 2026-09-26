@@ -186,7 +186,7 @@ class OceanStorySection(Orderable, OceanStorySectionBase):
 class OceanStories(PageBase):
     subpage_types = ['OceanStory']
 
-    search_fields = (index.SearchField('description'),index.AutocompleteField('description'))
+    search_fields = PageBase.search_fields + [index.SearchField('description'),index.AutocompleteField('description')]
 
     def get_detail_children(self):
         return OceanStory.objects.child_of(self)
@@ -200,7 +200,7 @@ class OceanStory(DetailPageBase):
     explore_title = models.CharField(max_length=256, blank=True, null=True)
     explore_url = models.URLField(max_length=4096, blank=True, null=True)
 
-    search_fields = DetailPageBase.search_fields + (
+    search_fields = DetailPageBase.search_fields + [
         index.SearchField("title"),
         index.SearchField("description"),
         index.AutocompleteField("description"),
@@ -209,7 +209,7 @@ class OceanStory(DetailPageBase):
         # how does this differ from https://docs.wagtail.org/en/v6.3.5/topics/search/indexing.html#indexing-callables-and-other-attributes
         # index.SearchField("get_sections_search_text"),
         # index.AutocompleteField("get_sections_search_text"),
-    )
+    ]
 
     def get_context(self, request):
         import importlib
