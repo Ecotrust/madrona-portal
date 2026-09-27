@@ -160,7 +160,7 @@ class OceanStorySectionBase(MediaItem):
         ordered_data_layers = OrderedDict()
         layer_ids.reverse()
         for l_id in layer_ids:
-            if l_id in data_layers.keys():
+            if l_id in data_layers:
                 ordered_data_layers[l_id] = data_layers[l_id]
 
         s = {
