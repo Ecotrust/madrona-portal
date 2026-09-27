@@ -1,6 +1,12 @@
 from django.test import TestCase
 from .models import *
 
+
+# TODO: 2026-09-27
+# All 4 tests fail
+# Also, in portal.ocean_stories.models.py there are references to `layer.specific_instance.arcgis_layers` --
+# Please create a regression test to address the concern listed here:
+# https://github.com/Ecotrust/madrona-portal/pull/66#discussion_r4067150586
 class OceanStorySectionTestCase(TestCase):
     def setUp(self):
         self.section = OceanStorySection()
