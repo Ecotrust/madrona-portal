@@ -123,9 +123,6 @@ class OceanStorySectionBase(MediaItem):
                 continue
 
             layer = Layer.objects.filter(id=layer_id).first()
-            if not layer:
-                continue
-
             # layer ID must be a string here
             data_layers[layer_id] = {}
             if not layer:
