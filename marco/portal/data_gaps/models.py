@@ -24,13 +24,13 @@ class DataGap(DetailPageBase):
 
     target_year = models.CharField(max_length=4)
 
-    search_fields = DetailPageBase.search_fields + (
+    search_fields = DetailPageBase.search_fields + [
         index.SearchField("title"),
         index.AutocompleteField("title"),
         index.SearchField("description"),
         index.AutocompleteField("description"),
         index.FilterField("target_year"),
-    )
+    ]
 
     content_panels = DetailPageBase.content_panels + [
         FieldPanel('target_year'),

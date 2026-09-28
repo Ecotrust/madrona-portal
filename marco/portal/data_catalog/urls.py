@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     #'',
-    re_path(r'^$', views.catalog),
+    # re_path(r'^$', views.catalog), # views.catalog does not exist
     re_path(r'^([A-Za-z0-9_-]+)/$', views.theme),
 ]
