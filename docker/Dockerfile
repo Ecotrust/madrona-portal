@@ -80,8 +80,26 @@ COPY madrona-apps/mp-survey              ./apps/mp-survey
 COPY madrona-apps/mp-visualize           ./apps/mp-visualize
 COPY madrona-apps/p97-nursery            ./apps/p97-nursery
 
+# ---------------------------------------------------------------------------# Install local sub-apps as editable (must run after all COPY commands)
 # ---------------------------------------------------------------------------
-# Runtime setup
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-deps \
+    -e ./apps/mp-data-manager \
+    -e ./apps/django_url_shortener/url_short \
+    -e ./apps/madrona-analysistools \
+    -e ./apps/mp-visualize \
+    -e ./apps/madrona-features \
+    -e ./apps/mp-accounts \
+    -e ./apps/madrona-scenarios \
+    -e ./apps/madrona-manipulators \
+    -e ./apps/mp-drawing \
+    -e ./apps/mp-explore \
+    -e ./apps/mp-map-groups \
+    -e ./apps/p97-nursery \
+    -e ./apps/mp-proxy \
+    -e ./apps/mp-survey
+
+# ---------------------------------------------------------------------------# Runtime setup
 # ---------------------------------------------------------------------------
 RUN chmod 755 /entrypoint.sh && \
     mkdir -p /vol/web/static && \
