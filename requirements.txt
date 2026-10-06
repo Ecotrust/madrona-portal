@@ -25,6 +25,7 @@ django-querysetsequence>=0.14,<1.0
 wagtailcharts>=0.4,<1.0
 django-import-export>=3.3,<4.0
 django-colorfield>=0.11,<1.0
+django-reversion>=6.0,<7.0
 
 # =============================================================================
 # Content & Tagging
