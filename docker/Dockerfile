@@ -83,7 +83,7 @@ COPY madrona-apps/p97-nursery            ./apps/p97-nursery
 # ---------------------------------------------------------------------------# Install local sub-apps as editable (must run after all COPY commands)
 # ---------------------------------------------------------------------------
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-deps \
+    pip install \
     -e ./apps/mp-data-manager \
     -e ./apps/django_url_shortener/url_short \
     -e ./apps/madrona-analysistools \
