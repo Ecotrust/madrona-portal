@@ -8,7 +8,7 @@ on:
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   IMAGE_NAME: ghcr.io/ecotrust/madrona-portal
-  IMAGE_PLATFORMS: linux/amd64
+  IMAGE_PLATFORMS: linux/amd64,linux/arm64
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -131,7 +131,7 @@ jobs:
           repository: Ecotrust/p97-nursery
           token: ${{ secrets.GH_PAT }}
           path: madrona-apps/p97-nursery
-      
+
       # -----------------------------------------------------------------------
       # Docker setup
       # -----------------------------------------------------------------------
@@ -154,7 +154,7 @@ jobs:
         run: |
           SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "${GITHUB_SHA::7}")
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
-          
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -164,8 +164,7 @@ jobs:
           platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:notqemu
+            ${{ env.IMAGE_NAME }}:test-python-dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
