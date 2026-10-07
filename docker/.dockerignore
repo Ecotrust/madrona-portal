@@ -1,0 +1,15 @@
+.git
+**/.git
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/node_modules
+**/.venv
+**/venv
+**/dist
+**/build
+**/.DS_Store
+madrona-portal/.git
+madrona-apps/**/.git
