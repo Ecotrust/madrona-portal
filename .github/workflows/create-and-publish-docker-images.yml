@@ -131,7 +131,7 @@ jobs:
           repository: Ecotrust/p97-nursery
           token: ${{ secrets.GH_PAT }}
           path: madrona-apps/p97-nursery
-
+      
       # -----------------------------------------------------------------------
       # Docker setup
       # -----------------------------------------------------------------------
@@ -154,7 +154,7 @@ jobs:
         run: |
           SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "${GITHUB_SHA::7}")
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
-
+          
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -164,7 +164,8 @@ jobs:
           platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}
-            ${{ env.IMAGE_NAME }}:test-python-image-single-image-platform
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:notqemu
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -172,4 +173,4 @@ jobs:
         run: |
           echo "### Image pushed to GHCR" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`${{ env.IMAGE_NAME }}:test-python-image-single-image-platform\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
