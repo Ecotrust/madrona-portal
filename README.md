@@ -65,6 +65,3 @@ Each overlay is built from its own `docker/Dockerfile` and published to GHCR on 
 
 ---  
 
-
-## Adding a new portal
-Use the [New Portal Deployment Checklist](docs/NEW_PORTAL_CHECKLIST.md) and an existing portal overlay as a template. The checklist covers local development, image publishing, production Compose, and host deployment.
