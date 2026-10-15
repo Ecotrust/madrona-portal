@@ -1,6 +1,6 @@
 # Madrona Portal
 
-The madrona-portal repository builds a **generic base image** that contains madrona portal, mp-*, madrona-*, and other shared apps.
+The madrona-portal repository builds a shared base image that contains madrona portal, mp-\*, madrona-\*, and other shared apps.
 
 See a specific portal's documentation for guidance on development and deployment:  
 
@@ -20,7 +20,7 @@ The madrona-portal base images are published to GitHub Container Registry (GHCR)
 The base image is built from this repo's [Dockerfile](docker/Dockerfile) and contains:  
 
   * image on GHCR `ghcr.io/ecotrust/madrona-portal:{sha,latest}`
-  * madrona-*, mp-*, and other shared apps 
+  * madrona-\*, mp-\*, and other shared apps 
   * runtime tooling
 
 ### Portal overlays
@@ -54,7 +54,7 @@ Each overlay is built from its own `docker/Dockerfile` and published to GHCR on 
 | --------------------------------------------------------------------- | -------------------------------- | --------------------------------------------- |
 | System deps (GDAL, PostGIS libs, build toolchain)                     | ✔                                |                                               |
 | Shared Python deps (`docker-requirements.txt`)                        | ✔                                |                                               |
-| Shared mp-* apps                                                      | ✔ (COPY + editable install)      |                                               |
+| Shared mp-\*, madrona-\*  apps                                                      | ✔ (COPY + editable install)      |                                               |
 | Entrypoint (connect to db, collectstatic, compress, DB_INIT, server select) | ✔                                |                                               |
 | Base compose (db, redis, app skeleton)                                | ✔                                |                                               |
 | Project app code + editable install                                   |                                  | ✔                                             |
