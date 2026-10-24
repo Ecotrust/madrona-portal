@@ -121,12 +121,14 @@ Each portal directory should contain:
 sudo apt-get install -y nginx certbot python3-certbot-nginx
 ```
 
-If needed, create a basic server block for the portal domain:  
+Try using a an existing portal Nginx configuration as a template. If you don't have an existing configuration, here is a basic server block for the portal domain:  
 
 ```nginx
 server {
     listen 80;
     server_name portal.example.org www.portal.example.org;
+    
+    client_max_body_size 100M;
 
     location /static/ {
         alias /home/ubuntu/portals/<portal>/docker/static/;
