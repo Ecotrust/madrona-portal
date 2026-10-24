@@ -153,7 +153,9 @@ You can test Nginx config with `sudo nginx -t`
 Reload Nginx and obtain TLS certificates with Certbot.
 
 ```bash
-sudo system restart nginx
+sudo service nginx restart
+# alternatively with systemctl
+# sudo systemctl reload nginx
 sudo certbot --nginx -d <portal-domain> -d <optional-www-domain>
 ```
 
