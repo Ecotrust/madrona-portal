@@ -17,7 +17,7 @@ To prepare madrona-portal for deployment on AWS, see [docs/AWS_DEPLOY.md](docs/A
 
 The madrona-portal base images are published to GitHub Container Registry (GHCR). Images are built and pushed on merge to `main` using [github actions](.github/workflows/create-and-publish-docker-images.yml). 
 
-The base image is built from this repo's [Dockerfile](docker/Dockerfile) and contains:  
+This repo builds the madrona-portal base image and contains:  
 
   * image on GHCR `ghcr.io/ecotrust/madrona-portal:{sha,latest}`
   * madrona-\*, mp-\*, and other shared apps 
