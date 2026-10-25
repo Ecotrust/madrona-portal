@@ -148,7 +148,7 @@ server {
 }
 ```
 
-You can test Nginx config with `sudo nginx -t`
+You can test Nginx config with `sudo nginx -T`
 
 Reload Nginx and obtain TLS certificates with Certbot.
 
