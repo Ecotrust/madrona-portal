@@ -7,13 +7,13 @@ This guide prepares an AWS server to run Madrona portals.
 Madrona uses two kinds of Docker images:
 
 * The **shared base image** contains software used by all portals.
-* Each **portal image** adds one portal's application and settings to the shared image.
+* Each **portal app image** adds one portal's application and settings to the base image.
 
 Please note:  
 
-* On an AWS server, you run the portal image, not the shared image by itself.
-* Rebuilding the shared image does not update a running portal. 
-* When shared software changes, rebuild the shared image, then rebuild and deploy each affected portal image.
+* On an AWS server, you run the portal app image, not the base image by itself.
+* Rebuilding the base image does not update a running portal. 
+* When base software changes, rebuild the base image, then rebuild and deploy each affected portal app image.
 * For production, use a fixed Git commit tag for both images so deployments are repeatable. 
 * Reserve `latest` for development and testing.
 
@@ -51,7 +51,7 @@ docker manifest inspect ghcr.io/<org>/<portal-image>:<image-tag> >/dev/null
 ### EC2
 
 - Recommended baseline for app + db + redis only: `t3.medium`.
-- Increase instance class when portal images include extra services (search engines, catalog systems, app servers).
+- Increase instance class when portal app images include extra services (search engines, catalog systems, app servers).
 - Start with at least 40-60 GB gp3 root volume for logs, images, and backups.
 
 ### Security group

@@ -1,6 +1,6 @@
 # Madrona Portal
 
-The madrona-portal repository builds a shared base image that contains madrona portal, mp-\*, madrona-\*, and other shared apps.
+The madrona-portal repository builds a base image that contains madrona portal, mp-\*, madrona-\*, and other shared apps.
 
 See a specific portal's documentation for guidance on development and deployment:  
 
