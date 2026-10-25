@@ -2,7 +2,7 @@
 
 The madrona-portal repository builds a base image that contains madrona portal, mp-\*, madrona-\*, and other shared apps.
 
-See a specific portal's documentation for guidance on development and deployment:  
+See a specific portal app's documentation for guidance on development and deployment:  
 
 * Mid-Atlantic Ocean Data Portal (MidA)
   * [MidA development setup](https://github.com/Ecotrust/mida-portal/blob/main/docs/DEVELOPMENT_SETUP.md)
@@ -23,20 +23,20 @@ This repo builds the madrona-portal base image and contains:
   * madrona-\*, mp-\*, and other shared apps 
   * runtime tooling
 
-### Portal overlays
+### Portal application images
 
 Each portal overlay builds on top of the madrona-portal base image. 
 
-The madrona-portal supports the following portal overlays:  
+The madrona-portal supports the following portal app images:  
 
   - [West Coast Ocean Data Portal (WCODP)](https://github.com/Ecotrust/wcoa)
   - [Mid-Atlantic Data Portal (MidA)](https://github.com/Ecotrust/mida-portal)
 
-Each overlay is built from its own `docker/Dockerfile` and published to GHCR on merge to `main` using github actions.
+Each portal app image is built from its own `docker/Dockerfile` and published to GHCR on merge to `main` using github actions.
 
-> *Please note:* The first portal to be Dockerized was `wcoa`. You may come across legacy WCOA-coupled Docker notes.
+> *Please note:* The first portal app image to be Dockerized was `wcoa`. You may come across legacy WCOA-coupled Docker notes.
 
-#### Portal overlay structure
+#### Portal app image structure
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -44,7 +44,7 @@ Each overlay is built from its own `docker/Dockerfile` and published to GHCR on 
 └──────────────┬─────────────────────────┬─────────────────┘
                │ FROM                    │ FROM
 ┌──────────────▼─────────────┐ ┌─────────▼─────────────────┐
-│  mida-portal overlay image │ │  wcoa overlay image       │
+│  mida-portal app image     │ │  wcoa app image           │
 └────────────────────────────┘ └───────────────────────────┘
 ```
 
