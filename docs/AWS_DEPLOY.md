@@ -14,7 +14,7 @@ Please note:
 * On an AWS server, you run the portal app image, not the base image by itself.
 * Rebuilding the base image does not update a running portal. 
 * When base software changes, rebuild the base image, then rebuild and deploy each affected portal app image.
-* For production, use a fixed Git commit tag for both images so deployments are repeatable. 
+* For production, use a version tag or fixed Git commit tag for both images so deployments are repeatable. 
 * Reserve `latest` for development and testing.
 
 ## Prerequisites
