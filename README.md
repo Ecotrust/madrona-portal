@@ -53,7 +53,7 @@ See a specific portal app's documentation for guidance on development and deploy
 | Base compose (db, redis, app skeleton)                                | ✔                                |                                               |
 | Project app code + editable install                                   |                                  | ✔                                             |
 | Project-only Python deps                                              |                                  | ✔ (`docker/requirements.txt`)                 |
-| Project-only services (geoportal, elastic)                            |                                  | ✔ (compose overlay)                           |
+| Project-only services (Geoportal, Elasticsearch)                      |                                  | ✔ (compose overlay)                           |
 | `.env`, ports, DB name, volume names                                  |                                  | ✔                                             |
 |  Project settings                                                     |                                  | ✔                                             |
 
